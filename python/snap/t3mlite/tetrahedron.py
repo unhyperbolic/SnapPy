@@ -8,6 +8,7 @@
 
 from .simplex import *
 import sys
+from .knot import *
 
 class Tetrahedron:
    def __init__(self, name = ''):
@@ -17,6 +18,9 @@ class Tetrahedron:
       self.Gluing   = {F0:None,F1:None,F2:None,F3:None}  # Permutations
       self.Class    = [None]*16             # list of equivalence classes
       self.Checked  = 0                     # flag
+
+      self.arcs = []
+         
 
    def __repr__(self):
       if self.Index != -1: 
@@ -100,9 +104,26 @@ class Tetrahedron:
             s = (s + "%s : %-10s   " % 
                    (SubsimplexName[edge], self.Class[edge]))
          out.write("\t       " + s + '\n')
+      if self.arcs:
+         print("Arcs:")
+         for arc in self.arcs:
+            print(arc)
+            
 
    # Below added 7/12/99 by NMD
 
    def get_orientation_of_edge(self, a, b):
       return self.Class[a | b].orientation_with_respect_to(self, a, b)
-   
+
+   def add_arcs(self, arcs):
+      for arc in arcs:
+         arc_trimmed = arc.trim_start()
+         if arc_trimmed:
+            arc_trimmed_twice = arc_trimmed.trim_end()
+            if arc_trimmed_twice:
+               if not arc_trimmed_twice.is_point():
+                  if arc_trimmed_twice not in self.arcs:
+                     self.arcs.append(arc_trimmed_twice)
+               else:
+                  print("BarycentricArc ended up as a point.")
+                  print(arc)

@@ -20,12 +20,14 @@ from . import linalg
 from . import homology
 import os, sys, random, io
 
+from .knot import *
+
 try:
      import snappy
 except ImportError:
      snappy = None
 
-VERBOSE = 0
+VERBOSE = 1
 
 # Globals needed for normal surfaces:
 
@@ -52,7 +54,7 @@ VertexVector = {V0:(1,0,0,0), V1:(0,1,0,0),
 class Insanity(Exception):
      pass
 
-class Mcomplex:
+class Mcomplex(object):
 
    def __init__(self, tetrahedron_list=None):
      if tetrahedron_list is None:
@@ -459,8 +461,20 @@ class Mcomplex:
        c.reverse().glue(b.glued())
        a.rotate(-1)
        b.rotate(1)
+
+     new[0].Tetrahedron.add_arcs([arc.transform(ABNSI*NABC) for arc in a.Tetrahedron.arcs])
+     new[1].Tetrahedron.add_arcs([arc.transform(BCNSI*NABC) for arc in a.Tetrahedron.arcs])
+     new[2].Tetrahedron.add_arcs([arc.transform(CANSI*NABC) for arc in a.Tetrahedron.arcs])
+
+     new[0].Tetrahedron.add_arcs([arc.transform(ABNSI*ABCS) for arc in b.Tetrahedron.arcs])
+     new[1].Tetrahedron.add_arcs([arc.transform(BCNSI*ABCS) for arc in b.Tetrahedron.arcs])
+     new[2].Tetrahedron.add_arcs([arc.transform(CANSI*ABCS) for arc in b.Tetrahedron.arcs])
+
+     if a.Tetrahedron.arcs or b.Tetrahedron.arcs or new[0].Tetrahedron.arcs or new[1].Tetrahedron.arcs or new[2].Tetrahedron.arcs:
+          print('before:{}; after:{}'.format([len(a.Tetrahedron.arcs),len(b.Tetrahedron.arcs)],[len(new[0].Tetrahedron.arcs),len(new[1].Tetrahedron.arcs),len(new[2].Tetrahedron.arcs)]))
      self.delete_tet(a.Tetrahedron)
      self.delete_tet(b.Tetrahedron)
+
      self.build_edge_classes()
      if VERBOSE:
        print('2->3')
@@ -472,6 +486,7 @@ class Mcomplex:
 # Returns 0 if the edge is a boundary edge.
 #
    def three_to_two(self, edge):
+
      if not edge.IntOrBdry == 'int':
        return 0
      if edge.valence() != 3 or not edge.distinct():
@@ -489,6 +504,23 @@ class Mcomplex:
        b.rotate(-1)
        c.rotate(1)
        a.reverse().opposite().next()
+
+
+     t0 = edge.Corners[0].Tetrahedron
+     t1 = edge.Corners[1].Tetrahedron
+     t2 = edge.Corners[2].Tetrahedron
+
+     b.Tetrahedron.add_arcs([arc.transform(NABCI*ABNS) for arc in t0.arcs])
+     b.Tetrahedron.add_arcs([arc.transform(NABCI*BCNS) for arc in t1.arcs])
+     b.Tetrahedron.add_arcs([arc.transform(NABCI*CANS) for arc in t2.arcs])
+     c.Tetrahedron.add_arcs([arc.transform(ABCSI*ABNS) for arc in t0.arcs])
+     c.Tetrahedron.add_arcs([arc.transform(ABCSI*BCNS) for arc in t1.arcs])
+     c.Tetrahedron.add_arcs([arc.transform(ABCSI*CANS) for arc in t2.arcs])
+
+
+     if t0.arcs or t1.arcs or t2.arcs or b.Tetrahedron.arcs or c.Tetrahedron.arcs:
+          print('before:{}; after:{}'.format([len(t0.arcs),len(t1.arcs),len(t2.arcs)],[len(b.Tetrahedron.arcs),len(c.Tetrahedron.arcs)]))
+     
      for corner in edge.Corners:
        self.delete_tet(corner.Tetrahedron)
      self.build_edge_classes()
@@ -627,6 +659,7 @@ class Mcomplex:
               progress, did_simplify = 1, 1
               break
      return did_simplify
+     
 
    def easy_simplify(self):
      did_simplify  = 0
@@ -671,6 +704,14 @@ class Mcomplex:
        rand_face = TwoSubsimplices[random.randint(0,3)]
        self.two_to_three(rand_face, rand_tet)
        self.eliminate_valence_two()       
+     return len(self)
+
+   def _two_three_simplify(self,n):
+     for i in range(n):
+       rand_tet = self[ random.randint(0, len(self) - 1) ]
+       rand_face = TwoSubsimplices[random.randint(0,3)]
+       self.two_to_three(rand_face, rand_tet)
+       self.eliminate_valence_three()       
      return len(self)
 
 # Create n edges of valence 2 in random places, removing valence
@@ -1006,7 +1047,21 @@ class Mcomplex:
         True
         """
         return homology.boundary_maps(self)
-        
+
+
+   def _add_arcs_around_valence_one_edge(self):
+        labeling_to_index = {}
+        for tet in self.Tetrahedra:             
+             faces = [i for i in tet.Neighbor if tet.Neighbor[i] == tet]
+             if len(faces)==2:
+                  f1, f2 = faces
+                  p1 = t3m_face_to_point[f1]
+                  perm = tet.Gluing[f1]
+                  permuted_coords = [p1.vector[perm[i]] for i in range(4)]
+                  p2 = BarycentricPoint(*permuted_coords)
+                  tet.add_arcs([BarycentricArc(p1,p2)])
+                  
+                  break
 
 # Takes a list where the ith element represents the glueing data
 # for the ith tetraherda:
