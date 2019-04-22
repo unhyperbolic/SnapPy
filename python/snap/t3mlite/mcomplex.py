@@ -27,7 +27,7 @@ try:
 except ImportError:
      snappy = None
 
-VERBOSE = 1
+VERBOSE = 0
 
 # Globals needed for normal surfaces:
 
@@ -452,26 +452,68 @@ class Mcomplex(object):
        return 0
      if a.Tetrahedron == b.Tetrahedron:
        return 0
+     print(a)
+     a.Tetrahedron.info()
+     print(b)
+     b.Tetrahedron.info()
+     be_a, be_b = barycentric_face_embedding(a)
+
+     be_a.info()
+
+     be_b.info()
+  
      new = self.new_arrows(3)
+     new_copies = [new_arrow.copy() for new_arrow in new]
      for i in range(3):
        new[i].glue(new[(i+1)%3])
+
+     print(new[0].glued(), new[1])
+     print(new[1].glued(), new[2])
+     print(new[2].glued(), new[0])
      a.reverse()
      for c in new:
+       print('a')
+       print(a)
+       print('b')
+       print(b)
+       print('c')
+       print(c)
+       print('c_op')
+       print(c.copy().opposite())
        c.opposite().glue(a.glued())
        c.reverse().glue(b.glued())
        a.rotate(-1)
        b.rotate(1)
 
-     new[0].Tetrahedron.add_arcs([arc.transform(ABNSI*NABC) for arc in a.Tetrahedron.arcs])
-     new[1].Tetrahedron.add_arcs([arc.transform(BCNSI*NABC) for arc in a.Tetrahedron.arcs])
-     new[2].Tetrahedron.add_arcs([arc.transform(CANSI*NABC) for arc in a.Tetrahedron.arcs])
 
-     new[0].Tetrahedron.add_arcs([arc.transform(ABNSI*ABCS) for arc in b.Tetrahedron.arcs])
-     new[1].Tetrahedron.add_arcs([arc.transform(BCNSI*ABCS) for arc in b.Tetrahedron.arcs])
-     new[2].Tetrahedron.add_arcs([arc.transform(CANSI*ABCS) for arc in b.Tetrahedron.arcs])
+     for c in new:
+       c.reverse()
+       c.opposite()
+       print(c)
+       c.Tetrahedron.info()
 
-     if a.Tetrahedron.arcs or b.Tetrahedron.arcs or new[0].Tetrahedron.arcs or new[1].Tetrahedron.arcs or new[2].Tetrahedron.arcs:
-          print('before:{}; after:{}'.format([len(a.Tetrahedron.arcs),len(b.Tetrahedron.arcs)],[len(new[0].Tetrahedron.arcs),len(new[1].Tetrahedron.arcs),len(new[2].Tetrahedron.arcs)]))
+     be_2, be_0, be_1 = barycentric_edge_embedding(new[2])
+
+     be_0.info()
+     be_1.info()
+     be_2.info()
+     
+     arcs_0 = be_0.transfer_arcs_from(be_a)
+     arcs_0.extend(be_0.transfer_arcs_from(be_b))
+     print(arcs_0)
+     new[0].Tetrahedron.add_arcs(arcs_0)
+
+     arcs_1 = be_1.transfer_arcs_from(be_a)
+     arcs_1.extend(be_1.transfer_arcs_from(be_b))
+     print(arcs_1)
+     new[1].Tetrahedron.add_arcs(arcs_1)
+
+     arcs_2 = be_2.transfer_arcs_from(be_a)
+     arcs_2.extend(be_2.transfer_arcs_from(be_b))
+     print(arcs_2)
+     new[2].Tetrahedron.add_arcs(arcs_2)
+     
+
      self.delete_tet(a.Tetrahedron)
      self.delete_tet(b.Tetrahedron)
 
@@ -481,6 +523,8 @@ class Mcomplex(object):
        print(self.EdgeValences)
 #     return self
      return 1
+
+
 
 # Replaces the star of an edge of valence 3 by two tetrahedra.
 # Returns 0 if the edge is a boundary edge.
@@ -494,9 +538,11 @@ class Mcomplex(object):
      a = Arrow(edge.Corners[0].Subsimplex,
               LeftFace[edge.Corners[0].Subsimplex],
               edge.Corners[0].Tetrahedron)
+     be_0, be_1, be_2 = barycentric_edge_embedding(a)
      b = self.new_arrow()
      c = self.new_arrow()
      b.glue(c)
+     be_b, be_c = barycentric_face_embedding(b)
      b.reverse()
      for i in range(3):
        b.glue(a.opposite().glued())
@@ -506,21 +552,16 @@ class Mcomplex(object):
        a.reverse().opposite().next()
 
 
-     t0 = edge.Corners[0].Tetrahedron
-     t1 = edge.Corners[1].Tetrahedron
-     t2 = edge.Corners[2].Tetrahedron
+     arcs_b = be_b.transfer_arcs_from(be_0)
+     arcs_b.extend(be_b.transfer_arcs_from(be_1))
+     arcs_b.extend(be_b.transfer_arcs_from(be_2))
+     b.Tetrahedron.add_arcs(arcs_b)
 
-     b.Tetrahedron.add_arcs([arc.transform(NABCI*ABNS) for arc in t0.arcs])
-     b.Tetrahedron.add_arcs([arc.transform(NABCI*BCNS) for arc in t1.arcs])
-     b.Tetrahedron.add_arcs([arc.transform(NABCI*CANS) for arc in t2.arcs])
-     c.Tetrahedron.add_arcs([arc.transform(ABCSI*ABNS) for arc in t0.arcs])
-     c.Tetrahedron.add_arcs([arc.transform(ABCSI*BCNS) for arc in t1.arcs])
-     c.Tetrahedron.add_arcs([arc.transform(ABCSI*CANS) for arc in t2.arcs])
-
-
-     if t0.arcs or t1.arcs or t2.arcs or b.Tetrahedron.arcs or c.Tetrahedron.arcs:
-          print('before:{}; after:{}'.format([len(t0.arcs),len(t1.arcs),len(t2.arcs)],[len(b.Tetrahedron.arcs),len(c.Tetrahedron.arcs)]))
-     
+     arcs_c = be_c.transfer_arcs_from(be_0)
+     arcs_c.extend(be_c.transfer_arcs_from(be_1))
+     arcs_c.extend(be_c.transfer_arcs_from(be_2))
+     c.Tetrahedron.add_arcs(arcs_c)
+       
      for corner in edge.Corners:
        self.delete_tet(corner.Tetrahedron)
      self.build_edge_classes()
@@ -556,6 +597,34 @@ class Mcomplex(object):
        print('2->0')
        print(self.EdgeValences)
      return 1
+
+   def two_to_zero_avoiding_arcs(self, edge):
+     if not edge.IntOrBdry == 'int':
+       return 0
+     if edge.valence() != 2 or not edge.distinct():
+       return 0
+     a = Arrow(edge.Corners[0].Subsimplex,
+                 LeftFace[edge.Corners[0].Subsimplex],
+                 edge.Corners[0].Tetrahedron)
+     b = a.glued()
+     if a.Tetrahedron.arcs or b.Tetrahedron.arcs:
+       return 0
+
+     # This move cannot  be done if the two edges opposite to the valence 2
+     # edge are glued together.
+     if a.Tetrahedron.Class[comp(a.Edge)] == b.Tetrahedron.Class[comp(b.Edge)]:
+       return 0
+     a.opposite().glued().reverse().glue(b.opposite().glued())
+     a.reverse().glued().reverse().glue(b.reverse().glued())
+
+     for corner in edge.Corners:
+       self.delete_tet(corner.Tetrahedron)
+     self.build_edge_classes()
+     if VERBOSE:
+       print('2->0')
+       print(self.EdgeValences)
+     return 1
+
 
 # Blow up two adjacent faces into a pair of tetrahedra.
 # The faces are specified by passing an arrow specifying the first face
@@ -706,13 +775,39 @@ class Mcomplex(object):
        self.eliminate_valence_two()       
      return len(self)
 
-   def _two_three_simplify(self,n):
-     for i in range(n):
+
+   def _eliminate_valence_two_avoiding_arcs(self):
+     did_simplify  = 0
+     progress = 1
+     while progress:
+        progress = 0
+        for edge in self.Edges:
+          if edge.valence() == 2:
+            if self.two_to_zero_avoiding_arcs(edge):
+              progress, did_simplify = 1, 1
+              break
+     return did_simplify
+        
+   def _simplify_avoiding_arcs(self):
+     for i in range(self.BLOW_UP_MULTIPLE * len(self)):
        rand_tet = self[ random.randint(0, len(self) - 1) ]
        rand_face = TwoSubsimplices[random.randint(0,3)]
        self.two_to_three(rand_face, rand_tet)
-       self.eliminate_valence_three()       
+
+
+     did_simplify  = 0
+     progress = 1
+     while progress:
+        progress = 0
+        if self._eliminate_valence_two_avoiding_arcs():
+          progress, did_simplify = 1, 1
+        if self.eliminate_valence_three():
+          progress, did_simplify = 1, 1
+
+
+     self.rebuild()
      return len(self)
+
 
 # Create n edges of valence 2 in random places, removing valence
 # 3 edges whenever they appear.
@@ -1057,8 +1152,7 @@ class Mcomplex(object):
                   f1, f2 = faces
                   p1 = t3m_face_to_point[f1]
                   perm = tet.Gluing[f1]
-                  permuted_coords = [p1.vector[perm[i]] for i in range(4)]
-                  p2 = BarycentricPoint(*permuted_coords)
+                  p2 = p1.permute(perm)
                   tet.add_arcs([BarycentricArc(p1,p2)])
                   
                   break

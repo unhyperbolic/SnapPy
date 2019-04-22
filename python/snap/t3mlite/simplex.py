@@ -138,6 +138,9 @@ ZeroSubsimplices = (V0,V1,V2,V3)
 # This dictionary maps the bitmap of a face to its index.
 FaceIndex =   { F0:0,  F1:1, F2:2, F3:3 }
 
+# This dictionary maps the bitmap of a vertex to its index.
+VertexIndex =   { V0:0,  V1:1, V2:2, V3:3 }
+
 # This dictionary maps a directed edge to the tail of its opposite.
 
 OppTail = {(V0,V1):V3,(V0,V2):V1,(V0,V3):V2,(V1,V2):V3,(V1,V3):V0,(V2,V3):V1,
