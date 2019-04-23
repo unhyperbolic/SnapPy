@@ -532,3 +532,19 @@ def trefoil_triangulation():
     MC._add_arcs_around_valence_one_edge()
     return MC
 
+def knot_triangulation(name):
+    M = snappy.Triangulation(name+"(1,0)")
+    MC = snappy.snap.t3mlite.Mcomplex(M._unsimplified_filled_triangulation())
+    smash_all(MC)
+    MC.rebuild()
+    MC._add_arcs_around_valence_one_edge()
+    return MC
+
+def trefoil_triangulation_no_arcs():
+    M = snappy.Triangulation("K3a1(1,0)")
+    MC = snappy.snap.t3mlite.Mcomplex(M._unsimplified_filled_triangulation())
+    smash_all(MC)
+    MC.rebuild()
+#    MC._add_arcs_around_valence_one_edge()
+    return MC
+
