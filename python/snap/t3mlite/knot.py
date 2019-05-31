@@ -250,6 +250,7 @@ def test_simplification_randomize():
 class BarycentricTetrahedronEmbedding(object):
     def __init__(self, tetrahedron, vertex_images):
         self.tetrahedron = tetrahedron
+        self.vertex_images = vertex_images
         assert len(vertex_images)==4
         for vi in vertex_images:
             assert len(vi)==3
@@ -267,6 +268,32 @@ class BarycentricTetrahedronEmbedding(object):
     def info(self):
         self.tetrahedron.info()
         print(self.matrix)
+
+    def plot(self):
+        import matplotlib as mpl
+        from mpl_toolkits.mplot3d import Axes3D
+        import matplotlib.pyplot as plt
+        from itertools import combinations
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+
+        
+        tet_points = [v[:3] for v in self.vertex_images]
+        for p1, p2 in combinations(tet_points,2):
+            x = [p1[0],p2[0]]
+            y = [p1[1],p2[1]]
+            z = [p1[2],p2[2]]        
+            ax.plot(x,y,z,color='black')
+        for arc in self.tetrahedron.arcs:
+            p1 = self.matrix * arc.start.vector
+            p2 = self.matrix * arc.end.vector
+
+            x = [p1[0],p2[0]]
+            y = [p1[1],p2[1]]
+            z = [p1[2],p2[2]]
+            ax.plot(x,y,z)
+        plt.show()
+
 
 
 def barycentric_face_embedding(arrow):
@@ -328,7 +355,12 @@ def barycentric_edge_embedding(arrow):
             BarycentricTetrahedronEmbedding(after_next.Tetrahedron,after_next_vertex_images)]
     
     
+class PLEmbedding(object):
+    def __init__(self, MC, embeddings):
+        pass
+
     
+
 class BarycentricFaceEmbedding(object):
     def __init__(self, arrow):
         next_arrow = arrow.glued()
@@ -430,6 +462,8 @@ def apply_one_three_to_two(MC):
         
 
 def two_three_simplify(MC, num_blowups, num_attempts):
+    if len(MC)<=2:
+        return MC
     for i in range(num_attempts):
         print('T:{},E:{},V:{}'.format( len(MC.Tetrahedra), len(MC.Edges), len(MC.Vertices) ))
         for j in range(num_blowups):
@@ -532,19 +566,383 @@ def trefoil_triangulation():
     MC._add_arcs_around_valence_one_edge()
     return MC
 
-def knot_triangulation(name):
+def knot_triangulation(name, add_arc = True):
     M = snappy.Triangulation(name+"(1,0)")
     MC = snappy.snap.t3mlite.Mcomplex(M._unsimplified_filled_triangulation())
     smash_all(MC)
     MC.rebuild()
-    MC._add_arcs_around_valence_one_edge()
+    if add_arc:
+        MC._add_arcs_around_valence_one_edge()
     return MC
 
-def trefoil_triangulation_no_arcs():
-    M = snappy.Triangulation("K3a1(1,0)")
-    MC = snappy.snap.t3mlite.Mcomplex(M._unsimplified_filled_triangulation())
-    smash_all(MC)
-    MC.rebuild()
-#    MC._add_arcs_around_valence_one_edge()
+
+class Node(object):
+    def __init__(self, data, previous, next):
+        self.data = data
+        self.previous = previous
+        self.next = next
+
+
+class DoublyLinkedList(object):
+    def __init__(self):
+        pass
+
+
+
+def low_valence_simplify(MC, n):
+    if len(MC)<=2:
+        return MC
+    for i in range(n):        
+        lower_valence = low_valence_reducing_moves(MC)
+        while lower_valence:
+            tet_index, subsimplex = random.choice(lower_valence)
+            MC.two_to_three(subsimplex, MC.Tetrahedra[tet_index])
+            lower_valence = low_valence_reducing_moves(MC)
+
+        MC.eliminate_valence_three()
+        MC.rebuild()
+
+    return MC
+            
+
+def combined_simplify(MC, n, lv, tt, up):
+    isosigs = set([MC.isosig()])
+    for i in range(n):
+
+        low_valence_simplify(MC, lv)
+        two_three_simplify(MC, tt, up)
+        isosig = MC.isosig()
+        if isosig in isosigs:
+            print('\nREPEAT\n')
+        isosigs.add(isosig)
+        if len(MC)<=2:
+            break
+        
+    
+
+def all_two_to_three(MC):
+    adjacent_MC = []
+    for face in MC.Faces:
+        corner = face.Corners[0]
+        tet = corner.Tetrahedron
+        copy = MC.copy()
+        copy_tet = copy.Tetrahedra[tet.Index]
+        if copy.two_to_three(corner.Subsimplex, copy_tet):
+            copy.rebuild()
+            adjacent_MC.append(copy)
+    return adjacent_MC
+
+def low_valence_reducing_moves(MC):
+    num_low_valence = MC.EdgeValences.count(1)+MC.EdgeValences.count(2)
+    num_valence_three = MC.EdgeValences.count(3)
+    adjacent_MC = []
+    print('num low valence:{}'.format(num_low_valence))
+
+    locations = []
+    for face in MC.Faces:
+        corner = face.Corners[0]
+        tet = corner.Tetrahedron
+        copy = MC.copy()
+        copy_tet = copy.Tetrahedra[tet.Index]
+
+        if copy.two_to_three(corner.Subsimplex, copy_tet):
+            copy.rebuild()
+            new_num_low_valence = copy.EdgeValences.count(1)+copy.EdgeValences.count(2)
+            if new_num_low_valence < num_low_valence:
+                print('new num low valence:{}'.format(new_num_low_valence))
+                adjacent_MC.append(copy)
+                locations.append((tet.Index,corner.Subsimplex))
+    return locations
+
+
+
+def all_good_two_to_three(MC):
+    num_valence_three = MC.EdgeValences.count(3)
+    adjacent_MC = []
+    for face in MC.Faces:
+        corner = face.Corners[0]
+        tet = corner.Tetrahedron
+        copy = MC.copy()
+        copy_tet = copy.Tetrahedra[tet.Index]
+        if copy.two_to_three(corner.Subsimplex, copy_tet):
+            copy.rebuild()
+            if copy.EdgeValences.count(3)>num_valence_three:
+                adjacent_MC.append(copy)
+    return adjacent_MC
+
+def simplify_three_to_two_avoiding(MC, isosigs):
+    progress = True
+    while progress:
+        progress = False
+        
+
+def random_simplify(MC, n, max_up=4):
+    for i in range(n):
+        if len(MC) == 2:
+            return MC
+        isosigs = set([MC.isosig()])
+        for i in range(max_up):
+            moves_up = all_good_two_to_three(MC)
+            if moves_up:
+                MC = random.choice(moves_up)
+            else:
+                moves_up = all_two_to_three(MC)
+                MC = random.choice(moves_up)
+            isosigs.add(MC.isosig())
+        moves_down = all_three_to_two(MC)
+        random.shuffle(moves_down)
+        new_move = True
+        while moves_down and new_move:
+
+            new_move = False
+            for other_MC in moves_down:
+                if other_MC.isosig() not in isosigs:
+                    MC = other_MC
+                    new_move = True
+                    break
+            moves_down = all_three_to_two(MC)
+            random.shuffle(moves_down)
+                    
+        MC.rebuild()
+    return MC
+        
+
+def all_three_to_two(MC):
+    adjacent_MC = []
+    for i, edge in enumerate(MC.Edges):
+        if edge.valence() == 3:
+            copy = MC.copy()
+            copy_edge = copy.Edges[i]
+            assert copy_edge.valence() == 3
+            if copy.three_to_two(copy_edge):
+                copy.rebuild()
+                adjacent_MC.append(copy)            
+    return adjacent_MC
+    
+from collections import Counter
+def greedy_simplify(MC):
+    seen_isosigs = set()
+    search_stack = [MC.copy()]
+    while search_stack:
+        print(Counter([len(M) for M in search_stack]))
+        MC = search_stack.pop()
+        if len(MC) == 1:
+            return MC
+        isosig = MC.isosig()
+        if isosig not in seen_isosigs:
+            seen_isosigs.add(isosig)
+            for next_MC in all_three_to_two(MC):
+                search_stack.append(next_MC)
+            for next_MC in all_two_to_three(MC):
+                search_stack.insert(0,next_MC)            
+
+
+def remove_duplicates(MC_list):
+    isosigs = set()
+    MC_list_no_duplicates = []
+    for MC in MC_list:
+        isosig = MC.isosig()
+        if isosig not in isosigs:
+            isosigs.add(isosig)
+            MC_list_no_duplicates.append(MC)
+    return MC_list_no_duplicates
+
+
+def bounded_up_simplify(MC, max_search_height = 5):
+
+    while len(MC)>2:
+        MCs = [[MC]]
+        print('Best num tets:{}'.format(len(MC)))
+        for i in range(max_search_height):
+            
+            print('Increasing size by {}'.format(i+1))
+            found_better_MC = False
+            last_layer = MCs[-1]
+            current_layer = []
+            isosigs = set()
+            for C in last_layer:
+                new_MCs = all_two_to_three(C)
+                for new_MC in new_MCs:
+                    isosig = new_MC.isosig()
+                    if isosig not in isosigs:
+                        isosigs.add(isosig)
+                        current_layer.append(new_MC)
+                        copy = new_MC.copy()
+                        copy.eliminate_valence_three()
+                        if len(copy)<len(MC):
+                            MC = new_MC
+                            MC.eliminate_valence_three()
+                            MC.rebuild()
+                            found_better_MC = True
+                            break
+                                                
+            print('{} new triangulations'.format(len(current_layer)))
+            if found_better_MC:
+                break
+            else:    
+                MCs.append(current_layer)
+            
     return MC
 
+def valence_two_edges(MC):
+    return [edge for edge in MC.Edges if edge.valence() == 2]
+
+def valence_one_edges(MC):
+    return [edge for edge in MC.Edges if edge.valence() == 1]
+
+
+def all_valence_one_moves(MC):
+    for i, edge in enumerate(MC.Edges):
+        if edge.valence() == 1:
+            copy = MC.copy()
+            edge_copy = MC.Edges[i]
+            corner = edge_copy.Corners[0]
+            for j, face in enumerate(FacesByIndex):
+                print('F{}'.format(j))
+                
+            op_face = RightFace[comp(corner.Subsimplex)]
+            tet = corner.Tetrahedron
+            if MC.two_to_three(op_face, tet):
+                progress = True
+                MC.rebuild()
+                break
+            else:
+                print('found valence 1, could not divide')
+                break
+    
+
+def subdivide_valence_one(MC):
+    print('num valence one before: {}'.format(MC.EdgeValences.count(1)))
+    print('num valence two before: {}'.format(MC.EdgeValences.count(2)))
+    print('num valence three before: {}'.format(MC.EdgeValences.count(3)))
+    for edge in MC.Edges:
+        if edge.valence() == 1:
+            corner = edge.Corners[0]
+            op_face = RightFace[comp(corner.Subsimplex)]
+            tet = corner.Tetrahedron
+            if MC.two_to_three(op_face, tet):
+                progress = True
+                MC.rebuild()
+                break
+            else:
+                print('found valence 1, could not divide')
+                break
+    print('')
+    print('num valence one after: {}'.format(MC.EdgeValences.count(1)))
+    print('num valence two after: {}'.format(MC.EdgeValences.count(2)))
+    print('num valence three after: {}'.format(MC.EdgeValences.count(3)))
+    print('\n')
+
+def subdivide_valence_two(MC):
+    print('num valence one before: {}'.format(MC.EdgeValences.count(1)))
+    print('num valence two before: {}'.format(MC.EdgeValences.count(2)))
+    print('num valence three before: {}'.format(MC.EdgeValences.count(3)))    
+    for edge in MC.Edges:
+        if edge.valence() == 2:
+            corner = edge.Corners[0]
+            op_face = RightFace[corner.Subsimplex]
+            tet = corner.Tetrahedron
+            if MC.two_to_three(op_face, tet):
+                progress = True
+                MC.rebuild()
+                break
+            else:
+                print('found valence 2, could not divide')
+                break
+    print('')
+    print('num valence one after: {}'.format(MC.EdgeValences.count(1)))
+    print('num valence two after: {}'.format(MC.EdgeValences.count(2)))
+    print('num valence three after: {}'.format(MC.EdgeValences.count(3)))    
+    print('\n')
+    
+def subdivide_low_valence(MC):
+    progress = True    
+    while progress:
+        progress = False
+        for edge in MC.Edges:
+            if edge.valence() == 2:
+                corner = edge.Corners[0]
+                op_face = RightFace[corner.Subsimplex]
+                tet = corner.Tetrahedron
+                if MC.two_to_three(op_face, tet):
+                    progress = True
+                    MC.rebuild()
+                    continue
+                else:
+                    print('found valence 2, could not divide')
+            elif edge.valence() == 1:
+                corner = edge.Corners[0]
+                op_face = LeftFace[comp(corner.Subsimplex)]
+                tet = corner.Tetrahedron
+                if MC.two_to_three(op_face, tet):
+                    progress = True
+                    MC.rebuild()
+                    continue
+                else:
+                    print('found valence 1, could not divide')
+                    
+        MC.eliminate_valence_three()
+        MC.rebuild()
+        print('num valence one: {}'.format(MC.EdgeValences.count(1)))
+        print('num valence two: {}'.format(MC.EdgeValences.count(2)))
+
+
+def fold_arcs(bary_tet_embedding):
+    tet = bary_tet_embedding.tetrahedron
+    
+    
+    
+    
+def embed_two_tetrahedra(MC):
+    t1, t2 = MC.Tetrahedra
+
+
+def standard_tri_to_tri_matrix(a1, a2, a3):
+    """
+    Take the standard triangle (in z=1 hyperplane) with coordinates [0,0,0,1],
+    [1,0,0,1], and [0,1,0,1] to the triangle with coordinates a1, a2, and a3 via
+    a matrix fixing the z=1 hyperplane.
+    """
+    a1 = vector(a1)
+    a2 = vector(a2)
+    a3 = vector(a3)
+    a1_3d = a1[:3]
+    a2_3d = a2[:3]
+    a3_3d = a3[:3]
+    cross_3d = (a2_3d-a1_3d).cross_product(a3_3d-a1_3d)
+    cross = list(cross_3d)
+    cross.append(0)
+    cross = vector(cross)
+    return Matrix([a2-a1,a3-a1,cross,a1]).transpose()
+
+def affine_triangle_map(a1,a2,a3,b1,b2,b3):
+    """
+    Given two triangles a1,a2,a3 and b1,b2,b3 in the z=1 hyperplane, compute
+    a 4x4 map fixing the z=1 hyperplane and taking the first triangle to the 
+    second. Takes a1 to b1, a2 to b2, and a3 to b3.
+    """
+    return standard_tri_to_tri_matrix(b1, b2, b3)*standard_tri_to_tri_matrix(a1, a2, a3).inverse()
+    
+"""
+def bounded_up_simplify(MC, max_search_height=5):
+    triangulation_layers = {len(MC):[MC]}
+
+    while min(triangulation_layers)>2:
+        for i in range(1,max_search_height+1):
+            triangulation_layers[min(triangulation_layers)+i] = []
+            for MC in triangulation_layers[min(triangulation_layers)+i-1]:
+                pass
+            
+
+    return triangulation_layers[min(triangulation_layers)][0]
+        
+    
+"""
+# two tet S3
+# 'cMcabbgqs'
+# 'cMcabbgdv'
+# 'cMcabbgqv'
+
+
+# one tet S3
+# 'bkaagj'
