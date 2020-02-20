@@ -102,6 +102,7 @@ const int num_tets = ##num_tets##;
 const int num_cusps = ##num_cusps##;
 
 const float peripheralCurveThickness = 0.015;
+const float peripheralCurveInnerThickness = 0.006;
 
 const vec3 longitudeColor = vec3( 1.0, 1.0, 1.0);
 const vec3 meridianColor  = vec3( 0.0, 0.0, 0.0);
@@ -708,12 +709,22 @@ material_params(RayHit ray_hit)
         
         if (coords.x <       peripheralCurveThickness ||
             coords.x > 1.0 - peripheralCurveThickness) {
+
             result.diffuse = longitudeColor;
+            if (coords.x <       peripheralCurveInnerThickness ||
+                coords.x > 1.0 - peripheralCurveInnerThickness) {
+                result.diffuse = meridianColor;
+            }
             result.ambient = result.diffuse;
         }
         if (coords.y <       peripheralCurveThickness ||
             coords.y > 1.0 - peripheralCurveThickness) {
+
             result.diffuse = meridianColor;
+            if (coords.y <       peripheralCurveInnerThickness ||
+                coords.y > 1.0 - peripheralCurveInnerThickness) {
+                result.diffuse = longitudeColor;
+            }
             result.ambient = result.diffuse;
         }
     }
