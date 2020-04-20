@@ -534,6 +534,20 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     ///Given shape of a tet and a ray, find where the ray exits and through which face
     float smallest_p = 100000000.0;
 
+    vec4 plane = vec4(0,0,0,-1);
+
+    if(R13Dot(ray_hit.ray.dir, plane) > 0.0){ 
+        float p = distParamForPlaneIntersection(ray_hit.ray, plane);
+        
+        if (p < 1.0) {
+            if (p < smallest_p) {  
+                smallest_p = p;
+                ray_hit.object_type = object_type_edge_fan;
+                ray_hit.object_index = 0;
+            }
+        }
+    }
+
     /*
     for(int face = 0; face < 4; face++) {
         if (entry_object_type != object_type_face || entry_object_index != face) {
