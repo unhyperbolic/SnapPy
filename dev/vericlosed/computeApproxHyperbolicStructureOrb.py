@@ -45,7 +45,7 @@ def _compute_vertex_gram_matrix_file_orb(triangulation, tmpDir, verbose = False)
         print("Calling orb to find approximate solution on", basename)
 
     # Find Orb wrapper
-    path = os.path.join(orb_path[0], 'orb_solution_for_snappea_finite_triangulation')
+    path = os.path.join(orb_path[0], 'orb_solution_for_snappea_finite_triangulation_mac')
 
     try:
         if verbose:
