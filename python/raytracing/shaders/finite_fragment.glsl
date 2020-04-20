@@ -551,6 +551,29 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     */
 
     {
+        vec4[2] epoints;
+        epoints[0] = vec4( 1,0,0,1);
+        epoints[1] = vec4(-1,0,0,1);
+
+        vec2 params = distParamsForTubeIntersection(
+            ray_hit.ray,
+            epoints,
+            // endpointsForEdge(ray_hit.tet_num, edge),
+            edgeTubeRadiusParam,
+            0.0);
+        
+        if (params.x < smallest_p) {
+            smallest_p = params.x;
+            ray_hit.object_type = object_type_edge_cylinder_enter;
+            ray_hit.object_index = 0;
+        } else if (params.y < smallest_p) {
+            smallest_p = params.y;
+            ray_hit.object_type = object_type_edge_cylinder_exit;
+            ray_hit.object_index = 0;
+        }
+    }
+
+    {
 //        float r = insphereRadiusParams[ray_hit.tet_num];
 
         float r = 1.001;

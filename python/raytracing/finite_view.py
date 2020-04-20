@@ -92,7 +92,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
         self.ui_parameter_dict = {
             'insphere_scale' : ['float', 0.05],
             'cuspAreas' : ['float[]', manifold.num_cusps() * [ 1.0 ]],
-            'edgeTubeRadius' : ['float', 0.08],
+            'edgeTubeRadius' : ['float', 0.02],
             }
 
         self.manifold = manifold
