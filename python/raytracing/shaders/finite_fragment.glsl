@@ -551,7 +551,9 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     */
 
     {
-        float r = insphereRadiusParams[ray_hit.tet_num];
+//        float r = insphereRadiusParams[ray_hit.tet_num];
+
+        float r = 1.001;
 
         if (r > 1.0001) {
             float p = distParamsForSphereIntersection(
