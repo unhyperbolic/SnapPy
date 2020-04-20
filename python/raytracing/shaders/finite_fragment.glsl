@@ -534,7 +534,11 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     ///Given shape of a tet and a ray, find where the ray exits and through which face
     float smallest_p = 100000000.0;
 
+    /*
+
     vec4 plane = vec4(0,0,0,-1);
+
+
 
     if(R13Dot(ray_hit.ray.dir, plane) > 0.0){ 
         float p = distParamForPlaneIntersection(ray_hit.ray, plane);
@@ -547,16 +551,16 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
             }
         }
     }
+    */
 
-    /*
-    for(int face = 0; face < 4; face++) {
+    for(int face = 0; face < 1; face++) {
         if (entry_object_type != object_type_face || entry_object_index != face) {
             // find p when we hit that face
             int index = 4 * ray_hit.tet_num + face;
             if(R13Dot(ray_hit.ray.dir, planes[index]) > 0.0){ 
                 float p = distParamForPlaneIntersection(ray_hit.ray, planes[index]);
                 // if ((-10000.0 <= p) && (p < smallest_p)) {
-                if (p < smallest_p) {  
+                if (p < smallest_p && p < 1.0) {  
                     /// negative values are ok if we have to go backwards a little to get through the face we are a little the wrong side of
                     /// Although this can apparently get caught in infinite loops in an edge
 
@@ -565,13 +569,13 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
                     /// surface normals check should ensure that even in this case we make progress through 
                     /// the triangles around an edge
                     smallest_p = p;
-                    ray_hit.object_type = object_type_face;
+//                    ray_hit.object_type = object_type_face;
+                    ray_hit.object_type = object_type_edge_fan;
                     ray_hit.object_index = face;
                 }
             }
         }
     }
-    */
 
     for (int edge = 0; edge < 6; edge++) {
         int index = 12 * ray_hit.tet_num + 2 * edge;
@@ -601,7 +605,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         int index = 4 * ray_hit.tet_num + vertex;
 //        float r = insphereRadiusParams[ray_hit.tet_num];
 
-        float r = 1.001;
+        float r = 1.01;
         
         if (r > 1.0001) {
             float p = distParamsForSphereIntersection(
@@ -807,6 +811,23 @@ material_params(RayHit ray_hit)
         int index = 4 * ray_hit.tet_num + ray_hit.object_index;
         int color_index = face_color_indices[index];
         result.diffuse = hsv2rgb(vec3(float(color_index)/float(2*num_tets), 0.75, 0.5));
+
+        if (ray_hit.object_index == 0) {
+            result.diffuse = vec3(1,0,0);
+        }
+
+        if (ray_hit.object_index == 1) {
+            result.diffuse = vec3(0,1,0);
+        }
+
+        if (ray_hit.object_index == 2) {
+            result.diffuse = vec3(0,0,1);
+        }
+
+        if (ray_hit.object_index == 3) {
+            result.diffuse = vec3(1,1,0);
+        }
+
         result.ambient = 0.5 * result.diffuse;
     }
 
@@ -830,6 +851,25 @@ material_params(RayHit ray_hit)
 
     if (ray_hit.object_type == object_type_vertex) {
         result.diffuse = hsv2rgb(vec3(float(ray_hit.tet_num)/float(num_tets), 0.5, 1.0));
+
+        if (ray_hit.object_index == 0) {
+            result.diffuse = vec3(1,0,0);
+        }
+
+        if (ray_hit.object_index == 1) {
+            result.diffuse = vec3(0,1,0);
+        }
+
+        if (ray_hit.object_index == 2) {
+            result.diffuse = vec3(0,0,1);
+        }
+
+        if (ray_hit.object_index == 3) {
+            result.diffuse = vec3(1,1,0);
+        }
+
+        result.diffuse *= 0.5;
+
         result.ambient = 0.5 * result.diffuse;
     }
 

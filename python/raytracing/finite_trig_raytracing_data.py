@@ -10,6 +10,9 @@ from snappy.dev.vericlosed.truncatedComplex import *
 
 from .hyperboloid_utilities import *
 
+from snappy.verify.upper_halfspace import FinitePoint
+from sage.all import RealField, ComplexField
+
 from math import sqrt
 
 __all__ = ['FiniteTrigRaytracingData']
@@ -35,6 +38,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         r._compute_tet_vertices()
         r._compute_edge_ends()
+        r._compute_planes()
 
         return r
 
@@ -49,20 +53,53 @@ class FiniteTrigRaytracingData(McomplexEngine):
             def _compute_vertex(path):
 
                 c = vector([1,0,0,0])
+
                 
                 if not path:
                     return c
                 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
                     _compute_path(path, tet.Index))
+
+                p = FinitePoint(
+                    ComplexField()(0),
+                    RealField()(1))
+
+                print(path)
+                print(p.translate_PGL(m))
+
+                #print(path)
+                #print(m)
                 
+                # m = matrix([[m[1,1],m[1,0]],[m[0,1],m[0,0]]])
+
+
                 return c * GL2C_to_O13(m)
 
+            #tet.R13_vertices = {
+            #    t3m.V0 : _compute_vertex([]),
+            #    t3m.V1 : _compute_vertex(['gamma', 'alpha']),
+            #    t3m.V2 : _compute_vertex(['beta', 'alpha']),
+            #    t3m.V3 : _compute_vertex(['beta','gamma','beta','alpha'])}
+
             tet.R13_vertices = {
-                t3m.V0 : _compute_vertex([]),
+                t3m.V0 : _compute_vertex(['gamma']),
                 t3m.V1 : _compute_vertex(['alpha']),
-                t3m.V2 : _compute_vertex(['beta','gamma','alpha']),
-                t3m.V3 : _compute_vertex(['beta','gamma','beta','gamma','alpha'])}
+                t3m.V2 : _compute_vertex(['beta', 'alpha', 'gamma']),
+                t3m.V3 : _compute_vertex(['beta', 'gamma', 'beta', 'alpha', 'gamma']) }
+
+            for i in t3m.ZeroSubsimplices:
+                for j in t3m.ZeroSubsimplices:
+                    if i != j:
+                        print("edge", i, j)
+                        edge_length = self.hyperbolic_structure.edge_lengths[tet.Class[i | j].Index]
+                        print(edge_length)
+                        print(R13_dot(tet.R13_vertices[i], tet.R13_vertices[j]))
+
+            for v in t3m.ZeroSubsimplices:
+                print("vertex", v, R13_time_vector_to_upper_halfspace(
+                        tet.R13_vertices[v]))
+                    
 
     def _compute_edge_ends(self):
         for tet in self.mcomplex.Tetrahedra:
@@ -85,6 +122,30 @@ class FiniteTrigRaytracingData(McomplexEngine):
                 t3m.E13 : _compute_edge_ends(['alpha','gamma','beta']),
                 t3m.E23 : _compute_edge_ends(['beta','alpha','gamma','beta']) }                
 
+    def _compute_planes(self):
+        for tet in self.mcomplex.Tetrahedra:
+            def _compute_plane(path):
+                c = vector([0.0, 0.0, 0.0, -1.0])
+
+                if not path:
+                    return c
+
+                m = self.hyperbolic_structure.pgl2_matrix_for_path(
+                    _compute_path(path, tet.Index))
+
+                m = matrix([[ m[1,1],-m[0,1]],
+                            [-m[1,0], m[0,0]]])
+
+                v = GL2C_to_O13(m) * c
+                
+                return vector([-v[0], v[1], v[2], v[3]])
+
+            tet.R13_planes = {
+                t3m.F0 : _compute_plane([]),
+                t3m.F1 : _compute_plane(['alpha', 'gamma']),
+                t3m.F2 : _compute_plane(['alpha', 'beta', 'alpha', 'gamma']),
+                t3m.F3 : _compute_plane(['beta', 'gamma']) }
+
     def get_uniform_bindings(self):
 
         R13Vertices = [
@@ -98,9 +159,14 @@ class FiniteTrigRaytracingData(McomplexEngine):
             for E in t3m.OneSubsimplices
             for edge_end in tet.R13_edge_ends[E] ]
             
-        print(R13EdgeEnds)
-
+        planes = [
+            tet.R13_planes[F]
+            for tet in self.mcomplex.Tetrahedra
+            for F in t3m.TwoSubsimplices ]
+        
         return {
+            'TetrahedraBasics.planes' :
+                ('vec4[]', planes),
             'TetrahedraBasics.R13Vertices' :
                 ('vec4[]', R13Vertices),
             'TetrahedraBasics.R13EdgeEnds' :
