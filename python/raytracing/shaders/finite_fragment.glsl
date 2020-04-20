@@ -559,8 +559,8 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
 
     {
         vec4[2] epoints;
-        epoints[0] = vec4( 1,0,0,1);
-        epoints[1] = vec4(-1,0,0,1);
+        epoints[0] = vec4( 1,1,0,0);
+        epoints[1] = vec4( 1,-1,0,0);
 
         vec2 params = distParamsForTubeIntersection(
             ray_hit.ray,

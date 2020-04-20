@@ -6,6 +6,7 @@ from snappy.SnapPy import matrix, vector
 from snappy.snap.mcomplex_base import *
 
 from snappy.dev.vericlosed import compute_approx_hyperbolic_structure_orb
+from snappy.dev.vericlosed.truncatedComplex import *
 
 from .hyperboloid_utilities import *
 
@@ -13,32 +14,56 @@ from math import sqrt
 
 __all__ = ['FiniteTrigRaytracingData']
 
+def _compute_path(letters, tet_num):
+    path = []
+    tet_and_perm = tet_num, t3m.Perm4([0,1,2,3])
+    for letter in letters:
+        edge = TruncatedComplex.Edge(letter, tet_and_perm)
+        path.append(edge)
+        tet_and_perm = edge.tet_and_perm_of_end()
+    return path
+
 class FiniteTrigRaytracingData(McomplexEngine):
     @staticmethod
     def from_triangulation(triangulation, areas = None, insphere_scale = 0.05):
 
-        hyperbolicStructure = compute_approx_hyperbolic_structure_orb(triangulation)
+        hyperbolic_structure = compute_approx_hyperbolic_structure_orb(triangulation)
 
-        r = FiniteTrigRaytracingData(hyperbolicStructure.mcomplex)
+        r = FiniteTrigRaytracingData(hyperbolic_structure)
 
-        r.RF = hyperbolicStructure.edge_lengths[0].parent()
+        r.RF = hyperbolic_structure.edge_lengths[0].parent()
 
         r._compute_tet_vertices()
 
         return r
 
-    def __init__(self, mcomplex, snappy_manifold = None):
-        super(FiniteTrigRaytracingData, self).__init__(mcomplex)
+    def __init__(self, hyperbolic_structure):
+        super(FiniteTrigRaytracingData, self).__init__(
+            hyperbolic_structure.mcomplex)
+        self.hyperbolic_structure = hyperbolic_structure
 
     def _compute_tet_vertices(self):
         for tet in self.mcomplex.Tetrahedra:
-            c = vector([1,0,0,0])
+
+            def _compute_vertex(path):
+
+                c = vector([1,0,0,0])
+                
+                if not path:
+                    return c
+                
+                m = self.hyperbolic_structure.pgl2_matrix_for_path(
+                    _compute_path(path, tet.Index))
+                
+                print(m)
+
+                return c * GL2C_to_O13(m)
 
             tet.R13_vertices = {
-                t3m.V0 : c,
-                t3m.V1 : c,
-                t3m.V2 : c,
-                t3m.V3 : c }
+                t3m.V0 : _compute_vertex([]),
+                t3m.V1 : _compute_vertex(['alpha']),
+                t3m.V2 : _compute_vertex(['beta','gamma','alpha']),
+                t3m.V3 : _compute_vertex(['beta','gamma','beta','gamma','alpha'])}
 
     def get_uniform_bindings(self):
 
