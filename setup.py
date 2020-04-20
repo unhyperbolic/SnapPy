@@ -541,6 +541,7 @@ setup( name = 'snappy',
                    'snappy/togl',
                    'snappy/dev',
                    'snappy/dev/extended_ptolemy',
+                   'snappy/dev/vericlosed'
        ],
        package_data = {
            'snappy' : ['info_icon.gif', 'SnapPy.ico', 'SnapPy.png',
@@ -581,6 +582,7 @@ setup( name = 'snappy',
                       'snappy/togl': 'python/togl',
                       'snappy/dev':'dev/python',
                       'snappy/dev/extended_ptolemy':'dev/extended_ptolemy',
+                      'snappy/dev/vericlosed':'dev/vericlosed'
                   }, 
        ext_modules = ext_modules,
        cmdclass =  {'clean' : SnapPyClean,
