@@ -568,6 +568,8 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         }
     }
 
+    /*
+
     for (int vertex = 0; vertex < 4; vertex++) {
         int index = 4 * ray_hit.tet_num + vertex;
         if (horosphereScales[index] != 0.0) {
@@ -580,8 +582,12 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
             }
         }
     }
+
+    */
                 
     float backDistParam = tanh(ray_hit.distWhenLeavingCusp-ray_hit.dist);
+
+    /*
 
     if (edgeTubeRadiusParam > 0.50001) {
         for (int edge = 0; edge < 6; edge++) {
@@ -621,8 +627,12 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         }
     }
 
+*/
+
     ray_hit.dist += atanh(smallest_p);
     advanceRayByDistParam(ray_hit.ray, smallest_p);
+
+/*
 
     if(edgeThickness > 0.00001) {
         if (ray_hit.object_type == object_type_face) {
@@ -631,6 +641,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
             }
         }
     }
+*/
 }
 
 void
