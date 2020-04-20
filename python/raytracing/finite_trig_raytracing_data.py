@@ -23,14 +23,34 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         r.RF = hyperbolicStructure.edge_lengths[0].parent()
 
+        r._compute_tet_vertices()
+
         return r
 
     def __init__(self, mcomplex, snappy_manifold = None):
         super(FiniteTrigRaytracingData, self).__init__(mcomplex)
 
+    def _compute_tet_vertices(self):
+        for tet in self.mcomplex.Tetrahedra:
+            c = vector([1,0,0,0])
+
+            tet.R13_vertices = {
+                t3m.V0 : c,
+                t3m.V1 : c,
+                t3m.V2 : c,
+                t3m.V3 : c }
+
     def get_uniform_bindings(self):
 
+        R13Vertices = [
+            tet.R13_vertices[V]
+            for tet in self.mcomplex.Tetrahedra
+            for V in t3m.ZeroSubsimplices ]
+
         return {
+            'TetrahedraBasics.R13Vertices' :
+                ('vec4[]', R13Vertices),
+
             'isNonGeometric' :
                 ('bool', False),
             'nonGeometricTexture' :

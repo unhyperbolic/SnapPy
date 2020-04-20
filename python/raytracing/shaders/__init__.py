@@ -59,10 +59,11 @@ def get_finite_triangulation_shader_source_and_ubo_descriptors(constants_dict):
 
     uniform_block_names_sizes_and_offsets = [
         ('TetrahedraBasics',
-         (64 + 64 + 256) * num_tets,
+         (64 + 64 + 256 + 192) * num_tets,
          { 'R13Vertices' : 0,
            'planes' : 64 * num_tets,
-           'SO13tsfms' : (64 + 64) * num_tets } ),
+           'SO13tsfms' : (64 + 64) * num_tets,
+           'R13EdgeEnds' : (64 + 64 + 256)} ),
         ('TetCuspMatrices',
          (256 + 256) * num_tets,
          { 'tetToCuspMatrices' : 0,

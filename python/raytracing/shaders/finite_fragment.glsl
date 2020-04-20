@@ -67,6 +67,13 @@ layout (std140) uniform TetrahedraBasics
     vec4 R13Vertices[4 * ##num_tets##];
     vec4 planes[4 * ##num_tets##];
     mat4 SO13tsfms[4 * ##num_tets##];
+    // Ends of edge 01 are  0 + 12 * tetNum and  1 + 12 * tetNum
+    // Ends of edge 02 are  2 + 12 * tetNum and  3 + 12 * tetNum
+    // Ends of edge 03 are  4 + 12 * tetNum and  5 + 12 * tetNum
+    // Ends of edge 12 ...
+    // Ends of edge 13 ...
+    // Ends of edge 23 are 10 + 12 * tetNum and 11 + 12 * tetNum
+    vec4 R13EdgeEnds[12 * ##num_tets##];
 };
 
 uniform float horosphereScales[4 * ##num_tets##];
@@ -573,20 +580,21 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         }
     }
 
-    {
+    for (int vertex = 0; vertex < 4; vertex++) {
+        int index = 4 * ray_hit.tet_num + vertex;
 //        float r = insphereRadiusParams[ray_hit.tet_num];
 
         float r = 1.001;
-
+        
         if (r > 1.0001) {
             float p = distParamsForSphereIntersection(
                 ray_hit.ray,
-                vec4(1,0,0,0),
+                R13Vertices[index],
                 r).x;
             if (p < smallest_p) {
                 smallest_p = p;
                 ray_hit.object_type = object_type_sphere;
-                ray_hit.object_index = 0;
+                ray_hit.object_index = vertex;
             }
         }
     }
