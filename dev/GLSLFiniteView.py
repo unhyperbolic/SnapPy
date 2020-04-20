@@ -43,7 +43,7 @@ def main(manifold):
     if sys.platform == 'darwin':
         print(darwinTkMsg)
 
-    gui = FiniteViewer(manifold)#.filled_triangulation())
+    gui = FiniteViewer(manifold.filled_triangulation())
     gui.widget.focus_set()
     gui.container.mainloop()
     

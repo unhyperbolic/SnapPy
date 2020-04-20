@@ -65,13 +65,13 @@ class FiniteTrigRaytracingData(McomplexEngine):
     @staticmethod
     def from_triangulation(triangulation, areas = None, insphere_scale = 0.05):
 
-#        hyperbolicStructure = compute_approx_hyperbolic_structure_orb(triangulation)
+        hyperbolicStructure = compute_approx_hyperbolic_structure_orb(triangulation)
 
-#        r = FiniteTrigRaytracingData(hyperbolicStructure)
+        r = FiniteTrigRaytracingData(hyperbolicStructure.mcomplex)
 
-#        r.RF = hyperbolicStructure.edge_lengths[0].parent()
+        r.RF = hyperbolicStructure.edge_lengths[0].parent()
 
-#        return r
+        return r
  
         manifold = triangulation
         
