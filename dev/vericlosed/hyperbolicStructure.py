@@ -1,4 +1,4 @@
-from verificationError import *
+from .verificationError import *
 
 from snappy.snap import t3mlite as t3m
 
