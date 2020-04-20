@@ -69,10 +69,12 @@ layout (std140) uniform TetrahedraBasics
     mat4 SO13tsfms[4 * ##num_tets##];
     // Ends of edge 01 are  0 + 12 * tetNum and  1 + 12 * tetNum
     // Ends of edge 02 are  2 + 12 * tetNum and  3 + 12 * tetNum
-    // Ends of edge 03 are  4 + 12 * tetNum and  5 + 12 * tetNum
-    // Ends of edge 12 ...
+    // Ends of edge 12 are  4 + 12 * tetNum and  5 + 12 * tetNum
+    // Ends of edge 03 ...
     // Ends of edge 13 ...
     // Ends of edge 23 are 10 + 12 * tetNum and 11 + 12 * tetNum
+    //
+    // Also see edgeToVertices
     vec4 R13EdgeEnds[12 * ##num_tets##];
 };
 
@@ -557,10 +559,11 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     }
     */
 
-    {
-        vec4[2] epoints;
-        epoints[0] = vec4( 1,1,0,0);
-        epoints[1] = vec4( 1,-1,0,0);
+    for (int edge = 0; edge < 6; edge++) {
+        int index = 12 * ray_hit.tet_num + 2 * edge;
+        vec4 epoints[2];
+        epoints[0] = R13EdgeEnds[index    ];
+        epoints[1] = R13EdgeEnds[index + 1];
 
         vec2 params = distParamsForTubeIntersection(
             ray_hit.ray,

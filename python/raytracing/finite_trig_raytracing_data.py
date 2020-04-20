@@ -34,6 +34,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
         r.RF = hyperbolic_structure.edge_lengths[0].parent()
 
         r._compute_tet_vertices()
+        r._compute_edge_ends()
 
         return r
 
@@ -55,8 +56,6 @@ class FiniteTrigRaytracingData(McomplexEngine):
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
                     _compute_path(path, tet.Index))
                 
-                print(m)
-
                 return c * GL2C_to_O13(m)
 
             tet.R13_vertices = {
@@ -65,6 +64,27 @@ class FiniteTrigRaytracingData(McomplexEngine):
                 t3m.V2 : _compute_vertex(['beta','gamma','alpha']),
                 t3m.V3 : _compute_vertex(['beta','gamma','beta','gamma','alpha'])}
 
+    def _compute_edge_ends(self):
+        for tet in self.mcomplex.Tetrahedra:
+            def _compute_edge_ends(path):
+                cs = [ vector([1,  1, 0, 0]),
+                       vector([1, -1, 0, 0]) ]
+                if not path:
+                    return cs
+
+                m = self.hyperbolic_structure.pgl2_matrix_for_path(
+                    _compute_path(path, tet.Index))
+                
+                return [ c * GL2C_to_O13(m) for c in cs ]
+
+            tet.R13_edge_ends = {
+                t3m.E01 : _compute_edge_ends([]),
+                t3m.E02 : _compute_edge_ends(['beta']),
+                t3m.E12 : _compute_edge_ends(['beta','alpha','beta']),
+                t3m.E03 : _compute_edge_ends(['gamma','beta']),
+                t3m.E13 : _compute_edge_ends(['alpha','gamma','beta']),
+                t3m.E23 : _compute_edge_ends(['beta','alpha','gamma','beta']) }                
+
     def get_uniform_bindings(self):
 
         R13Vertices = [
@@ -72,10 +92,19 @@ class FiniteTrigRaytracingData(McomplexEngine):
             for tet in self.mcomplex.Tetrahedra
             for V in t3m.ZeroSubsimplices ]
 
+        R13EdgeEnds = [
+            edge_end
+            for tet in self.mcomplex.Tetrahedra
+            for E in t3m.OneSubsimplices
+            for edge_end in tet.R13_edge_ends[E] ]
+            
+        print(R13EdgeEnds)
+
         return {
             'TetrahedraBasics.R13Vertices' :
                 ('vec4[]', R13Vertices),
-
+            'TetrahedraBasics.R13EdgeEnds' :
+                ('vec4[]', R13EdgeEnds),
             'isNonGeometric' :
                 ('bool', False),
             'nonGeometricTexture' :

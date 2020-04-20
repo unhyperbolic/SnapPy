@@ -63,7 +63,7 @@ def get_finite_triangulation_shader_source_and_ubo_descriptors(constants_dict):
          { 'R13Vertices' : 0,
            'planes' : 64 * num_tets,
            'SO13tsfms' : (64 + 64) * num_tets,
-           'R13EdgeEnds' : (64 + 64 + 256)} ),
+           'R13EdgeEnds' : (64 + 64 + 256) * num_tets} ),
         ('TetCuspMatrices',
          (256 + 256) * num_tets,
          { 'tetToCuspMatrices' : 0,
