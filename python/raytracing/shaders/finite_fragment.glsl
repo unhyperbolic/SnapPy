@@ -199,7 +199,7 @@ const int object_type_edge_cylinder_enter = 2;
 const int object_type_edge_cylinder_exit  = 3;
 const int object_type_horosphere          = 4;
 const int object_type_edge_fan            = 5;
-const int object_type_sphere              = 6;
+const int object_type_vertex              = 6;
 const int object_type_margulis_tube       = 7;
 
 // A ray consists of a point in the hyperbolid model and a
@@ -418,7 +418,7 @@ normalForRayHit(RayHit ray_hit)
         return horosphereEqn(index) - ray_hit.ray.point;
     }
 
-    if(ray_hit.object_type == object_type_sphere) {
+    if(ray_hit.object_type == object_type_vertex) {
         return normalForSphere(ray_hit.ray.point);
     }
     
@@ -593,7 +593,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
                 r).x;
             if (p < smallest_p) {
                 smallest_p = p;
-                ray_hit.object_type = object_type_sphere;
+                ray_hit.object_type = object_type_vertex;
                 ray_hit.object_index = vertex;
             }
         }
@@ -811,7 +811,7 @@ material_params(RayHit ray_hit)
         result.ambient = 0.5 * result.diffuse;
     }
 
-    if (ray_hit.object_type == object_type_sphere) {
+    if (ray_hit.object_type == object_type_vertex) {
         result.diffuse = hsv2rgb(vec3(float(ray_hit.tet_num)/float(num_tets), 0.5, 1.0));
         result.ambient = 0.5 * result.diffuse;
     }
@@ -860,7 +860,7 @@ vec4 shade(RayHit ray_hit)
 {
     float depth = tanh(ray_hit.dist);
 
-    if (ray_hit.object_type == object_type_sphere ||
+    if (ray_hit.object_type == object_type_vertex ||
         ray_hit.object_type == object_type_horosphere ||
         ray_hit.object_type == object_type_edge_cylinder_enter ||
         ray_hit.object_type == object_type_edge_cylinder_exit ||
