@@ -1027,10 +1027,10 @@ RayHit computeRayHit(vec2 xy){
     // all start from a common point, transform ray first
     // to be inside a tetrahedron.
     if (perspectiveType) {
-        graph_trace(ray_tet_space);
+     //   graph_trace(ray_tet_space);
     }
 
-#if 1
+#if 0
 
     // Check whether we are in a horosphere and if yes,
     // whether the ray hit a peripheral curve.
