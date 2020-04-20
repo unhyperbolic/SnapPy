@@ -13,6 +13,8 @@ from .hyperboloid_utilities import *
 
 from math import sqrt
 
+from sage.all import RealDoubleField
+
 __all__ = ['FiniteTrigRaytracingData']
 
 class FiniteTrigRaytracingData(McomplexEngine):
@@ -72,7 +74,14 @@ class FiniteTrigRaytracingData(McomplexEngine):
 #        return r
  
         manifold = triangulation
-       
+        
+
+        r = FiniteTrigRaytracingData(
+            t3m.Mcomplex(triangulation))
+
+        r.RF = RealDoubleField()
+
+        return r
 
         if manifold.solution_type() != 'all tetrahedra positively oriented':
             return NonGeometricRaytracingData(
@@ -124,14 +133,13 @@ class FiniteTrigRaytracingData(McomplexEngine):
         r._add_cusp_to_tet_matrices()
         r._add_margulis_tube_ends()
         r._add_inspheres()
-        r._add_log_holonomies()
+#        r._add_log_holonomies()
 
-        r._add_cusp_triangle_vertex_positions()
+#        r._add_cusp_triangle_vertex_positions()
         return r
 
-    def __init__(self, mcomplex, snappy_manifold):
+    def __init__(self, mcomplex, snappy_manifold = None):
         super(FiniteTrigRaytracingData, self).__init__(mcomplex)
-        self.snappy_manifold = snappy_manifold
 
     def _add_horotriangle_heights(self):
         for tet in self.mcomplex.Tetrahedra:
@@ -253,112 +261,6 @@ class FiniteTrigRaytracingData(McomplexEngine):
             self._add_log_holonomies_to_cusp(cusp, shapes)
 
     def get_uniform_bindings(self):
-        orientations = [
-            +1 if tet.ShapeParameters[t3m.E01].imag() > 0 else -1
-            for tet in self.mcomplex.Tetrahedra ]
-
-        otherTetNums = [
-            tet.Neighbor[F].Index
-            for tet in self.mcomplex.Tetrahedra
-            for F in t3m.TwoSubsimplices ]
-
-        enteringFaceNums = [
-            tet.Gluing[F][f]
-            for tet in self.mcomplex.Tetrahedra
-            for f, F in enumerate(t3m.TwoSubsimplices) ]
-
-        horotriangleHeights = [
-            tet.horotriangle_heights
-            for tet in self.mcomplex.Tetrahedra ]
-
-        SO13tsfms = [
-            tet.O13_matrices[F]
-            for tet in self.mcomplex.Tetrahedra
-            for F in t3m.TwoSubsimplices ]
-
-        planes = [
-            tet.R13_planes[F]
-            for tet in self.mcomplex.Tetrahedra
-            for F in t3m.TwoSubsimplices ]
-
-        horosphere_scales = [
-            tet.R13_horosphere_scales[V]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        R13Vertices = [
-            tet.R13_vertices[V]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        margulisTubeTails = [
-            tet.margulisTubeEnds[V][0]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]            
-
-        margulisTubeHeads = [
-            tet.margulisTubeEnds[V][1]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]            
-
-        margulisTubeRadiusParams = [
-            tet.Class[V].margulisTubeRadiusParam
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]            
-
-        cusp_to_tet_matrices = [
-            tet.cusp_to_tet_matrices[V]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        tet_to_cusp_matrices = [
-            tet.tet_to_cusp_matrices[V]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        cusp_translations = [
-            [ [ z.real(), z.imag() ]
-              for z in tet.Class[V].Translations ]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        logAdjustments = [
-            complex_to_pair(tet.cusp_triangle_vertex_positions[V][0])
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        cuspTriangleVertexPositions = [
-            tet.cusp_triangle_vertex_positions[V][1]
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices
-            ]
-
-        mat_logs = [
-            tet.Class[V].mat_log
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        insphereRadiusParams = [
-            tet.cosh_sqr_inradius
-            for tet in self.mcomplex.Tetrahedra ]
-
-        face_color_indices = [
-            tet.Class[F].Index
-            for tet in self.mcomplex.Tetrahedra
-            for F in t3m.TwoSubsimplices ]
-
-        edge_color_indices = [
-            tet.Class[E].Index
-            for tet in self.mcomplex.Tetrahedra
-            for E in t3m.OneSubsimplices ]
-
-        horosphere_color_indices = [
-            tet.Class[V].Index
-            for tet in self.mcomplex.Tetrahedra
-            for V in t3m.ZeroSubsimplices ]
-
-        isNonGeometric = (
-            self.snappy_manifold.solution_type() != 'all tetrahedra positively oriented')
 
         return {
 #            'orientations' :
