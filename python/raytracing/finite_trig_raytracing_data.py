@@ -382,8 +382,6 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         boost = O13_orthonormalize(boost * m)
 
-        return boost, tet_num
-
         entry_F = -1
 
         for i in range(100):

@@ -553,7 +553,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     }
     */
 
-    for(int face = 3; face < 4; face++) {
+    for(int face = 0; face < 4; face++) {
         if (entry_object_type != object_type_face || entry_object_index != face) {
             // find p when we hit that face
             int index = 4 * ray_hit.tet_num + face;
@@ -569,8 +569,8 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
                     /// surface normals check should ensure that even in this case we make progress through 
                     /// the triangles around an edge
                     smallest_p = p;
-//                    ray_hit.object_type = object_type_face;
-                    ray_hit.object_type = object_type_edge_fan;
+                    ray_hit.object_type = object_type_face;
+//                    ray_hit.object_type = object_type_edge_fan;
                     ray_hit.object_index = face;
                 }
             }
