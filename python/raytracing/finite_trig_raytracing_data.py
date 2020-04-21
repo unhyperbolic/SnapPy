@@ -6,6 +6,8 @@ from snappy.SnapPy import matrix, vector
 from snappy.snap.mcomplex_base import *
 
 from snappy.dev.vericlosed import compute_approx_hyperbolic_structure_orb
+from snappy.dev.vericlosed.polishApproxHyperbolicStructure import *
+
 from snappy.dev.vericlosed.truncatedComplex import *
 
 from .hyperboloid_utilities import *
@@ -49,6 +51,9 @@ class FiniteTrigRaytracingData(McomplexEngine):
     def from_triangulation(triangulation, areas = None, insphere_scale = 0.05):
 
         hyperbolic_structure = compute_approx_hyperbolic_structure_orb(triangulation)
+        hyperbolic_structure.pick_exact_and_var_edges()
+        hyperbolic_structure = polish_approx_hyperbolic_structure(
+            hyperbolic_structure, bits_prec = 212)
 
         r = FiniteTrigRaytracingData(hyperbolic_structure)
 
@@ -71,13 +76,16 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
             def _compute_vertex(path):
 
-                c = vector([1,0,0,0])
+                c = vector(RealField(212),[1,0,0,0])
 
                 #if not path:
                 #    return c
                 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index)).inverse()
+                    _compute_path(path, tet.Index))
+
+                m = matrix([[ m[1,1],-m[0,1]],
+                            [-m[1,0], m[0,0]]])
 
                 p = FinitePoint(
                     ComplexField()(0),
@@ -129,13 +137,16 @@ class FiniteTrigRaytracingData(McomplexEngine):
     def _compute_edge_ends(self):
         for tet in self.mcomplex.Tetrahedra:
             def _compute_edge_ends(path):
-                cs = [ vector([1,  1, 0, 0]),
-                       vector([1, -1, 0, 0]) ]
+                cs = [ vector(RealField(212),[1,  1, 0, 0]),
+                       vector(RealField(212),[1, -1, 0, 0]) ]
                 #if not path:
                 #    return cs
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index)).inverse()
+                    _compute_path(path, tet.Index))
+
+                m = matrix([[ m[1,1],-m[0,1]],
+                            [-m[1,0], m[0,0]]])
                 
                 return [ GL2C_to_O13(m) * c for c in cs ]
 
@@ -150,16 +161,16 @@ class FiniteTrigRaytracingData(McomplexEngine):
     def _compute_planes(self):
         for tet in self.mcomplex.Tetrahedra:
             def _compute_plane(path):
-                c = vector([0.0, 0.0, 0.0, -1.0])
+                c = vector(RealField(212),[0.0, 0.0, 0.0, -1.0])
 
                 #if not path:
                 #    return c
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index)).inverse()
+                    _compute_path(path, tet.Index))
 
-                m = matrix([[ m[1,1],-m[0,1]],
-                            [-m[1,0], m[0,0]]])
+                #m = matrix([[ m[1,1],-m[0,1]],
+                #            [-m[1,0], m[0,0]]])
 
                 v = c * GL2C_to_O13(m)
                 
@@ -181,9 +192,9 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         path0 = _path_finder(tet0_perm, tet.Index)
 
-        print("Computing face pairing")
+        #print("Computing face pairing")
 
-        print("Face F", F)
+        #print("Face F", F)
 
         # print("path ", path0, tet0_perm)
 
@@ -215,18 +226,43 @@ class FiniteTrigRaytracingData(McomplexEngine):
         m1 = self.hyperbolic_structure.pgl2_matrix_for_path(
                 path1)
 
+        #print("m0 matrix")
+        #print(m0)
+
         #for v in t3m.ZeroSubsimplices:
         #    if v & tet1_F:
         #        print("   ", GL2C_to_O13(m1) * tet.Neighbor[F].R13_vertices[v])
 
-        print("=========")
+        #print("=========")
 
-        for v in t3m.ZeroSubsimplices:
-            if v & F:
-                print(tet.R13_vertices[v])
-                print(GL2C_to_O13(m0.inverse() * m1) * tet.Neighbor[F].R13_vertices[tet.Gluing[F].image(v)])
+        if False:
+            for v in t3m.ZeroSubsimplices:
+                if v & F:
+                    print(tet.R13_vertices[v])
+                    print(GL2C_to_O13(m0.inverse() * m1) * tet.Neighbor[F].R13_vertices[tet.Gluing[F].image(v)])
 
-        return GL2C_to_O13((m0.inverse() * m1).inverse())
+        #m = (m0.inverse() * m1).inverse()
+
+        m1 = matrix([[ m1[1,1],-m1[0,1]],
+                     [-m1[1,0], m1[0,0]]])
+
+
+        m = m1 * m0
+
+        #print("m matrix")
+        #print(m)
+
+        #print("O13", GL2C_to_O13(m))
+
+        m = matrix(ComplexField(212), m)
+
+#        print("GL2C", m0.base_ring())
+
+        r = GL2C_to_O13(m)
+
+ #       print(r.base_ring())
+
+        return r
 
         #tet0_perm = t3m.Perm4(
         #    { v: k
@@ -299,9 +335,11 @@ class FiniteTrigRaytracingData(McomplexEngine):
                     if V & F:
                         v0 = tet.O13_matrices[F] * vector(tet.R13_vertices[V])
                         v1 = tet.Neighbor[F].R13_vertices[tet.Gluing[F].image(V)]
-                        print("CONS")
-                        print(v0)
-                        print(v1)
+
+                        if abs(R13_dot(v0, v1) - (-1.0)) > 1e-6:
+                            print("Inconsistency ", tet.Index, F)
+                            print(v0)
+                            print(v1)
 
 
     def get_uniform_bindings(self):

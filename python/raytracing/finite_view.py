@@ -122,7 +122,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
 
         boost, tet_num = self.view_state
 
-        print(boost)
+        #print(boost)
 
         result = _merge_dicts(
             _constant_uniform_bindings,
@@ -141,7 +141,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
             self.ui_uniform_dict
             )
 
-        print(result['vertexSize'])
+        #print(result['vertexSize'])
 
         # _check_consistency(result)
 

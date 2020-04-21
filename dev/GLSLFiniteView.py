@@ -23,7 +23,7 @@ An attempt at fixing the navigation keys (using pyobjc installed with pip):
 
 """
 
-from snappy import Manifold
+from snappy import Manifold, Triangulation
 
 # Import raytracing directly from SnapPy source so that we can quickly
 # iterate on shaders without the need to build/install SnapPy every time.
@@ -43,7 +43,7 @@ def main(manifold):
     if sys.platform == 'darwin':
         print(darwinTkMsg)
 
-    gui = FiniteViewer(manifold.filled_triangulation())
+    gui = FiniteViewer(manifold)
     gui.widget.focus_set()
     gui.container.mainloop()
     
@@ -53,4 +53,4 @@ if __name__ == '__main__':
     if sys.argv[1] == 'perf':
         run_perf_test()
     else:
-        main(Manifold(sys.argv[1]))
+        main(Triangulation(sys.argv[1], remove_finite_vertices = False))
