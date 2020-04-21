@@ -125,7 +125,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
     def _compute_planes(self):
         for tet in self.mcomplex.Tetrahedra:
             def _compute_plane(path):
-                c = vector([0.0, 0.0, 0.0, -1.0])
+                c = vector([0.0, 0.0, 0.0, 1.0])
 
                 if not path:
                     return c
@@ -141,10 +141,10 @@ class FiniteTrigRaytracingData(McomplexEngine):
                 return vector([-v[0], v[1], v[2], v[3]])
 
             tet.R13_planes = {
-                t3m.F0 : _compute_plane([]),
-                t3m.F1 : _compute_plane(['alpha', 'gamma']),
-                t3m.F2 : _compute_plane(['alpha', 'beta', 'alpha', 'gamma']),
-                t3m.F3 : _compute_plane(['beta', 'gamma']) }
+                t3m.F0 : _compute_plane(['beta', 'alpha', 'beta', 'gamma', 'beta']),
+                t3m.F1 : _compute_plane(['beta', 'gamma', 'beta']),
+                t3m.F2 : _compute_plane(['gamma']),
+                t3m.F3 : _compute_plane(['beta']) }
 
     def get_uniform_bindings(self):
 

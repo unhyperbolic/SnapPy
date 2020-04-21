@@ -553,7 +553,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     }
     */
 
-    for(int face = 0; face < 1; face++) {
+    for(int face = 3; face < 4; face++) {
         if (entry_object_type != object_type_face || entry_object_index != face) {
             // find p when we hit that face
             int index = 4 * ray_hit.tet_num + face;
@@ -853,11 +853,11 @@ material_params(RayHit ray_hit)
         result.diffuse = hsv2rgb(vec3(float(ray_hit.tet_num)/float(num_tets), 0.5, 1.0));
 
         if (ray_hit.object_index == 0) {
-            result.diffuse = vec3(1,0,0);
+            result.diffuse = vec3(0.8,0,0);
         }
 
         if (ray_hit.object_index == 1) {
-            result.diffuse = vec3(0,1,0);
+            result.diffuse = vec3(0,0.8,0);
         }
 
         if (ray_hit.object_index == 2) {
@@ -865,7 +865,7 @@ material_params(RayHit ray_hit)
         }
 
         if (ray_hit.object_index == 3) {
-            result.diffuse = vec3(1,1,0);
+            result.diffuse = vec3(1,1,1);
         }
 
         result.diffuse *= 0.5;
