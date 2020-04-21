@@ -206,6 +206,18 @@ class FiniteViewer(WindowOrFrame):
         UniformDictController.create_horizontal_scale(
             frame,
             self.widget.ui_parameter_dict,
+            key = 'vertexRadius',
+            title = 'Vertex Radius',
+            row = row,
+            from_ = 0.0,
+            to = 1.35,
+            update_function = self.widget.redraw_if_initialized,
+            format_string = '%.3f')
+
+        row += 1
+        UniformDictController.create_horizontal_scale(
+            frame,
+            self.widget.ui_parameter_dict,
             key = 'insphere_scale',
             title = 'Insphere scale',
             row = row,

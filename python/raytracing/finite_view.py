@@ -93,6 +93,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
             'insphere_scale' : ['float', 0.05],
             'cuspAreas' : ['float[]', manifold.num_cusps() * [ 1.0 ]],
             'edgeTubeRadius' : ['float', 0.02],
+            'vertexRadius' : ['float', 0.03]
             }
 
         self.manifold = manifold
@@ -112,7 +113,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
             *args, **kwargs)
 
         # Use distance view for now
-        self.view = 1
+        self.view = 0
 
         HyperboloidNavigation.__init__(self)
 
@@ -133,10 +134,14 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
                 'currentTetIndex' : ('int', tet_num),
                 'viewMode' : ('int', self.view),
                 'edgeTubeRadiusParam' :
-                    ('float', math.cosh(self.ui_parameter_dict['edgeTubeRadius'][1] / 2.0) ** 2 / 2.0)
+                    ('float', math.cosh(self.ui_parameter_dict['edgeTubeRadius'][1] / 2.0) ** 2 / 2.0),
+                'vertexSize' :
+                    ('float', math.cosh(self.ui_parameter_dict['vertexRadius'][1]))
                 },
             self.ui_uniform_dict
             )
+
+        print(result['vertexSize'])
 
         # _check_consistency(result)
 

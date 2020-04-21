@@ -33,6 +33,7 @@ uniform int maxSteps;
 uniform float maxDist;
 uniform int subpixelCount;
 uniform float edgeThickness;
+uniform float vertexSize;
 uniform float contrast;
 uniform bool perspectiveType;
 uniform int viewMode;
@@ -605,7 +606,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         int index = 4 * ray_hit.tet_num + vertex;
 //        float r = insphereRadiusParams[ray_hit.tet_num];
 
-        float r = 1.01;
+        float r = vertexSize;
         
         if (r > 1.0001) {
             float p = distParamsForSphereIntersection(
