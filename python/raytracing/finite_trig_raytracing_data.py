@@ -27,7 +27,7 @@ def _compute_path(letters, tet_num):
     return path
 
 def _path_finder(perm, tet_num):
-    _already_seen = set()
+    _already_seen = set([t3m.Perm4([0,1,2,3]).tuple()])
     
     def _try(this_perm, path):
         if perm.tuple() == this_perm.tuple():
@@ -115,14 +115,15 @@ class FiniteTrigRaytracingData(McomplexEngine):
             for i in t3m.ZeroSubsimplices:
                 for j in t3m.ZeroSubsimplices:
                     if i != j:
-                        print("edge", i, j)
+                        #print("edge", i, j)
                         edge_length = self.hyperbolic_structure.edge_lengths[tet.Class[i | j].Index]
-                        print(edge_length)
-                        print(R13_dot(tet.R13_vertices[i], tet.R13_vertices[j]))
+                        #print(edge_length)
+                        #print(R13_dot(tet.R13_vertices[i], tet.R13_vertices[j]))
 
             for v in t3m.ZeroSubsimplices:
-                print("vertex", v, R13_time_vector_to_upper_halfspace(
-                        tet.R13_vertices[v]))
+                pass
+                #print("vertex", v, R13_time_vector_to_upper_halfspace(
+                #        tet.R13_vertices[v]))
                     
 
     def _compute_edge_ends(self):
@@ -178,6 +179,29 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         tet0_perm = first_perm()
 
+        path0 = _path_finder(tet0_perm, tet.Index)
+
+        print("Computing face pairing")
+
+        print("Face F", F)
+
+        print("path ", path0, tet0_perm)
+
+        for v in t3m.ZeroSubsimplices:
+            print("    ", tet.R13_vertices[v])
+
+        if path0 == []:
+            m = matrix.identity(RealField(),4)
+        else:
+            m = GL2C_to_O13(
+                self.hyperbolic_structure.pgl2_matrix_for_path(
+                    path0))
+
+        print("=========")
+
+        for v in t3m.ZeroSubsimplices:
+            print("   ", m * tet.R13_vertices[v])
+
         #tet0_perm = t3m.Perm4(
         #    { v: k
         #      for k,v
@@ -185,7 +209,6 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         #print(tet0_perm)
         
-        path0 = _path_finder(tet0_perm, tet.Index)
 
         # print(path0)
 
