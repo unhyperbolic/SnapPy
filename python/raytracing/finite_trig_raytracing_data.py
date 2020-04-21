@@ -185,7 +185,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
         print("Face F", F)
 
-        print("path ", path0, tet0_perm)
+        # print("path ", path0, tet0_perm)
 
         for v in t3m.ZeroSubsimplices:
             print("    ", tet.R13_vertices[v])
@@ -200,7 +200,8 @@ class FiniteTrigRaytracingData(McomplexEngine):
         print("=========")
 
         for v in t3m.ZeroSubsimplices:
-            print("   ", m * tet.R13_vertices[v])
+            if v & F:
+                print("   ", m * tet.R13_vertices[v])
 
         #tet0_perm = t3m.Perm4(
         #    { v: k
