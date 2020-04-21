@@ -73,19 +73,18 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
                 c = vector([1,0,0,0])
 
-                
                 if not path:
                     return c
                 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index))
+                    _compute_path(path, tet.Index)).inverse()
 
                 p = FinitePoint(
                     ComplexField()(0),
                     RealField()(1))
 
                 print(path)
-                print(p.translate_PGL(m.inverse()))
+                print(p.translate_PGL(m))
 
                 #print(path)
                 #print(m)
@@ -93,7 +92,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
                 # m = matrix([[m[1,1],m[1,0]],[m[0,1],m[0,0]]])
 
 
-                return c * GL2C_to_O13(m), p.translate_PGL(m.inverse())
+                return GL2C_to_O13(m) * c, p.translate_PGL(m)
 
             #tet.R13_vertices = {
             #    t3m.V0 : _compute_vertex([]),
@@ -135,9 +134,9 @@ class FiniteTrigRaytracingData(McomplexEngine):
                     return cs
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index))
+                    _compute_path(path, tet.Index)).inverse()
                 
-                return [ c * GL2C_to_O13(m) for c in cs ]
+                return [ GL2C_to_O13(m) * c for c in cs ]
 
             tet.R13_edge_ends = {
                 t3m.E01 : _compute_edge_ends([]),
@@ -150,18 +149,18 @@ class FiniteTrigRaytracingData(McomplexEngine):
     def _compute_planes(self):
         for tet in self.mcomplex.Tetrahedra:
             def _compute_plane(path):
-                c = vector([0.0, 0.0, 0.0, 1.0])
+                c = vector([0.0, 0.0, 0.0, -1.0])
 
                 if not path:
                     return c
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
-                    _compute_path(path, tet.Index))
+                    _compute_path(path, tet.Index)).inverse()
 
                 m = matrix([[ m[1,1],-m[0,1]],
                             [-m[1,0], m[0,0]]])
 
-                v = GL2C_to_O13(m) * c
+                v = c * GL2C_to_O13(m)
                 
                 return vector([-v[0], v[1], v[2], v[3]])
 

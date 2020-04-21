@@ -553,7 +553,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
     }
     */
 
-    for(int face = 4; face < 4; face++) {
+    for(int face = 3; face < 4; face++) {
         if (entry_object_type != object_type_face || entry_object_index != face) {
             // find p when we hit that face
             int index = 4 * ray_hit.tet_num + face;
@@ -577,7 +577,7 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         }
     }
 
-    for (int edge = 5; edge < 6; edge++) {
+    for (int edge = 0; edge < 6; edge++) {
         int index = 12 * ray_hit.tet_num + 2 * edge;
         vec4 epoints[2];
         epoints[0] = R13EdgeEnds[index    ];
