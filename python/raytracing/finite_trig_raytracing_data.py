@@ -83,8 +83,8 @@ class FiniteTrigRaytracingData(McomplexEngine):
                     ComplexField()(0),
                     RealField()(1))
 
-                print(path)
-                print(p.translate_PGL(m))
+                #print(path)
+                #print(p.translate_PGL(m))
 
                 #print(path)
                 #print(m)
@@ -183,7 +183,7 @@ class FiniteTrigRaytracingData(McomplexEngine):
         #      for k,v
         #      in first_perm().dict.items() })
 
-        print(tet0_perm)
+        #print(tet0_perm)
         
         path0 = _path_finder(tet0_perm, tet.Index)
 
@@ -196,10 +196,10 @@ class FiniteTrigRaytracingData(McomplexEngine):
             m0 = matrix.identity(
                 2, ComplexField())
 
-        print("face", F)
+        #print("face", F)
 
-        for V in t3m.ZeroSubsimplices:
-            print("   V: ", tet.A_vertices[V].translate_PGL(m0.inverse()))
+        #for V in t3m.ZeroSubsimplices:
+        #    print("   V: ", tet.A_vertices[V].translate_PGL(m0.inverse()))
 
         return GL2C_to_O13(m0)
         
