@@ -274,10 +274,10 @@ def _diff(v1, v2, label = ''):
         print("DIFF!!!", label, v1, v2)
 
 def _check_consistency(d):
-    planes = d['planes'][1]
+    planes = d['TetrahedraBasics.planes'][1]
     otherTetNums = d['otherTetNums'][1]
     entering_face_nums = d['enteringFaceNums'][1]
-    SO13tsfms = d['SO13tsfms'][1]
+    SO13tsfms = d['TetrahedraBasics.SO13tsfms'][1]
 
 #    verts = d['verts'][1]
 
