@@ -73,8 +73,8 @@ class FiniteTrigRaytracingData(McomplexEngine):
 
                 c = vector([1,0,0,0])
 
-                if not path:
-                    return c
+                #if not path:
+                #    return c
                 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
                     _compute_path(path, tet.Index)).inverse()
@@ -131,8 +131,8 @@ class FiniteTrigRaytracingData(McomplexEngine):
             def _compute_edge_ends(path):
                 cs = [ vector([1,  1, 0, 0]),
                        vector([1, -1, 0, 0]) ]
-                if not path:
-                    return cs
+                #if not path:
+                #    return cs
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
                     _compute_path(path, tet.Index)).inverse()
@@ -152,8 +152,8 @@ class FiniteTrigRaytracingData(McomplexEngine):
             def _compute_plane(path):
                 c = vector([0.0, 0.0, 0.0, -1.0])
 
-                if not path:
-                    return c
+                #if not path:
+                #    return c
 
                 m = self.hyperbolic_structure.pgl2_matrix_for_path(
                     _compute_path(path, tet.Index)).inverse()
@@ -190,10 +190,10 @@ class FiniteTrigRaytracingData(McomplexEngine):
         #for v in t3m.ZeroSubsimplices:
         #    print("    ", tet.R13_vertices[v])
 
-        if path0 == []:
-            m0 = matrix.identity(ComplexField(),2)
-        else:
-            m0 = self.hyperbolic_structure.pgl2_matrix_for_path(
+        #if path0 == []:
+        #    m0 = matrix.identity(ComplexField(),2)
+        #else:
+        m0 = self.hyperbolic_structure.pgl2_matrix_for_path(
                     path0)
 
         #print("=========")
@@ -209,10 +209,10 @@ class FiniteTrigRaytracingData(McomplexEngine):
         #print("FF", tet1_perm.image(t3m.F3), tet1_F)
 
         path1 = _path_finder(tet1_perm, tet.Neighbor[F].Index)
-        if path1 == []:
-            m1 = matrix.identity(ComplexField(),2)
-        else:
-            m1 = self.hyperbolic_structure.pgl2_matrix_for_path(
+        #if path1 == []:
+        #    m1 = matrix.identity(ComplexField(),2)
+        #else:
+        m1 = self.hyperbolic_structure.pgl2_matrix_for_path(
                 path1)
 
         #for v in t3m.ZeroSubsimplices:
