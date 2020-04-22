@@ -10,7 +10,7 @@ from .zoom_slider import Slider, ZoomSlider
 # Main widget
 
 class FiniteViewer(WindowOrFrame):
-    def __init__(self, manifold, parent = None, root = None,
+    def __init__(self, manifold, weights = None, parent = None, root = None,
                  title = '', window_type = 'untyped',
                  fillings_changed_callback = None):
 
@@ -25,7 +25,7 @@ class FiniteViewer(WindowOrFrame):
         self.fillings_changed_callback = fillings_changed_callback
 
         main_frame = self.create_frame_with_main_widget(
-            self.container, manifold)
+            self.container, manifold, weights)
 
         self.filling_dict = { 'fillings' : self._fillings_from_manifold() }
 
@@ -363,13 +363,15 @@ class FiniteViewer(WindowOrFrame):
 
         return frame
 
-    def create_frame_with_main_widget(self, parent, manifold):
+    def create_frame_with_main_widget(self, parent, manifold, weights):
         frame = ttk.Frame(parent)
 
         column = 0
 
         self.widget = FiniteView(
-            manifold, frame,
+            manifold,
+            weights = weights,
+            master = frame,
             width = 600, height = 500, double = 1, depth = 1)
         self.widget.grid(row = 0, column = column, sticky = tkinter.NSEW)
         self.widget.make_current()

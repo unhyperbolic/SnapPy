@@ -39,11 +39,11 @@ def run_perf_test():
 
     PerfTest(gui.widget)
 
-def main(manifold):
+def main(manifold, weights):
     if sys.platform == 'darwin':
         print(darwinTkMsg)
 
-    gui = FiniteViewer(manifold)
+    gui = FiniteViewer(manifold, weights = weights)
     gui.widget.focus_set()
     gui.container.mainloop()
     
@@ -53,4 +53,8 @@ if __name__ == '__main__':
     if sys.argv[1] == 'perf':
         run_perf_test()
     else:
-        main(Triangulation(sys.argv[1], remove_finite_vertices = False))
+        weights = None
+        if len(sys.argv) == 3:
+            weights = eval(sys.argv[2])
+
+        main(Triangulation(sys.argv[1], remove_finite_vertices = False), weights)

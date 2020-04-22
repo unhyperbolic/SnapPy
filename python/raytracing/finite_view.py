@@ -72,7 +72,7 @@ _max_linear_camera_speed = 2.0
 _max_depth_for_orbiting = 0.9998
 
 class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
-    def __init__(self, manifold, master, *args,
+    def __init__(self, manifold, weights, master, *args,
                  **kwargs):
 
         self.ui_uniform_dict = {
@@ -114,6 +114,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
 
         # Use distance view for now
         self.view = 0
+        self.weights = weights
 
         HyperboloidNavigation.__init__(self)
 
@@ -130,7 +131,7 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
             {
                 'screenResolution' : ('vec2', [width, height]),
                 'currentBoost' : ('mat4', boost),
-                'weights' : ('float[]', weights),
+                'weights' : ('float[]', self.weights if self.weights else weights),
                 'currentTetIndex' : ('int', tet_num),
                 'viewMode' : ('int', self.view),
                 'edgeTubeRadiusParam' :
