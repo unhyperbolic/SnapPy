@@ -578,27 +578,29 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
         }
     }
 
-    for (int edge = 0; edge < 6; edge++) {
-        int index = 12 * ray_hit.tet_num + 2 * edge;
-        vec4 epoints[2];
-        epoints[0] = R13EdgeEnds[index    ];
-        epoints[1] = R13EdgeEnds[index + 1];
+    if (edgeTubeRadiusParam > 0.50001) {
+        for (int edge = 0; edge < 6; edge++) {
+            int index = 12 * ray_hit.tet_num + 2 * edge;
+            vec4 epoints[2];
+            epoints[0] = R13EdgeEnds[index    ];
+            epoints[1] = R13EdgeEnds[index + 1];
 
-        vec2 params = distParamsForTubeIntersection(
-            ray_hit.ray,
-            epoints,
-            // endpointsForEdge(ray_hit.tet_num, edge),
-            edgeTubeRadiusParam,
-            0.0);
-        
-        if (params.x < smallest_p) {
-            smallest_p = params.x;
-            ray_hit.object_type = object_type_edge_cylinder_enter;
-            ray_hit.object_index = 0;
-        } else if (params.y < smallest_p) {
-            smallest_p = params.y;
-            ray_hit.object_type = object_type_edge_cylinder_exit;
-            ray_hit.object_index = 0;
+            vec2 params = distParamsForTubeIntersection(
+                ray_hit.ray,
+                epoints,
+                // endpointsForEdge(ray_hit.tet_num, edge),
+                edgeTubeRadiusParam,
+                0.0);
+            
+            if (params.x < smallest_p) {
+                smallest_p = params.x;
+                ray_hit.object_type = object_type_edge_cylinder_enter;
+                ray_hit.object_index = 0;
+            } else if (params.y < smallest_p) {
+                smallest_p = params.y;
+                ray_hit.object_type = object_type_edge_cylinder_exit;
+                ray_hit.object_index = 0;
+            }
         }
     }
 
