@@ -30,7 +30,7 @@ class NonorientableUnsupportedError(RuntimeError):
 
 _constant_uniform_bindings = {
     'currentWeight' : ('float', 0.0),
-    'contrast': ('float', 0.5),
+#    'contrast': ('float', 0.5),
     'multiScreenShot' : ('int', 0),
     'tile' : ('vec2', [0.0, 0.0]),
     'numTiles' : ('vec2', [1.0, 1.0]),
@@ -81,6 +81,8 @@ class FiniteView(SimpleImageShaderWidget, HyperboloidNavigation):
             'subpixelCount': ['int', 1],
             'fov': ['float', 90],
             'edgeThickness' : ['float', 0.0000001],
+
+            'contrast' : ['float', 1.0],
 
             'lightBias' : ['float', 2.0],
             'lightFalloff' : ['float', 1.65],

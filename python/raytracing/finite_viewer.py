@@ -217,13 +217,13 @@ class FiniteViewer(WindowOrFrame):
         row += 1
         UniformDictController.create_horizontal_scale(
             frame,
-            self.widget.ui_parameter_dict,
-            key = 'insphere_scale',
-            title = 'Insphere scale',
+            self.widget.ui_uniform_dict,
+            key = 'contrast',
+            title = 'Contrast',
             row = row,
             from_ = 0.0,
-            to = 1.25,
-            update_function = self.widget.recompute_raytracing_data_and_redraw,
+            to = 1.6,
+            update_function = self.widget.redraw_if_initialized,
             format_string = '%.2f')
 
         row += 1
