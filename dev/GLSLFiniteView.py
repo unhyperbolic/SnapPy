@@ -46,6 +46,29 @@ def main(manifold, weights):
     gui = FiniteViewer(manifold, weights = weights)
     gui.widget.focus_set()
     gui.container.mainloop()
+
+def to_index(s):
+    var, face_num, tet_num = s.split('_')
+    if var != 's':
+        raise Exception("Not s")
+    return 4 * int(tet_num) + int(face_num)
+
+def check_weights(trig, weights):
+    
+    face_classes = trig._ptolemy_equations_identified_face_classes()
+    pos_c2 = [ weights[to_index(face_class[2])] for face_class in face_classes ]
+    neg_c2 = [ weights[to_index(face_class[3])] for face_class in face_classes ]
+
+    for p, n in zip(pos_c2, neg_c2):
+        if p != -n:
+            raise Exception("Not matching")
+
+    for row in trig._ptolemy_equations_boundary_map_2()[0]:
+        if len(row) != len(pos_c2):
+            raise Exception("Not matching")
+        s = sum([e * p for e, p in zip(row, pos_c2)])
+        if s != 0:
+            raise Exception("Not in kernel")
     
 if __name__ == '__main__':
     print(sys.argv)
@@ -53,8 +76,12 @@ if __name__ == '__main__':
     if sys.argv[1] == 'perf':
         run_perf_test()
     else:
+        trig = Triangulation(sys.argv[1], remove_finite_vertices = False)
+
         weights = None
         if len(sys.argv) == 3:
             weights = eval(sys.argv[2])
 
-        main(Triangulation(sys.argv[1], remove_finite_vertices = False), weights)
+            check_weights(trig, weights)
+
+        main(trig, weights)
