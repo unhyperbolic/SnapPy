@@ -288,7 +288,7 @@ struct Triangulation
                         cusp_list_end;  /**< tailer node for doubly linked list of Cusps      */
 #ifdef ORB_SUPPORT
     int				num_singular_arcs; /* DJH */
-    Real                          curvature[2]; /* DJH */
+//    Real                          curvature[2]; /* DJH */
     Real				approach_value; /* DJH */
 #endif
 };
