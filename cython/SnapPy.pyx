@@ -3,6 +3,7 @@
 DEF REAL_TYPE = 'double'
 DEF HIGH_PRECISION = False
 include "SnapPy.pxi"
+include "Orb.pxi"
 include "core/basic.pyx"
 include "core/triangulation.pyx"
 include "core/manifold.pyx"

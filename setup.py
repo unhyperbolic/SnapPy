@@ -329,19 +329,15 @@ for file in code:
     assert os.path.exists(hp_file)
     hp_snappy_ext_files.add(hp_file, modtime(file))
 
-orb_code = glob(os.path.join('orb', 'orb_unix_kit', '*.c'))
-for file in orb_code:
-    if not os.path.split(file)[1].startswith('test_'):
-        snappy_ext_files.add(file)
-
-orb_code = glob(os.path.join('orb', 'orb_unix_kit', '*.cpp'))
-for file in orb_code:
-    if not os.path.split(file)[1].startswith('test_'):
-        snappy_ext_files.add(file)
-
 
 for hp_file in hp_qd_code:
     hp_snappy_ext_files.add(hp_file)
+
+orb_code = glob(os.path.join('orb', 'orb_unix_kit', '*.c')) + glob(os.path.join('orb', 'orb_unix_kit', '*.cpp'))
+for file in orb_code:
+    if not os.path.split(file)[1].startswith('test_'):
+        snappy_ext_files.add(file)
+        hp_snappy_ext_files.add(file)
 
 # The compiler we will be using
 
@@ -411,7 +407,8 @@ SnapPyHP = Extension(
     sources = hp_snappy_ext_files.sources_to_build,
     include_dirs = ['kernel/headers', 'kernel/unix_kit',
                     'kernel/addl_code', 'kernel/kernel_code',
-                    'quad_double/real_type', 'quad_double/qd/include'],
+                    'quad_double/real_type', 'quad_double/qd/include',
+                    'orb/orb_unix_kit'],
     language='c++',
     extra_compile_args = hp_extra_compile_args,
     extra_link_args = hp_extra_link_args,

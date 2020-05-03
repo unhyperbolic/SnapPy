@@ -4,6 +4,7 @@
 DEF REAL_TYPE = "qd_real"
 DEF HIGH_PRECISION = True
 include "SnapPy.pxi"
+include "Orb.pxi"
 include "core/basic.pyx"
 include "core/triangulation.pyx"
 include "core/manifold.pyx"

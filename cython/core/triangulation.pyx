@@ -645,7 +645,8 @@ cdef class Triangulation(object):
 
     def _from_orb_string(self, string, remove_finite_vertices = True):
         
-        pass
+        self.set_c_triangulation(
+            orb_read_string(string))
 
     def _to_bytes(self):
         """
