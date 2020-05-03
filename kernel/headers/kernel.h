@@ -26,7 +26,7 @@
 #include "kernel_prototypes.h"
 #include "tables.h"
 
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
 #include "one_skeleton_curve.h"
 #endif
 

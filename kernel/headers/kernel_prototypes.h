@@ -585,7 +585,7 @@ extern void compute_cusped_isomorphisms(
  *  Thus it can be used on triangulations of non-hyperbolic manifolds.
  */
  
-#ifndef ORB_SUPPORT
+#ifndef ORB_SUPPORT2
 extern Boolean same_triangulation(
                                 Triangulation   *manifold0,
                                 Triangulation   *manifold1);
@@ -853,14 +853,14 @@ extern FuncResult   cancel_tetrahedra(EdgeClass *edge, EdgeClass **where_to_resu
  *  both at the top of file and immediately preceding each function.
  */
 extern FuncResult   three_to_two(EdgeClass *edge, EdgeClass **where_to_resume, int *num_tetrahedra_ptr
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
                                  , Boolean keep_shapes
 #endif
     );
 
 /**< See cancel_tetrahedra(). */
 extern FuncResult   two_to_three(Tetrahedron *tet0, FaceIndex f, int *num_tetrahedra_ptr
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
                                  , Boolean keep_shapes
 #endif
 );
@@ -911,7 +911,7 @@ extern FuncResult solve_complex_equations(Complex **complex_equations,
 
 extern Triangulation *subdivide(Triangulation *manifold,
 				const char *new_name
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
                                 , Boolean remove_extras
 #endif
 );

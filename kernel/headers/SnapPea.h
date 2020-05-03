@@ -756,7 +756,7 @@ extern FuncResult   proto_canonize(Triangulation *manifold);
  */
 
 extern void         canonical_retriangulation(Triangulation *manifold
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
                                               , Boolean attachign_two_handle
 #endif
     );
@@ -1451,7 +1451,7 @@ extern GroupPresentation *fundamental_group(
                     Boolean         simplify_presentation,
                     Boolean         fillings_may_affect_generators,
                     Boolean         minimize_number_of_generators
-#ifndef ORB_SUPPORT
+#ifndef ORB_SUPPORT2
                     , Boolean         try_hard_to_shorten_relators
 #endif
 );
@@ -1830,7 +1830,7 @@ extern void get_holonomy(   Triangulation   *manifold,
 
 extern void get_tet_shape(  Triangulation   *manifold,
                             int             which_tet,
-#ifndef ORB_SUPPORT
+#ifndef ORB_SUPPORT2
 			    FillingStatus   which_solution,
 #endif
                             Boolean         fixed_alignment,
@@ -1947,7 +1947,7 @@ extern void free_isometry_list(IsometryList *isometry_list);
 
 extern Boolean same_triangulation(  Triangulation   *manifold0,
                                     Triangulation   *manifold1
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
                                     , int *singular_map
 #endif
 );
@@ -1994,7 +1994,7 @@ extern void free_length_spectrum(MultiLength *spectrum);
 
 extern Triangulation *triangulate_link_complement(
 			       KLPProjection *aLinkProjection
-#ifndef ORB_SUPPORT
+#ifndef ORB_SUPPORT2
                                ,
 			       Boolean remove_extra_vertices
 #endif
@@ -2049,7 +2049,7 @@ extern Boolean O31_determinants_OK( O31Matrix   arrayB[],
 /*                                                                      */
 /************************************************************************/
 
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
 extern void matrix_generators( Triangulation           *manifold,
                                MoebiusTransformation   generators[],
                                Boolean centroid_at_origin);
@@ -2750,7 +2750,7 @@ extern Real volume(Triangulation *manifold, int *precision);
 SNAPPEA_NAMESPACE_SCOPE_CLOSE
 SNAPPEA_LINKAGE_SCOPE_CLOSE
 
-#ifdef ORB_SUPPORT
+#ifdef ORB_SUPPORT2
 #include "Orb.h"
 #endif
 

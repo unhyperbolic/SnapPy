@@ -363,7 +363,7 @@ SnapPyC = Extension(
     include_dirs = ['kernel/headers', 'kernel/unix_kit',
                     'kernel/addl_code', 'kernel/real_type'],
     language='c++',
-    extra_compile_args=snappy_extra_compile_args,
+    extra_compile_args=snappy_extra_compile_args + ['-DORB_SUPPORT'],
     extra_link_args=snappy_extra_link_args,
     extra_objects = snappy_ext_files.up_to_date_objects)
 
@@ -432,7 +432,7 @@ if build_orb:
                         'kernel/real_type',
                         'orb2/headers',
                         'kernel/addl_code'],
-        extra_compile_args=['-DORB_SUPPORT'],
+        extra_compile_args=['-DORB_SUPPORT', '-DORB_SUPPORT2'],
         language='c++')
     
 # The CyOpenGL extension
