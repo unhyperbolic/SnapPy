@@ -437,3 +437,25 @@ void read_orb(
     
     free(buffer);
 }
+
+extern Triangulation * orb_read_string(char *str)
+{
+    Triangulation *t;
+    CassonFormat *cf;
+    char *name;
+    
+    read_orb_from_string(str, &name, &cf, NULL);
+    if (!cf) {
+        return NULL;
+    }
+    if (!verify_casson(cf)) {
+        free_casson(cf);
+        return NULL;
+    }
+
+    t = casson_to_triangulation(cf);
+
+    t->name = name;
+
+    return t;
+}

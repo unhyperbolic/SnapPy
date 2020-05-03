@@ -15,5 +15,8 @@ extern void read_orb(
         CassonFormat ** cf,
         char **orb_link_projection_data);
 
+extern Triangulation * orb_read_string(
+    char *str);
+
 #endif
 
