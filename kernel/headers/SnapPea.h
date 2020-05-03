@@ -954,9 +954,6 @@ extern void core_geodesic(  Triangulation   *manifold,
 
 Triangulation *construct_cover( Triangulation           *base_manifold,
                                 RepresentationIntoSn    *representation,
-#ifdef ORB_SUPPORT
-                                int                     num_generators,
-#endif
                                 int                     n);
 /**<
  *  Constructs the n-sheeted cover of the given base_manifold defined

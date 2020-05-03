@@ -25,7 +25,6 @@
 Triangulation *construct_cover(
 	Triangulation			*base_manifold,
 	RepresentationIntoSn	*representation,
-	int						num_generators,
 	int						n)
 {
 	Triangulation	*covering_manifold;

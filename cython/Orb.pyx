@@ -84,7 +84,7 @@ cdef extern from "SnapPea.h":
     extern RepresentationList *find_representations(c_Triangulation *manifold, int n,PermutationSubgroup range) except *
     extern void free_representation_list(RepresentationList *representation_list) except *
     extern void free_representation(RepresentationIntoSn *representation, int num_generators, int num_cusps) except *
-    extern c_Triangulation *construct_cover(c_Triangulation *base_manifold, RepresentationIntoSn *representation, int num_generators, int n) except *
+    extern c_Triangulation *construct_cover(c_Triangulation *base_manifold, RepresentationIntoSn *representation, int n) except *
     extern c_AbelianGroup *homology(c_Triangulation *manifold) except *
     extern void compress_abelian_group(c_AbelianGroup *g) except *
     extern void free_abelian_group(c_AbelianGroup *g) except *
@@ -499,7 +499,6 @@ cdef class Orbifold(object):
         while rep != NULL:
             cover = construct_cover(self.c_triangulation,
                                     rep,
-                                    reps.num_generators,
                                     reps.num_sheets)
             T = Orbifold()
             T.c_triangulation = cover
