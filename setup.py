@@ -333,11 +333,11 @@ for file in code:
 for hp_file in hp_qd_code:
     hp_snappy_ext_files.add(hp_file)
 
-orb_code = glob(os.path.join('orb', 'orb_unix_kit', '*.c')) + glob(os.path.join('orb', 'orb_unix_kit', '*.cpp'))
+orb_code = glob(os.path.join('orb', 'orb_unix_kit', '*.c')) + glob(os.path.join('orb', 'orb_unix_kit', '*.cpp')) + [os.path.join('orb', 'code', f) for f in ['my_identify_solution_type.c', 'my_volume.c', 'peripheral_curves.c']]
 for file in orb_code:
     if not os.path.split(file)[1].startswith('test_'):
         snappy_ext_files.add(file)
-        hp_snappy_ext_files.add(file)
+#        hp_snappy_ext_files.add(file)
 
 # The compiler we will be using
 

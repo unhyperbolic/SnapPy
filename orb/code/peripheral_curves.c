@@ -339,7 +339,7 @@ static void				backup_scratch_curves(Triangulation *manifold);
 static void				restore_scratch_curves(Triangulation *manifold);
 
 
-void peripheral_curves(
+void orb_peripheral_curves(
 	Triangulation *manifold)
 {
 	Cusp	*cusp;
@@ -361,7 +361,7 @@ void peripheral_curves(
 }
 
 
-void peripheral_curves_as_needed(
+void orb_peripheral_curves_as_needed(
 	Triangulation *manifold)
 {
 	/*

@@ -54,6 +54,16 @@ static Boolean	my_solution_is_geometric(Triangulation *manifold);
 static Boolean  is_invalid_solution( Triangulation *manifold);
 static Boolean is_degenerate_tet( Tetrahedron *tet );
 
+extern void compute_cusp_euler_characteristics( Triangulation *manifold );
+extern Boolean my_solution_is_degenerate(Triangulation *manifold);
+
+extern double my_volume( Triangulation *manifold, Boolean *ok );
+extern Boolean flat_tet( Tetrahedron *tet );
+extern void identify_one_cusp(
+	Triangulation *manifold,
+	Cusp		*cusp );
+
+
 void my_identify_solution_type(
 	Triangulation	*manifold)
 {

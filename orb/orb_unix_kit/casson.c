@@ -10,6 +10,69 @@ const int vertex_at_faces[4][4] = {
     {1,3,9,0},
     {2,0,1,9}};
 
+static void copied_tilts( Triangulation *manifold)
+{
+	Tetrahedron *tet;
+	FaceIndex   f;
+	int i;
+	double factor;
+
+	for( tet =  manifold->tet_list_begin.next;
+		tet!=&manifold->tet_list_end;
+		tet = tet->next )
+	for( f = 0; f<4;f++)
+	{
+		tet->tilt[f] = 0;
+
+		for(i=0;i<4;i++)
+		if ( ABS( tet->Gram_matrix[i][i] ) > 0.00000001 )
+			tet->tilt[f] -= sqrt( ABS( tet->Gram_matrix[i][i] ) ) * tet->inverse_Gram_matrix[i][f];
+		else	tet->tilt[f] -= tet->inverse_Gram_matrix[i][f];
+
+		/* This should never be negative but it is possible the numerical rounding may cause problems.
+		 * Given the checks we have performed before this point, if this product is negative then
+		 * it can not be by much so we'll just set it to zero.
+		 */
+		if ( gl4R_determinant(tet->Gram_matrix) * tet->inverse_Gram_matrix[f][f] < 0 )
+			factor = 0;
+		else	factor = safe_sqrt( gl4R_determinant(tet->Gram_matrix) * tet->inverse_Gram_matrix[f][f]);	
+
+		if ( factor < 1e-10 ) factor = 1e-10;
+		tet->tilt[f] /= factor;
+	}
+
+	return;
+}
+
+static 
+double copied_minor1( GL4RMatrix matrix, int row, int col )
+{
+  double m[3][3], det;
+  int i, j, r, c;
+
+ for( i=0, r=0; i<3; r++)
+ if (r!=row)
+ {
+     for(j=0, c=0; j<3;c++)
+          if (c!=col)
+          {
+              m[i][j] = matrix[r][c];
+              j++;
+          }
+
+     i++;
+ }
+
+ for(i=0, det=0; i<3; i++)
+ {
+       det += m[0][i]*m[1][(i+1)% 3]*m[2][(i+2)%3];
+       det -= m[2][i]*m[1][(i+1)% 3]*m[0][(i+2)%3];
+ }
+
+ return  ( (row+col)%2==0 ) ? det : -det;
+}
+
+
 Boolean verify_casson(
         CassonFormat *cf)
 {
@@ -260,7 +323,7 @@ Triangulation *casson_to_triangulation( CassonFormat *cf )
 
 		for(i=0;i<4;i++)
 			for(j=0;j<4;j++)
-				tet->inverse_Gram_matrix[i][j] = minor1( tet->Gram_matrix, i, j );
+				tet->inverse_Gram_matrix[i][j] = copied_minor1( tet->Gram_matrix, i, j );
 
 		tet->orientation_parameter[ultimate] = safe_sqrt( -gl4R_determinant( tet->Gram_matrix ) );
 		if (neg) tet->orientation_parameter[ultimate] *= -1;
@@ -320,7 +383,7 @@ Triangulation *casson_to_triangulation( CassonFormat *cf )
 	manifold->solution_type[filled] = cf->type;
 
 	if (manifold->solution_type[complete] == geometric_solution )
-		my_tilts( manifold );
+		copied_tilts( manifold );
 	peripheral_curves_as_needed( manifold );
 
 	return manifold;
