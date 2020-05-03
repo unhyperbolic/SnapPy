@@ -128,6 +128,10 @@ cdef class Triangulation(object):
             isinstance(spec, bytes) and spec.startswith(b'% Triangulation')):
             return self._from_string(spec, remove_finite_vertices)
 
+        if (isinstance(spec, basestring) and spec.startswith('% orb') or
+            isinstance(spec, bytes) and spec.startswith(b'% orb')):
+            return self._from_orb_string(spec, remove_finite_vertices)
+
         # Get fillings, if any
         m = split_filling_info.match(spec)
         name = m.group(1)
@@ -638,6 +642,10 @@ cdef class Triangulation(object):
         self.set_c_triangulation(c_triangulation)
         if remove_finite_vertices:
             self._remove_finite_vertices()
+
+    def _from_orb_string(self, string, remove_finite_vertices = True):
+        
+        pass
 
     def _to_bytes(self):
         """
