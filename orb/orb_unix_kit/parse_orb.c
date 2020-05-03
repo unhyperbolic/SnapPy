@@ -443,8 +443,14 @@ extern Triangulation * orb_read_string(char *str)
     Triangulation *t;
     CassonFormat *cf;
     char *name;
+    char *remaining = NULL;
     
-    read_orb_from_string(str, &name, &cf, NULL);
+    read_orb_from_string(str, &name, &cf, &remaining);
+
+    if (remaining) {
+        my_free(remaining);
+    }
+
     if (!cf) {
         return NULL;
     }

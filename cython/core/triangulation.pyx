@@ -646,8 +646,10 @@ cdef class Triangulation(object):
     def _from_orb_string(self, string, remove_finite_vertices = True):
         
         IF not HIGH_PRECISION:
+            b_string = to_byte_str(string)
+            print(b_string)
             self.set_c_triangulation(
-                orb_read_string(string))
+                orb_read_string(b_string))
 
     def _to_bytes(self):
         """

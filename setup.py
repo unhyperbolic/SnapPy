@@ -517,8 +517,8 @@ TwisterCore = Extension(
     language='c++' )
 
 ext_modules = [SnapPyC, SnapPyHP, TwisterCore]
-if build_orb:
-    ext_modules.append(OrbC)
+#if build_orb:
+#    ext_modules.append(OrbC)
 
 install_requires = ['plink>=2.3.1a1', 'spherogram>=1.8.2', 'FXrays>=1.3',
                     'pypng', 'decorator', 'future', 'snappy_manifolds>=1.0']

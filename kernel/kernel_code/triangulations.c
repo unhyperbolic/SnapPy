@@ -117,6 +117,9 @@ void data_to_triangulation(
      *  human readers;  here we recompute it from scratch.
      */
     manifold->num_tetrahedra            = data->num_tetrahedra;
+#ifdef ORB_SUPPORT
+    manifold->num_singular_arcs         = 0;
+#endif
     manifold->solution_type[complete]   = not_attempted;
     manifold->solution_type[ filled ]   = not_attempted;
     manifold->orientability             = data->orientability;
@@ -234,6 +237,12 @@ void data_to_triangulation(
         for (i = 0; i < manifold->num_cusps; i++)
         {
             cusp_array[i]->topology     = data->cusp_data[i].topology;
+#ifdef ORB_SUPPORT
+            cusp_array[i]->num_cone_points               = 0;
+            cusp_array[i]->orbifold_euler_characteristic = 0;
+            cusp_array[i]->euler_characteristic          = 0;
+            cusp_array[i]->cone_points                   = NULL;
+#endif
             cusp_array[i]->m            = data->cusp_data[i].m;
             cusp_array[i]->l            = data->cusp_data[i].l;
             cusp_array[i]->is_complete  = (data->cusp_data[i].m == 0.0
@@ -938,6 +947,15 @@ void initialize_cusp(
     cusp->matching_cusp             = NULL;
     cusp->prev                      = NULL;
     cusp->next                      = NULL;
+#ifdef ORB_SUPPORT
+    cusp->fundamental_domain        = NULL;
+    cusp->inner_product[ultimate]   = 0.5;
+    cusp->inner_product[penultimate]= 0.5;
+    cusp->num_generators            = 0;
+    cusp->area                      = 0.0;
+    cusp->num_cone_points           = 0;
+    cusp->cone_points               = NULL;
+#endif
 }
 
 
