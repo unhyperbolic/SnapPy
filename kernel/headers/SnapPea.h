@@ -42,6 +42,29 @@
 
 SNAPPEA_NAMESPACE_SCOPE_OPEN
 
+#ifdef ORB_SUPPORT
+
+/**
+ *  How the hyperbolic structure is given. Note that this influences, e.g.,
+ *  the result of computing the canonical re-triangulation.
+ *
+ *  Note that shapes can only be used for 3-manifolds with toroidal or
+ *  Klein bottle cusps for the complete or incomplete structure (completed
+ *  by the specified Dehn-filling).
+ *
+ *  The vertex Gram matrices can be used for 3-orbifolds but only if there
+ *  are no Dehn-fillings on the cusps.
+ *
+ */
+
+typedef enum
+{
+    shape_geom,             /**< Shapes of ideal tetrahedra */
+    vertex_Gram_geom        /**< Vertex gram matrices of generalized tetrahedra */
+} GeomType;
+
+#endif
+
 /**
  *  Note:  values of the SolutionType enum are stored as integers in
  *  the triangulation.doc file format.  Changing the order of the

@@ -265,6 +265,9 @@ struct Triangulation
 {
     char                *name;                  /**< name of manifold                     */
     int                 num_tetrahedra;         /**< number of tetrahedra                 */
+#ifdef ORB_SUPPORT
+    GeomType            geom_type;              /**< shapes or Vertex gram matrices       */
+#endif
     SolutionType        solution_type[2];       /**< complete and filled                  */
     Orientability       orientability;          /**< Orientability of manifold            */
     int                 num_cusps,              /**< total number of cusps                */
