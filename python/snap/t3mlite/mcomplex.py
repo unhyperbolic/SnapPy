@@ -452,34 +452,14 @@ class Mcomplex(object):
        return 0
      if a.Tetrahedron == b.Tetrahedron:
        return 0
-#     print(a)
-#     a.Tetrahedron.info()
-#     print(b)
-#     b.Tetrahedron.info()
      be_a, be_b = barycentric_face_embedding(a)
-
-#     be_a.info()
-
-#     be_b.info()
   
      new = self.new_arrows(3)
      new_copies = [new_arrow.copy() for new_arrow in new]
      for i in range(3):
        new[i].glue(new[(i+1)%3])
-
-#     print(new[0].glued(), new[1])
-#     print(new[1].glued(), new[2])
-#     print(new[2].glued(), new[0])
      a.reverse()
      for c in new:
-#       print('a')
-#       print(a)
-#       print('b')
-#       print(b)
-#       print('c')
-#       print(c)
-#       print('c_op')
-#       print(c.copy().opposite())
        c.opposite().glue(a.glued())
        c.reverse().glue(b.glued())
        a.rotate(-1)
@@ -489,28 +469,19 @@ class Mcomplex(object):
      for c in new:
        c.reverse()
        c.opposite()
-#       print(c)
-#       c.Tetrahedron.info()
 
      be_2, be_0, be_1 = barycentric_edge_embedding(new[2])
-
-#     be_0.info()
-#     be_1.info()
-#     be_2.info()
      
      arcs_0 = be_0.transfer_arcs_from(be_a)
      arcs_0.extend(be_0.transfer_arcs_from(be_b))
-#     print(arcs_0)
      new[0].Tetrahedron.add_arcs(arcs_0)
 
      arcs_1 = be_1.transfer_arcs_from(be_a)
      arcs_1.extend(be_1.transfer_arcs_from(be_b))
-#     print(arcs_1)
      new[1].Tetrahedron.add_arcs(arcs_1)
 
      arcs_2 = be_2.transfer_arcs_from(be_a)
      arcs_2.extend(be_2.transfer_arcs_from(be_b))
-#     print(arcs_2)
      new[2].Tetrahedron.add_arcs(arcs_2)
      
 
@@ -521,7 +492,6 @@ class Mcomplex(object):
      if VERBOSE:
        print('2->3')
        print(self.EdgeValences)
-#     return self
      return 1
 
 
@@ -530,7 +500,11 @@ class Mcomplex(object):
 # Returns 0 if the edge is a boundary edge.
 #
    def three_to_two(self, edge):
-
+     """
+     This is a modified version which uses the functions in 
+     knot.py to transfer arcs (in barycentric coordinates) from
+     the starting three tetrahedra to the resulting two tetrahedra. 
+     """
      if not edge.IntOrBdry == 'int':
        return 0
      if edge.valence() != 3 or not edge.distinct():
