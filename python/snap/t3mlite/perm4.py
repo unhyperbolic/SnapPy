@@ -33,7 +33,7 @@ class Perm4:
         self.dict[i] = init[i]
     else:
       self.dict = init
-      v = init.items()
+      v = list(init.items())
       x = self.opposite[(v[0][0],v[1][0])]
       y = self.opposite[(v[0][1],v[1][1])]
       self.dict[x[0]] = y[sign]
