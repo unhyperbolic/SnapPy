@@ -1,0 +1,656 @@
+Plink failed to import tkinter.
+NumericOutputChecker:
+   0 failures out of 27 tests.
+snappy.SnapPy:
+   0 failures out of 557 tests.
+snappy.SnapPyHP:
+   0 failures out of 549 tests.
+snappy.database:
+   0 failures out of 52 tests.
+
+All doctests:
+   0 failures out of 52 tests.
+snappy.database:
+   0 failures out of 52 tests.
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/__init__.py", line 154, in snappy.Manifold.canonical_retriangulation
+Failed example:
+    K = M.canonical_retriangulation(verified = True)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.Manifold.canonical_retriangulation[4]>", line 1, in <module>
+        K = M.canonical_retriangulation(verified = True)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/__init__.py", line 165, in canonical_retriangulation
+        return verify.verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 382, in verified_canonical_retriangulation
+        return _verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 504, in _verified_canonical_retriangulation
+        return exactly_checked_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+1 items had failures:
+   1 of   6 in snappy.Manifold.canonical_retriangulation
+***Test Failed*** 1 failures.
+snappy:
+   1 failures out of 106 tests.
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 84, in snappy.snap.holonomy_matrix_entries
+Failed example:
+    K = mat_entries.find_field(100, 10, optimize = True)[0]
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.holonomy_matrix_entries[3]>", line 1, in <module>
+        K = mat_entries.find_field(100, 10, optimize = True)[0]
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 85, in snappy.snap.holonomy_matrix_entries
+Failed example:
+    K.polynomial()
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.holonomy_matrix_entries[4]>", line 1, in <module>
+        K.polynomial()
+    NameError: name 'K' is not defined
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 60, in snappy.snap.invariant_trace_field_gens
+Failed example:
+    K = M.invariant_trace_field_gens().find_field(100, 10, optimize=True)[0]
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.invariant_trace_field_gens[1]>", line 1, in <module>
+        K = M.invariant_trace_field_gens().find_field(100, 10, optimize=True)[0]
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 61, in snappy.snap.invariant_trace_field_gens
+Failed example:
+    L = M.trace_field_gens().find_field(100, 10, optimize=True)[0]
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.invariant_trace_field_gens[2]>", line 1, in <module>
+        L = M.trace_field_gens().find_field(100, 10, optimize=True)[0]
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 62, in snappy.snap.invariant_trace_field_gens
+Failed example:
+    K.polynomial(), L.polynomial()
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.invariant_trace_field_gens[3]>", line 1, in <module>
+        K.polynomial(), L.polynomial()
+    NameError: name 'K' is not defined
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 19, in snappy.snap.tetrahedra_field_gens
+Failed example:
+    tets.find_field(100, 10, optimize=True)    # doctest: +NORMALIZE_WHITESPACE +NUMERIC9
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.tetrahedra_field_gens[2]>", line 1, in <module>
+        tets.find_field(100, 10, optimize=True)    # doctest: +NORMALIZE_WHITESPACE +NUMERIC9
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/__init__.py", line 42, in snappy.snap.trace_field_gens
+Failed example:
+    traces.find_field(100, 10, optimize=True)    # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.snap.trace_field_gens[2]>", line 1, in <module>
+        traces.find_field(100, 10, optimize=True)    # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+4 items had failures:
+   2 of   5 in snappy.snap.holonomy_matrix_entries
+   3 of   4 in snappy.snap.invariant_trace_field_gens
+   1 of   3 in snappy.snap.tetrahedra_field_gens
+   1 of   3 in snappy.snap.trace_field_gens
+***Test Failed*** 7 failures.
+snappy.snap:
+   7 failures out of 343 tests.
+snappy.matrix:
+   0 failures out of 10 tests.
+snappy.raytracing.cohomology_fractal:
+   0 failures out of 14 tests.
+snappy.raytracing.geodesic:
+   0 failures out of 10 tests.
+snappy.raytracing.geodesics:
+   0 failures out of 7 tests.
+snappy.raytracing.ideal_raytracing_data:
+   0 failures out of 9 tests.
+snappy.raytracing.upper_halfspace_utilities:
+   0 failures out of 36 tests.
+snappy.drilling:
+   0 failures out of 89 tests.
+snappy.ptolemy:
+   0 failures out of 357 tests.
+spherogram:
+   0 failures out of 333 tests.
+snappy.verify.krawczyk_shapes_engine:
+   0 failures out of 63 tests.
+
+All doctests:
+   0 failures out of 63 tests.
+snappy.verify.interval_newton_shapes_engine:
+   0 failures out of 75 tests.
+
+All doctests:
+   0 failures out of 75 tests.
+snappy.verify.verifyHyperbolicity:
+   0 failures out of 18 tests.
+
+All doctests:
+   0 failures out of 18 tests.
+snappy.verify.verifyHyperbolicity:
+   0 failures out of 18 tests.
+
+All doctests:
+   0 failures out of 18 tests.
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 136, in snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation
+Failed example:
+    K = exactly_checked_canonical_retriangulation(M, 300, 4)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation[3]>", line 1, in <module>
+        K = exactly_checked_canonical_retriangulation(M, 300, 4)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 140, in snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation
+Failed example:
+    K.has_finite_vertices()
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation[4]>", line 1, in <module>
+        K.has_finite_vertices()
+    NameError: name 'K' is not defined
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 145, in snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation
+Failed example:
+    K.num_tetrahedra()
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation[5]>", line 1, in <module>
+        K.num_tetrahedra()
+    NameError: name 'K' is not defined
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 153, in snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation
+Failed example:
+    exactly_checked_canonical_retriangulation(M, 500, 6)  # doctest: +IGNORE_EXCEPTION_DETAIL
+Expected:
+    Traceback (most recent call last):
+    ...
+    TiltProvenPositiveNumericalVerifyError: Numerical verification that tilt is negative has failed, tilt is actually positive. This is provably not the proto-canonical triangulation: 0.1645421638874662848910671879? <= 0
+Got:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation[8]>", line 1, in <module>
+        exactly_checked_canonical_retriangulation(M, 500, 6)  # doctest: +IGNORE_EXCEPTION_DETAIL
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 333, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K = verified_canonical_retriangulation(M)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.verified_canonical_retriangulation[6]>", line 1, in <module>
+        K = verified_canonical_retriangulation(M)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 382, in verified_canonical_retriangulation
+        return _verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 504, in _verified_canonical_retriangulation
+        return exactly_checked_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 334, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K.has_finite_vertices()
+Expected:
+    True
+Got:
+    False
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 336, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K.num_tetrahedra()
+Expected:
+    18
+Got:
+    2
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 343, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K = verified_canonical_retriangulation(M)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.verified_canonical_retriangulation[10]>", line 1, in <module>
+        K = verified_canonical_retriangulation(M)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 382, in verified_canonical_retriangulation
+        return _verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 504, in _verified_canonical_retriangulation
+        return exactly_checked_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 344, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K.has_finite_vertices()
+Expected:
+    True
+Got:
+    False
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 346, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    K.num_tetrahedra()
+Expected:
+    12
+Got:
+    2
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 355, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    M = Manifold('x101'); K = verified_canonical_retriangulation(M)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.verified_canonical_retriangulation[14]>", line 1, in <module>
+        M = Manifold('x101'); K = verified_canonical_retriangulation(M)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 382, in verified_canonical_retriangulation
+        return _verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 504, in _verified_canonical_retriangulation
+        return exactly_checked_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 356, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    N = Manifold('x103'); L = verified_canonical_retriangulation(N)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.verified_canonical_retriangulation[15]>", line 1, in <module>
+        N = Manifold('x103'); L = verified_canonical_retriangulation(N)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 382, in verified_canonical_retriangulation
+        return _verified_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 504, in _verified_canonical_retriangulation
+        return exactly_checked_canonical_retriangulation(
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 163, in exactly_checked_canonical_retriangulation
+        shapes = find_shapes_as_complex_sqrt_lin_combinations(M, dec_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/verifyCanonical.py", line 357, in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+Failed example:
+    len(K.isomorphisms_to(L)) > 0
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.verifyCanonical.verified_canonical_retriangulation[16]>", line 1, in <module>
+        len(K.isomorphisms_to(L)) > 0
+    NameError: name 'L' is not defined
+**********************************************************************
+2 items had failures:
+   4 of   9 in snappy.verify.verifyCanonical.exactly_checked_canonical_retriangulation
+   9 of  19 in snappy.verify.verifyCanonical.verified_canonical_retriangulation
+***Test Failed*** 13 failures.
+**********************************************************************
+File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 94, in snappy.verify.squareExtensions.find_shapes_as_complex_sqrt_lin_combinations
+Failed example:
+    find_shapes_as_complex_sqrt_lin_combinations(M, 200, 10)
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python@3.9/3.9.13_1/Frameworks/Python.framework/Versions/3.9/lib/python3.9/doctest.py", line 1334, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest snappy.verify.squareExtensions.find_shapes_as_complex_sqrt_lin_combinations[2]>", line 1, in <module>
+        find_shapes_as_complex_sqrt_lin_combinations(M, 200, 10)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/verify/squareExtensions.py", line 102, in find_shapes_as_complex_sqrt_lin_combinations
+        complex_data = M.tetrahedra_field_gens().find_field(prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 331, in find_field
+        self._field[False] = self._find_field_uncached(prec, degree,
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 276, in _find_field_uncached
+        z.min_polynomial()
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 75, in min_polynomial
+        p = best_algdep_factor(self_prec, degree)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/snap/find_field.py", line 31, in best_algdep_factor
+        return z.algebraic_dependency(degree)
+      File "sage/rings/complex_mpfr.pyx", line 3283, in sage.rings.complex_mpfr.ComplexNumber.algebraic_dependency (build/cythonized/sage/rings/complex_mpfr.c:28441)
+        return algdep(self, n, **kwds)
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/sage/arith/misc.py", line 234, in algdep
+        LLL = M.LLL(delta=.75)
+      File "sage/matrix/matrix_integer_dense.pyx", line 3247, in sage.matrix.matrix_integer_dense.Matrix_integer_dense.LLL (build/cythonized/sage/matrix/matrix_integer_dense.cpp:27991)
+        from fpylll import LLL, IntegerMatrix
+      File "/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/__init__.py", line 3, in <module>
+        from .fplll.integer_matrix import IntegerMatrix
+      File "src/fpylll/fplll/integer_matrix.pyx", line 1, in init fpylll.fplll.integer_matrix
+      File "src/fpylll/util.pyx", line 1, in init fpylll.util
+    ImportError: dlopen(/Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/fpylll/fplll/gso.cpython-39-darwin.so, 0x0002): symbol not found in flat namespace '__ZTWN5fplll21temp_mpfr_initializedE'
+**********************************************************************
+1 items had failures:
+   1 of   3 in snappy.verify.squareExtensions.find_shapes_as_complex_sqrt_lin_combinations
+***Test Failed*** 1 failures.
+snappy.verify:
+   14 failures out of 420 tests.
+
+All doctests:
+   22 failures out of 2919 tests.
+
+Testing in sage: True
+Testing in regina: False
+Testing Flattenings.from_tetrahedra_shapes_of_manifold...
+Testing induced representation...
+Testing induced SL(4,C) representation...
+Running manifold tests for generalized obstruction class...
+Checking for m003 N = 2
+Checking for m004 N = 2
+Checking for m003 N = 3
+Testing RUR for m052__sl3_c0.rur
+Testing numerical solution retrieval method...
+Testing geometricRep...
+Trying to retrieve solutions from file:///Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/ptolemy/testing_files/data/pgl2/OrientableCuspedCensus/03_tetrahedra/m019__sl2_c0.magma_out ...
+Parsing...
+Trying to retrieve solutions from file:///Users/rylee/src/sage/local/var/lib/sage/venv-python3.9/lib/python3.9/site-packages/snappy/ptolemy/testing_files/data/pgl2/OrientableCuspedCensus/03_tetrahedra/m019__sl2_c1.magma_out ...
+Parsing...
+Testing in sage command line...
+Running manifold tests...
+Checking for 3_1 N = 2
+Checking for 4_1 N = 2
+Checking for 5_2 N = 2
+Checking for m135 N = 2
+Checking for s000 N = 2
+Checking for v0000 N = 2
+Checking for t00000 N = 2
+Testing matrix methods...
+Checking for DT[mcbbiceaibjklmdfgh] N = 2
+Checking for 4_1 N = 3
+Checking for m015 N = 3
+Checking for 4_1 N = 4
+
+Running Montesinos tests for Spherogram.
+
+testAlexanderPoly (spherogram.links.test.TestLinkFunctions) ... ok
+testConnectedSum (spherogram.links.test.TestLinkFunctions) ... ok
+testCopy (spherogram.links.test.TestLinkFunctions) ... ok
+testDet (spherogram.links.test.TestLinkFunctions) ... ok
+testJonesPolynomial (spherogram.links.test.TestLinkFunctions) ... ok
+testKnotGroup (spherogram.links.test.TestLinkFunctions) ... ok
+testLinkingMatrix (spherogram.links.test.TestLinkFunctions) ... ok
+testLinkingNumber (spherogram.links.test.TestLinkFunctions) ... ok
+testMirror (spherogram.links.test.TestLinkFunctions) ... ok
+testSignature (spherogram.links.test.TestLinkFunctions) ... ok
+testWhiteGraph (spherogram.links.test.TestLinkFunctions) ... ok
+testWrithe (spherogram.links.test.TestLinkFunctions) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.721s
+
+OK
+
+All doctests:
+   22 failures out of 2919 tests.
+***Warning***: CyOpenGL not installed, so not tested
