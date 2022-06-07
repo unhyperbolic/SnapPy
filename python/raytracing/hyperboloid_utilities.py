@@ -220,8 +220,27 @@ def cusp_view_matrix(v):
 
     RF = v[0].parent()
 
-    return matrix([[1,0,0,0],
-                   [0,1,0,0],
-                   [0,0,1,0],
-                   [0,0,0,1]],
-                  ring = RF)
+    v = 1.1*v
+    center = vector([1,0,0,0])
+    t = 1 + 1/(r13_dot(center,v))
+    
+    point = R13_normalise(t*v + (1-t)*center)
+    direction = point - center
+    direction = R13_normalise(direction + r13_dot(direction, point)*point)
+
+    print(point)
+    print(direction)
+
+    m = matrix([
+        direction,
+        point,
+        [0,-1,0,0],
+        [0,0,-1,0]
+        ])
+    switch = matrix([
+        [0,1,0,0],
+        [0,0,1,0],
+        [0,0,0,1],
+        [1,0,0,0]
+        ])
+    return (switch*m).transpose()
