@@ -3,6 +3,7 @@ from tkinter import ttk
 from . import gui_utilities
 from .gui_utilities import UniformDictController, FpsLabelUpdater
 from .raytracing_view import *
+from .surgery_view import *
 from .hyperboloid_utilities import unit_3_vector_and_distance_to_O13_hyperbolic_translation
 from .zoom_slider import Slider, ZoomSlider
 
@@ -49,6 +50,9 @@ class InsideViewer(ttk.Frame):
 
         self.notebook.add(self.create_fillings_frame(self),
                           text = 'Fillings')
+
+        self.notebook.add(self.create_fillings_frame_new(self),
+                          text = 'Fillings (new)')
 
         self.notebook.add(self.create_skeleton_frame(self),
                           text = 'Skeleton')
@@ -270,6 +274,19 @@ class InsideViewer(ttk.Frame):
             subframe, text = "Make manifold", takefocus=0,
             command = self.make_manifold)
         mfd_button.grid(row = 0, column = 3)
+
+        return frame
+
+    def create_fillings_frame_new(self, parent):
+        frame = ttk.Frame(parent)
+
+        self.surgery_widget = SurgeryView(
+            container = frame,
+            width = 200, height = 200,
+            double = 1,
+            depth = 1)
+        self.surgery_widget.grid(row = 0, column = 0, sticky = tkinter.NSEW)
+        self.surgery_widget.make_current()
 
         return frame
 
@@ -752,7 +769,7 @@ class PerfTest:
 
         self.widget.redraw_if_initialized()
         self.widget.after(250, self.redraw)
-
+        
 def run_perf_test():
     from snappy import Manifold
 
