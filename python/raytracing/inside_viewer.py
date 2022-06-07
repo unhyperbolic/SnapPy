@@ -194,6 +194,12 @@ class InsideViewer(ttk.Frame):
                                      text = text,
                                      command = lambda i = i: self.set_view(i))
             button.grid(row = 0, column = i + 1)
+    
+        for i in range(len(self.widget.raytracing_data.mcomplex.Vertices)):
+            button = ttk.Button(view_frame, 
+                                text = 'Cusp ' + str(i),
+                                command = lambda i = i: print(i) )
+            button.grid( row = 1, column = i + 1)  
 
         return frame
 
