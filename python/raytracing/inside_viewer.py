@@ -206,7 +206,7 @@ class InsideViewer(ttk.Frame):
         self.widget.redraw_if_initialized()
         self.focus_viewer()
 
-    def set_cusp_index(self, i):
+    def set_surgery_cusp_index(self, i):
         self.surgery_widget.index = i
         self.focus_viewer()
 
@@ -287,7 +287,7 @@ class InsideViewer(ttk.Frame):
         self.surgery_widget = SurgeryView(
             container = frame,
             viewer = self,
-            index = 0,
+            cusp_index = 0,
             width = 200, height = 200,
             double = 1,
             depth = 1)
@@ -299,14 +299,17 @@ class InsideViewer(ttk.Frame):
         self.cusp_radio_buttons = []
 
         for i in range(self.widget.manifold.num_cusps()):
-            self.cusp_radio_buttons.append(ttk.Radiobutton(frame,
-                                     variable = self.cusp_var,
-                                     value = i,
-                                     text = "Cusp %d: %s"
-                                        % (i, 
-                                        str(self.filling_dict['fillings'][1][i])),
-                                     command = lambda i = i: self.set_cusp_index(i)))
-            self.cusp_radio_buttons[i].grid(row = 0, column = i + 1)
+            cusp_radio_button = ttk.Radiobutton(
+                frame,
+                variable = self.cusp_var,
+                value = i,
+                text = "Cusp %d: %s" % (
+                    i,
+                    str(self.filling_dict['fillings'][1][i])),
+                command = lambda i = i: self.set_surgery_cusp_index(i))
+
+            cusp_radio_button.grid(row = 0, column = i + 1)
+            self.cusp_radio_buttons.append(cusp_radio_button)
 
         recompute_button = ttk.Button(
             frame, text = "Recompute hyp. structure", takefocus=0,

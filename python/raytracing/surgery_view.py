@@ -28,7 +28,7 @@ class SurgeryView(SimpleImageShaderWidget):
     def __init__(self,
                  container,
                  viewer,
-                 index,
+                 cusp_index,
                  *args,
                  **kwargs):
         SimpleImageShaderWidget.__init__(
@@ -37,7 +37,7 @@ class SurgeryView(SimpleImageShaderWidget):
         self.bind('<Button-1>', self.tkButton1)
         self.bind('<B1-Motion>', self.tkButtonMotion1)
         self.viewer = viewer
-        self.index = index
+        self.cusp_index = cusp_index
 
     def get_uniform_bindings(self, width, height):
         result = {
@@ -46,22 +46,12 @@ class SurgeryView(SimpleImageShaderWidget):
         return result
 
     def tkButton1(self, event):
-        width = self.winfo_width()
-        height = self.winfo_height()
-        u = (event.x - 0.5*width)/width
-        v = (event.y - 0.5*height)/width
-        if u*u + v*v < 0.001:
-            invzu = 0
-            invzv = 0
-        else:
-            invzu = u/(u*u + v*v)
-            invzv = -v/(u*u + v*v)
-        self.viewer.filling_dict['fillings'][1][self.index] = (invzu,invzv)
-        self.viewer.push_fillings_to_manifold()
-        self.viewer.cusp_radio_buttons[self.index].config(
-                text = "Cusp %d: [%.3f,%.3f]" % (self.index, invzu, invzv))
+        self.process_surgery_mouse_event(event)
 
     def tkButtonMotion1(self, event):
+        self.process_surgery_mouse_event(event)
+
+    def process_surgery_mouse_event(self, event):
         width = self.winfo_width()
         height = self.winfo_height()
         u = (event.x - 0.5*width)/width
@@ -72,7 +62,7 @@ class SurgeryView(SimpleImageShaderWidget):
         else:
             invzu = u/(u*u + v*v)
             invzv = -v/(u*u + v*v)
-        self.viewer.filling_dict['fillings'][1][self.index] = (invzu,invzv)
+        self.viewer.filling_dict['fillings'][1][self.cusp_index] = (invzu,invzv)
         self.viewer.push_fillings_to_manifold()
-        self.viewer.cusp_radio_buttons[self.index].config(
-                text = "Cusp %d: [%.3f,%.3f]" % (self.index, invzu, invzv))
+        self.viewer.cusp_radio_buttons[self.cusp_index].config(
+                text = "Cusp %d: [%.3f,%.3f]" % (self.cusp_index, invzu, invzv))
