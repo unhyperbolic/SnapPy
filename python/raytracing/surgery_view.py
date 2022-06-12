@@ -62,7 +62,7 @@ class SurgeryView(SimpleImageShaderWidget):
         else:
             invzu = u/(u*u + v*v)
             invzv = -v/(u*u + v*v)
-        self.viewer.filling_dict['fillings'][1][self.cusp_index] = (invzu,invzv)
+        self.viewer.filling_dict['fillings'][1][self.cusp_index] = [invzu,invzv]
         self.viewer.push_fillings_to_manifold()
         self.viewer.cusp_radio_buttons[self.cusp_index].config(
                 text = "Cusp %d: [%.3f,%.3f]" % (self.cusp_index, invzu, invzv))
