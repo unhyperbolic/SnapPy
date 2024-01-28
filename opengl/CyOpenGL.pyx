@@ -26,6 +26,7 @@ import time
 Togl_dir = os.path.abspath(os.path.dirname(togl.__file__))
 
 import tkinter as Tk_
+from tkinter_gl import GLViewBase
 
 ##############################################################################
 # Classes and utilties that work with any OpenGL

@@ -1,4 +1,4 @@
-class SimpleImageShaderWidget(RawOpenGLWidget):
+class SimpleImageShaderWidget(GLViewBase):
     """
     An image shader is a GLSL program that does all of its computation in
     the fragment shader.
@@ -43,7 +43,8 @@ class SimpleImageShaderWidget(RawOpenGLWidget):
 
     def __init__(self, master,
                  **kw):
-        RawOpenGLWidget.__init__(self, master, **kw)
+
+        GLViewBase.__init__(self, master, **kw)
 
         self._vertex_buffer = VertexBuffer()
         self._vertex_buffer.load(((3,-1), (-1,3), (-1,-1)))
@@ -54,6 +55,32 @@ class SimpleImageShaderWidget(RawOpenGLWidget):
             name = "fallback image shader")
         self.textures = []
         self.report_time_callback = None
+        self.initialized = False
+
+    def draw(self):
+
+        print("Drawing")
+
+        # The window has been shown, so the GL framebuffer
+        # exists, thus mark as initialized.
+        self.initialized = True
+        self.make_current()
+        self.redraw(width = self.winfo_width(),
+                    height = self.winfo_height())
+
+    def redraw_if_initialized(self):
+        """
+        Redraw if it is safe to do (GL framebuffer is initialized).
+        """
+
+        print("redraw_if_initialized")
+
+        if not self.initialized:
+            # return
+            pass
+        self.make_current()
+        self.redraw(width = self.winfo_width(),
+                    height = self.winfo_height())
 
     def set_textures(self, texture_files):
         self.make_current()
@@ -173,8 +200,6 @@ class SimpleImageShaderWidget(RawOpenGLWidget):
         glDeleteTextures(1, &color_texture)
         glDeleteTextures(1, &depth_texture)
 
-        print_gl_errors("Render to off-screen area")
-
         return c_array
 
     def save_image(self, width, height, outfile):
@@ -259,6 +284,8 @@ class SimpleImageShaderWidget(RawOpenGLWidget):
         if self.report_time_callback:
             glFinish()
             self.report_time_callback(time.time() - start_time)
+
+        print_gl_errors("HERE")
 
         if not skip_swap_buffers:
             self.swap_buffers()
