@@ -339,10 +339,10 @@ Use the View Options to select which components of the scene are drawn.
         height = self.widget.winfo_height()
         if height > 0:
             self.scale = fovy / height
+            self.widget.redraw_if_initialized()
         else:
             self.update_idletasks()
             self.after(50, self.set_zoom, x)
-        self.widget.redraw_if_initialized()
 
     def rebuild(self, full_list=True):
         self.set_ties()

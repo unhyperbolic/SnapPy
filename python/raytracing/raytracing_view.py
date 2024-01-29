@@ -246,13 +246,15 @@ class RaytracingView(SimpleImageShaderWidget, HyperboloidNavigation):
     def recompute_raytracing_data_and_redraw(self):
         self._initialize_raytracing_data()
         self.fix_view_state()
-        self.redraw_if_initialized()
+        #self.redraw_if_initialized()
+        self.update()
 
     def recompute_raytracing_data_update_shader_and_redraw(self):
         self._initialize_raytracing_data()
         self._update_shader()
         self.fix_view_state()
-        self.redraw_if_initialized()
+        #self.redraw_if_initialized()
+        self.update()
 
     def compute_translation_and_inverse_from_pick_point(
                 self, size, frag_coord, depth):

@@ -22,6 +22,7 @@ from colorsys import hls_to_rgb
 from math import sqrt, ceil, floor, pi, sin, cos, tan
 from random import random
 import time
+import traceback
 
 Togl_dir = os.path.abspath(os.path.dirname(togl.__file__))
 
@@ -100,7 +101,7 @@ class RawOpenGLWidget(Tk_.Widget, Tk_.Misc):
 
         self.bind('<Expose>', self.tkMap_expose_or_configure)
 
-        self.initialized = False
+        self.initialized = True
 
         # Switch to the GL context so that that we can call GLEW
         # initialize
@@ -161,6 +162,8 @@ class RawOpenGLWidget(Tk_.Widget, Tk_.Misc):
         Redraw.
         """
 
+        print_gl_errors("map expose configure")
+
         # The window has been shown, so the GL framebuffer
         # exists, thus mark as initialized.
         self.initialized = True
@@ -173,6 +176,10 @@ class RawOpenGLWidget(Tk_.Widget, Tk_.Misc):
         Redraw if it is safe to do (GL framebuffer is initialized).
         """
 
+        traceback.print_stack()
+
+        print_gl_errors("redraw_if_initialized")        
+        
         if not self.initialized:
             return
         self.make_current()
