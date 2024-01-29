@@ -173,11 +173,7 @@ class RawOpenGLWidget(Tk_.Widget, Tk_.Misc):
         Redraw if it is safe to do (GL framebuffer is initialized).
         """
 
-        if not self.initialized:
-            return
-        self.make_current()
-        self.redraw(width = self.winfo_width(),
-                    height = self.winfo_height())
+        self.update_idletasks()
 
     def save_image_window_resolution(self, outfile):
         cdef array.array c_array
