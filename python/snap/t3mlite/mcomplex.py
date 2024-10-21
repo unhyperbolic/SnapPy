@@ -271,7 +271,7 @@ class Mcomplex:
         Construct the edge classes and compute valences.
         """
         for tet in self.Tetrahedra:
-            for one_subsimplex in OneSubsimplices:
+            for one_subsimplex in (3, 5, 9, 6, 10, 12):
                 if ( tet.Class[one_subsimplex] is None ):
                     newEdge = Edge()
                     self.Edges.append(newEdge)
@@ -365,7 +365,7 @@ class Mcomplex:
         Construct the faces.
         """
         for tet in self.Tetrahedra:
-            for two_subsimplex in TwoSubsimplices:
+            for two_subsimplex in TwoSubsimplices[::-1]:
                 if ( tet.Class[two_subsimplex] is None ):
                     newFace = Face()
                     self.Faces.append(newFace)
