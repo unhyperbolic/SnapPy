@@ -136,6 +136,17 @@ layout (std140) uniform geodesics
 };
 #endif
 
+#if defined(num_loop_segments) && num_loop_segments > 0
+layout (std140) uniform loops
+{
+    vec4 loopTails[num_loop_segments];
+    vec4 loopHeads[num_loop_segments];
+    int loopIndex[num_loop_segments];
+    float loopTubeRadiusParam[num_loop_segments];
+    int loopOffsets[##num_tets## + 1];
+};
+#endif
+
 #if !defined(num_eyeballs)
 #define num_eyeballs 0
 #endif
@@ -301,9 +312,10 @@ const int object_type_margulis_tube_exit    = 10;
 const int object_type_elevation_enter       = 11;
 const int object_type_elevation_exit        = 12;
 const int object_type_geodesic_tube         = 13;
-const int object_type_additional_horosphere = 14;
-const int object_type_eyeball               = 15;
-const int object_type_edge_midpoint         = 16;
+const int object_type_loop_tube             = 14;
+const int object_type_additional_horosphere = 15;
+const int object_type_eyeball               = 16;
+const int object_type_edge_midpoint         = 17;
 
 // A ray consists of a point in the hyperbolid model and a
 // unit tangent vector dir orthogonal to the point with respect
@@ -589,6 +601,16 @@ endpointsForGeodesic(int index)
 }
 #endif
 
+#if defined(num_loop_segments) && num_loop_segments > 0
+// The two endpoints of a loop
+vec4[2]
+endpointsForLoop(int index)
+{
+    return vec4[](loopTails[index],
+                  loopHeads[index]);
+}
+#endif
+
 #endif
 
 vec4
@@ -633,6 +655,14 @@ normalForRayHit(RayHit ray_hit)
         return normalForTube(
             ray_hit.ray.point,
             endpointsForGeodesic(ray_hit.object_index));
+    }
+#endif
+
+#if defined(num_loop_segments) && num_loop_segments > 0
+    if (ray_hit.object_type == object_type_loop_tube) {
+        return normalForTube(
+            ray_hit.ray.point,
+            endpointsForLoop(ray_hit.object_index));
     }
 #endif
 
@@ -946,6 +976,26 @@ ray_trace_through_hyperboloid_tet(inout RayHit ray_hit)
                                       params.x > horosphere_exit_param)) {
             smallest_p = params.x;
             ray_hit.object_type = object_type_geodesic_tube;
+            ray_hit.object_index = index;
+        }
+    }
+#endif
+
+#if defined(num_loop_segments) && num_loop_segments > 0
+    for (int index = loopOffsets[ray_hit.tet_num];
+         index < loopOffsets[ray_hit.tet_num + 1];
+         index++) {
+
+        vec2 params = distParamsForTubeIntersection(
+            ray_hit.ray,
+            endpointsForLoop(index),
+            loopTubeRadiusParam[index],
+            0.0);
+
+        if (params.x < smallest_p && (!traceInsideVertexNeighborhood() ||
+                                      params.x > horosphere_exit_param)) {
+            smallest_p = params.x;
+            ray_hit.object_type = object_type_loop_tube;
             ray_hit.object_index = index;
         }
     }
@@ -1303,6 +1353,29 @@ material_params(RayHit ray_hit)
         // Instead, we multiply the index by the golden angle
         //          pi * (3 - sqrt(5)) radians
         // so that no geodesics hit the same color.
+        //
+        // For hsv2rgb, we need to divide by 2 * pi:
+        //
+        float goldenAngleBy2Pi = 0.3819660112501051;
+
+        result.diffuse = hsv2rgb(vec3(float(index) * goldenAngleBy2Pi + 0.1, 1.0, 1.0));
+
+        result.ambient = 0.5 * result.diffuse;
+    }
+#endif
+
+#if defined(num_loop_segments) && num_loop_segments > 0
+    if (ray_hit.object_type == object_type_loop_tube) {
+        int index = loopIndex[ray_hit.object_index];
+
+        // The user wants to switch loops off and on while
+        // their colors stay stable.
+        //
+        // Thus, we cannot divide the color circle equally.
+        //
+        // Instead, we multiply the index by the golden angle
+        //          pi * (3 - sqrt(5)) radians
+        // so that no loops hit the same color.
         //
         // For hsv2rgb, we need to divide by 2 * pi:
         //

@@ -45,6 +45,7 @@ def get_triangulation_shader_source_and_ubo_descriptors(
         src = header + def_block.encode() + footer
 
     num_geodesic_segments = defs_dict.get('num_geodesic_segments', 0)
+    num_loop_segments = defs_dict.get('num_loop_segments', 0)
     num_additional_horospheres = defs_dict.get('num_additional_horospheres', 0)
     num_eyeballs = defs_dict.get('num_eyeballs', 0)
     num_tets = constants_dict[b'##num_tets##']
@@ -82,6 +83,13 @@ def get_triangulation_shader_source_and_ubo_descriptors(
            'geodesicIndex': (16 + 16) * num_geodesic_segments,
            'geodesicTubeRadiusParam': (16 + 16 + 16) * num_geodesic_segments,
            'geodesicOffsets': (16 + 16 + 16 + 16) * num_geodesic_segments }),
+        ('loops',
+         (16 + 16 + 16 + 16) * num_loop_segments + 16 * (num_tets + 1),
+         { 'loopTails': 0,
+           'loopHeads': 16 * num_loop_segments,
+           'loopIndex': (16 + 16) * num_loop_segments,
+           'loopTubeRadiusParam': (16 + 16 + 16) * num_loop_segments,
+           'loopOffsets': (16 + 16 + 16 + 16) * num_loop_segments }),
         ('eyeballs',
          (16 + 64 + 64) * num_eyeballs + 16 * (num_tets + 1),
          { 'eyeballPositions' : 0,
