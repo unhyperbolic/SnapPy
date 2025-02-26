@@ -135,7 +135,8 @@ cdef extern from "SnapPea.h":
     ctypedef struct c_SymmetryGroup "SymmetryGroup"
     ctypedef struct SymmetryGroupPresentation
     ctypedef struct IsometryList
-    ctypedef struct DualOneSkeletonCurve
+    ctypedef struct DualOneSkeletonCurve:
+        int * word
 #    ctypedef struct TerseTriangulation
 #    ctypedef struct CuspNeighborhoods
     ctypedef struct NormalSurfaceList

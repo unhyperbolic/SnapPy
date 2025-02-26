@@ -1426,6 +1426,7 @@ cdef class Manifold(Triangulation):
         cdef DualOneSkeletonCurve **curve_list
         cdef c_MatrixParity parity
         cdef Complex complete_length, filled_length
+        cdef int * word
 
         if self.c_triangulation is NULL:
             raise ValueError('The Triangulation is empty.')
@@ -1447,9 +1448,9 @@ cdef class Manifold(Triangulation):
                     parity=parity,
                     filled_length=self._number_(Complex2Number(filled_length)),
                     complete_length=self._number_(Complex2Number(complete_length)),
-                    max_segments=max_segments
-                  )
-               )
+                    max_segments=max_segments,
+                    word = c_word_as_string(
+                         curve_list[i].word, 24, verbose_form = False)))
         free_dual_curves(num_curves, curve_list)
         return ListOnePerLine(result)
 

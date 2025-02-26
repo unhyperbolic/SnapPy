@@ -205,12 +205,12 @@
 
 
 static void                 initialize_flags(Triangulation *manifold);
-static void                 consider_its_neighbor(Tetrahedron *tet, FaceIndex face, int size, Complex corners[2][4], Orientation orientation, Tetrahedron *tet0, FaceIndex face0, int max_size, Triangulation *manifold, DualOneSkeletonCurve **curve_tree);
+static void                 consider_its_neighbor(Tetrahedron *tet, FaceIndex face, int size, int * word, Complex corners[2][4], Orientation orientation, Tetrahedron *tet0, FaceIndex face0, int max_size, Triangulation *manifold, DualOneSkeletonCurve **curve_tree);
 static void                 compute_corners(Complex corners[4], Complex nbr_corners[4], FaceIndex face, FaceIndex entry_face, Permutation gluing, Orientation nbr_orientation, ComplexWithLog cwl[3]);
 static void                 compute_Moebius_transformation(Orientation orientation, Complex corners[4], MoebiusTransformation *mt);
 static void                 verify_mt_action(MoebiusTransformation *mt, Complex z, Complex w);
-static void                 add_curve_to_tree(Triangulation *manifold, DualOneSkeletonCurve **curve_tree, MatrixParity parity, Complex cl[2], int size);
-static DualOneSkeletonCurve *package_up_the_curve(Triangulation *manifold, MatrixParity parity, Complex cl[2], int size);
+static void                 add_curve_to_tree(Triangulation *manifold, DualOneSkeletonCurve **curve_tree, MatrixParity parity, Complex cl[2], int size, int * word);
+static DualOneSkeletonCurve *package_up_the_curve(Triangulation *manifold, MatrixParity parity, Complex cl[2], int size, int * word);
 static void                 replace_contents_of_node(DualOneSkeletonCurve *node, Triangulation *manifold, MatrixParity parity, Complex cl[2], int size);
 static void                 convert_tree_to_pointer_array( DualOneSkeletonCurve *curve_tree, int *num_curves, DualOneSkeletonCurve ***the_curves);
 static int                  count_the_curves(DualOneSkeletonCurve *curve_tree);
@@ -259,6 +259,8 @@ void dual_curves(
 
     number_the_tetrahedra(manifold);
 
+    choose_generators(manifold, FALSE, FALSE);
+    
     /*
      *  curve_tree is a pointer to the root of a binary
      *  tree containing all the curves found so far.
@@ -278,6 +280,8 @@ void dual_curves(
      *  Consider each possible base Tetrahedron.
      */
 
+    int word[] = { 0 };
+    
     for (tet0 = manifold->tet_list_begin.next;
          tet0 != &manifold->tet_list_end;
          tet0 = tet0->next)
@@ -306,6 +310,7 @@ void dual_curves(
          */
         for (face0 = 0; face0 < 3; face0++)
             consider_its_neighbor(  tet0, face0, 1,
+				    word,
                                     corners0, right_handed,
                                     tet0, face0, max_size,
                                     manifold, &curve_tree);
@@ -349,6 +354,7 @@ static void consider_its_neighbor(
     Tetrahedron             *tet,
     FaceIndex               face,
     int                     size,
+    int                     *word,
     Complex                 corners[2][4],
     Orientation             orientation,
     Tetrahedron             *tet0,
@@ -378,6 +384,19 @@ static void consider_its_neighbor(
                           orientation :
                           REVERSE(orientation);
 
+    int * new_word = word;
+
+    if (tet->generator_status[face] != not_a_generator) {
+	int letter[] = {0, 0};
+	if (tet->generator_status[face] == outbound_generator) {
+	    letter[0] =   tet->generator_index[face] + 1;
+	} else {
+	    letter[0] = -(tet->generator_index[face] + 1);
+	}
+	new_word = concat_group_words(word, letter);
+    }
+
+    
     /*
      *  Is nbr the base Tetrahedron?
      *  If so, process the curve and return.
@@ -448,7 +467,7 @@ static void consider_its_neighbor(
              *  equal complex length and smaller or equal
              *  combinatorial size is already there.
              */
-            add_curve_to_tree(manifold, curve_tree, mt[0].parity, cl, size);
+            add_curve_to_tree(manifold, curve_tree, mt[0].parity, cl, size, new_word);
 
             /*
              *  Remove the final segment of the curve before
@@ -496,17 +515,19 @@ static void consider_its_neighbor(
         compute_corners(corners[i], nbr_corners[i], face, entry_face,
                         gluing, nbr_orientation,
                         nbr->shape[i]->cwl[ultimate]);
-
+    
     /*
      *  ...recursively consider each of its neighbors...
      */
     for (nbr_face = 0; nbr_face < 4; nbr_face++)
-        if (nbr_face != entry_face)
+        if (nbr_face != entry_face) {
+
             consider_its_neighbor(
-                nbr,  nbr_face, size + 1,
+                nbr,  nbr_face, size + 1, new_word,
                 nbr_corners, nbr_orientation,
                 tet0, face0,    max_size,
                 manifold, curve_tree);
+	}
 
     /*
      *  ...and remove it from the curve.
@@ -769,7 +790,8 @@ static void add_curve_to_tree(
     DualOneSkeletonCurve    **curve_tree,
     MatrixParity            parity,
     Complex                 cl[2],  /*  complex length of geodesic  */
-    int                     size)   /*  combinatorial size of curve */
+    int                     size,
+    int * word)   /*  combinatorial size of curve */
 {
     DualOneSkeletonCurve    *node;
     int                     position;
@@ -781,7 +803,7 @@ static void add_curve_to_tree(
 
     if (*curve_tree == NULL)
     {
-        *curve_tree = package_up_the_curve(manifold, parity, cl, size);
+        *curve_tree = package_up_the_curve(manifold, parity, cl, size, word);
         return;
     }
 
@@ -841,7 +863,7 @@ static void add_curve_to_tree(
                     node = node->left_child;
                 else
                 {
-                    node->left_child = package_up_the_curve(manifold, parity, cl, size);
+                    node->left_child = package_up_the_curve(manifold, parity, cl, size, word);
                     return;
                 }
                 break;
@@ -851,7 +873,7 @@ static void add_curve_to_tree(
                     node = node->right_child;
                 else
                 {
-                    node->right_child = package_up_the_curve(manifold, parity, cl, size);
+                    node->right_child = package_up_the_curve(manifold, parity, cl, size, word);
                     return;
                 }
                 break;
@@ -873,13 +895,16 @@ static DualOneSkeletonCurve *package_up_the_curve(
     Triangulation   *manifold,
     MatrixParity    parity,
     Complex         cl[2],
-    int             size)
+    int             size,
+    int * word)
 {
     DualOneSkeletonCurve    *node;
 
     node = NEW_STRUCT(DualOneSkeletonCurve);
     node->tet_intersection = NEW_ARRAY(manifold->num_tetrahedra, DualOneSkeletonCurvePiece);
 
+    node->word = copy_group_word(word);
+    
     replace_contents_of_node(node, manifold, parity, cl, size);
 
     node->left_child  = NULL;

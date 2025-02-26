@@ -89,6 +89,8 @@ struct DualOneSkeletonCurve
      */
     Complex                     length[2];
 
+    int * word;
+    
     /**
      *  The size field will contain the number
      *  of segments in the curve.

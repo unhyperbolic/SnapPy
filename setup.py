@@ -331,8 +331,8 @@ if sys.platform == 'win32':
             cc = arg.split('=')[1]
 
 # The SnapPy extension
-snappy_extra_compile_args = []
-snappy_extra_link_args = []
+snappy_extra_compile_args = ['-pg']
+snappy_extra_link_args = ['-pg']
 if sys.platform == 'win32':
     if cc == 'msvc':
         snappy_extra_compile_args.append('/EHsc')
