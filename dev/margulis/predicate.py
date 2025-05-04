@@ -179,7 +179,7 @@ def is_margulis_number(M, epsilon, bits_prec=None, verified=False):
                     continue
                 raise Exception(
                     "Insufficient precision to determine for %s %d (%s) and %s %d (%s)" % (
-                        tile_type0, index0, format_word(w0),
-                        tile_type1, index1, format_word(w1)))
+                        tile_type0, index0, w0,
+                        tile_type1, index1, w1))
 
     return True, None, cusp_areas, geodesic_tubes
