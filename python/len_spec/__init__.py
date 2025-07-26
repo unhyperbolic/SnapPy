@@ -22,6 +22,8 @@ import heapq
 
 from typing import Any, Optional, List, Sequence
 
+_spine_optimization : bool = True
+
 _optimization : bool = False
 
 def length_spectrum_alt_gen(manifold,
@@ -503,7 +505,7 @@ def _length_spectrum_from_mcomplex(
 
                 # We first do a quick global check to see whether the spine
                 # intersects a ball containing the spine.
-                if distance_r13_point_line(
+                if _spine_optimization and distance_r13_point_line(
                         mcomplex.spine_center, line) > mcomplex.spine_radius:
                     continue
 
