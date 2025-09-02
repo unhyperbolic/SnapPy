@@ -5,7 +5,7 @@ ctypedef double Real
 
 include "SnapPy.pxi"
 include "numbers/double.pyx"
-include "core/basic_conversions.pyx"
+include "common/cython/core/basic_conversions.pyx"
 include "core/basic.pyx"
 include "core/triangulation.pyx"
 include "core/manifold.pyx"

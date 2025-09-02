@@ -6,7 +6,7 @@ ctypedef qd_real Real
 
 include "SnapPy.pxi"
 include "numbers/qd.pyx"
-include "core/basic_conversions.pyx"
+include "common/cython/core/basic_conversions.pyx"
 include "core/basic.pyx"
 include "core/triangulation.pyx"
 include "core/manifold.pyx"
