@@ -158,23 +158,26 @@ def add_geodesic_to_queue(
 def expand_next_neighborhood(
         neighborhood_queue : List[Neighborhood],
         neighborhoods : Neighborhoods,
-        len_spec : Iterable[LengthSpectrumGeodesicInfo],
-        *,
-        verified : bool
+        len_spec : Iterable[LengthSpectrumGeodesicInfo]
     ) -> bool:
 
     neighborhood = heapq.heappop(neighborhood_queue)
 
-    if verified:
+    if neighborhoods.mcomplex.verified:
         err_epsilon = 0
     else:
-        RF = neighborhood.epsilon.parent()
-        err_epsilon = RF(1e-6)
+        err_epsilon = neighborhoods.mcomplex.RF(1e-6)
 
     if neighborhood.epsilon > neighborhoods.mu + err_epsilon:
         return False
 
     if isinstance(neighborhood, GeodesicNeighborhood):
+        if neighborhood.geodesic_info._is_intermediate:
+            neighborhood.geodesic_info = next(len_spec)
+            neighborhood.epsilon = neighborhood.geodesic_info.length.real()
+            heapq.heappush(neighborhood_queue, neighborhood)
+            return True
+
         if not neighborhood.added:
             neighborhoods.add_neighborhood(neighborhood)
             neighborhood.added = True
@@ -306,11 +309,12 @@ def margulis(
             add_cusp_to_queue_and_neighborhoods(
                 neighborhood_queue, neighborhoods, vertex, cusp_shape)
 
-    len_spec = M.length_spectrum_alt_gen(bits_prec=bits_prec, verified=verified)
+    len_spec = M.length_spectrum_alt_gen(
+        bits_prec=bits_prec, verified=verified, include_intermediates=True)
     add_geodesic_to_queue(neighborhood_queue, neighborhoods, next(len_spec))
 
     while expand_next_neighborhood(
-            neighborhood_queue, neighborhoods, len_spec, verified=verified):
+            neighborhood_queue, neighborhoods, len_spec):
         pass
 
     if include_thin_part:
