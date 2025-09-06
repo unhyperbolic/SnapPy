@@ -12,6 +12,9 @@ cdef class Orbifold(OrbTriangulation):
 
     """
 
+    @staticmethod
+    def _number_(n):
+        return number.number_to_native_number(n)
 
     def solution_type(self, enum=False):
         if self.c_triangulation is NULL:
@@ -30,4 +33,4 @@ cdef class Orbifold(OrbTriangulation):
 
         find_structure(self.c_triangulation, False)
 
-        return my_volume(self.c_triangulation, &ok)
+        return self._number_(Real2Number(my_volume(self.c_triangulation, &ok)))

@@ -1,7 +1,20 @@
 cdef extern from "stdlib.h":
     void free(void *mem)
 
+cdef extern from *:
+    """
+    #define Real_from_string(x) (atof((char *)x))
+    """
+    Real Real_from_string(char* num_string)
+
 cdef extern from "SnapPea.h":
+    ctypedef struct Real_struct:
+        Real x
+
+    ctypedef struct Complex:
+        Real real
+        Real imag
+
     ctypedef char Boolean
 
     ctypedef enum c_SolutionType "SolutionType":

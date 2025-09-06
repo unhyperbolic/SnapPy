@@ -3,11 +3,6 @@ from .number import Number as RawNumber
 class Number(RawNumber):
     _default_precision=53
 
-cdef extern from "double_SnapPy.h":
-    double PI_SQUARED_BY_2
-    double default_vertex_epsilon
-    double det_error_epsilon
-
 cdef real_to_string(Real x):
     return '%.18f' % x
 
