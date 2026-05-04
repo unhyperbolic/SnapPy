@@ -43,9 +43,6 @@ You need to have wheel installed to install snappy, e.g.,
 
 """
 
-# On some python distributions for Mac OS X, one needs to set the environment
-# variable MACOSX_DEPLOYMENT_TARGET to, e.g., 10.14.
-
 try:
     import setuptools
 except ImportError:
@@ -73,6 +70,15 @@ from setuptools import setup, Command
 
 from setuptools import Distribution
 from setuptools.command.build_clib import build_clib
+from setuptools.command.sdist import sdist
+
+try:
+    from Cython.Build import cythonize
+    from Cython import __version__ as cython_version
+    have_cython = True
+except ImportError as e:
+    have_cython = False
+    cython_import_error = e
 
 def get_build_temp_dir():
     dist = Distribution()
@@ -81,7 +87,29 @@ def get_build_temp_dir():
     return dummy_cmd.build_temp
 build_temp_dir = get_build_temp_dir()
 
+def distutils_dir_name(dname):
+    """Returns the name of a distutils build subdirectory"""
+    name = "build/{prefix}.{plat}-{ver[0]}{ver[1]}".format(
+        prefix=dname, plat=sysconfig.get_platform(), ver=sys.version_info)
+    if dname == 'temp' and sys.platform == 'win32':
+        name += os.sep + 'Release'
+    return name
+
+def build_lib_dir():
+    return os.path.abspath(distutils_dir_name('lib'))
+
+def check_call(args):
+    try:
+        subprocess.check_call(args)
+    except subprocess.CalledProcessError:
+        executable = args[0]
+        command = [a for a in args if not a.startswith('-')][-1]
+        raise RuntimeError(command + ' failed for ' + executable)
+
 cythoned_dir = 'cythoned'
+
+###############################################################################
+# Custom SnapPy commands
 
 # A real clean
 
@@ -137,19 +165,6 @@ class SnapPyBuildDocs(Command):
         if status != 0:
             sys.exit(status)
 
-def distutils_dir_name(dname):
-    """Returns the name of a distutils build subdirectory"""
-    name = "build/{prefix}.{plat}-{ver[0]}{ver[1]}".format(
-        prefix=dname, plat=sysconfig.get_platform(), ver=sys.version_info)
-    if dname == 'temp' and sys.platform == 'win32':
-        name += os.sep + 'Release'
-    return name
-
-
-def build_lib_dir():
-    return os.path.abspath(distutils_dir_name('lib'))
-
-
 class SnapPyTest(Command):
     user_options = []
     def initialize_options(self):
@@ -162,7 +177,6 @@ class SnapPyTest(Command):
         print('Running tests ...')
         sys.exit(runtests())
 
-
 class SnapPyApp(Command):
     user_options = []
     def initialize_options(self):
@@ -174,23 +188,11 @@ class SnapPyApp(Command):
         import snappy.app
         snappy.app.main()
 
-
-def check_call(args):
-    try:
-        subprocess.check_call(args)
-    except subprocess.CalledProcessError:
-        executable = args[0]
-        command = [a for a in args if not a.startswith('-')][-1]
-        raise RuntimeError(command + ' failed for ' + executable)
-
-
-from setuptools.command.sdist import sdist
 class SnapPySdist(sdist):
     def run(self):
         python = sys.executable
         check_call([python, 'setup.py', 'build_docs'])
         sdist.run(self)
-
 
 class SnapPyPipInstall(Command):
     user_options = []
@@ -211,14 +213,35 @@ class SnapPyPipInstall(Command):
                     '--upgrade-strategy', 'only-if-needed',
                     new_wheel])
 
+###############################################################################
+# System specific compiler and environment setup
+
+if sys.platform == 'darwin':
+    macos_arch = sysconfig.get_platform().split('-')[-1]
+    macos_targets = {'x86_64':'10.9', 'arm64': '11', 'universal2': '10.9'}
+    # On some python distributions for Mac OS X, one needs to set this
+    # environment variable to 10.14.
+    os.environ['MACOSX_DEPLOYMENT_TARGET'] = macos_targets[macos_arch]
+
+if sys.platform == 'win32':
+    # For Windows, check the compiler we will be using.
+    win_cc = 'msvc'
+    for arg in sys.argv:
+        if arg.startswith('--compiler='):
+            win_cc = arg.split('=')[1]
+
+def split_version(s : str):
+    return [int(x) for x in s.split('.')]
+
 def replace_ext(file, new_ext):
+    if new_ext is None:
+        return file
     root, ext = os.path.splitext(file)
     return root + '.' + new_ext
 
 # We check manually which object files need to be rebuilt; distutils
 # is overly cautious and always rebuilds everything, which makes
 # development painful.
-
 
 def modtime(file):
     if os.path.exists(file):
@@ -239,7 +262,8 @@ class SourceAndObjectFiles():
         If set_headers is called, an object file older than any header is forced to
         be rebuild.
         """
-        self.mod_time_dependencies = max(modtime(file) for file in files)
+        if files:
+            self.mod_time_dependencies = max(modtime(file) for file in files)
 
     def set_cython_file_language_and_dependencies(
             self, cython_file, language, dependencies = []):
@@ -250,7 +274,10 @@ class SourceAndObjectFiles():
         """
         self.cython_file = cython_file
         self.cythoned_file = replace_ext(cythoned_dir + '/' + cython_file, language)
-        self.add(self.cythoned_file, [cython_file] + dependencies)
+        all_dependencies = [cython_file] + dependencies
+        self.add(self.cythoned_file, all_dependencies)
+        t = modtime(self.cythoned_file)
+        self.needs_cythonize = any(t < modtime(d) for d in all_dependencies)
 
     def add(self, source_file, dependencies = []):
         """
@@ -268,252 +295,316 @@ class SourceAndObjectFiles():
         else:
             self.up_to_date_objects.append(object_file)
 
-###############################################################################
-# SourceAndObjectFiles for SnapPy and SnapPyHP extension
+    def cythonize(self):
+        if self.cython_file is None:
+            return
 
-snappy_ext_files = SourceAndObjectFiles()
-hp_snappy_ext_files = SourceAndObjectFiles()
+        if not self.needs_cythonize:
+            return
 
-SnapPy_path = os.path.join('src', 'snappy', 'extensions', 'SnapPy')
-kernel_path = os.path.join(SnapPy_path, 'kernel')
+        if any( (non_build in sys.argv)
+                for non_build in [ 'clean', 'egg_info', 'dist_info' ]):
+            return
 
-snappy_headers = (
-    glob(os.path.join(kernel_path, 'headers', '*.h')) +
-    glob(os.path.join(kernel_path, 'addl_code', '*.h')) +
-    glob(os.path.join(kernel_path, 'unix_kit', '*.h')))
-snappy_ext_files.set_headers(snappy_headers)
-hp_snappy_ext_files.set_headers(snappy_headers)
+        if not have_cython:
+            if not exists(self.cythoned_file):
+                raise ImportError(
+                    no_cython_message +
+                    'Missing Cythoned file: ' + self.cythoned_file +
+                    '\n[Cython import error: %r]' % cython_import_error +
+                    '\n[Command line arguments: %r]' % sys.argv)
+            return
 
-snappy_cython_deps = [
-    os.path.join(SnapPy_path, 'cython_src', 'SnapPycore.pxi'),
-    os.path.join(SnapPy_path, 'cython_src', 'SnapPy.pxi') ]
-snappy_cython_deps += glob(os.path.join(SnapPy_path, 'cython_src','core', '*.pyx'))
-
-snappy_ext_files.set_cython_file_language_and_dependencies(
-    os.path.join(SnapPy_path, 'cython_src', 'SnapPy.pyx'), 'c', snappy_cython_deps)
-
-SnapPyHP_path = os.path.join('src', 'snappy', 'extensions', 'SnapPyHP')
-
-hp_snappy_ext_files.set_cython_file_language_and_dependencies(
-    os.path.join(SnapPyHP_path, 'cython_src', 'SnapPyHP.pyx'), 'cpp', snappy_cython_deps)
-
-unused_unix_files = ['unix_UI.c', 'decode_new_DT.c']
-base_code = glob(os.path.join(kernel_path, 'kernel_code','*.c'))
-unix_code = [
-    file
-    for file in glob(os.path.join(kernel_path, 'unix_kit','*.c'))
-    if os.path.basename(file) not in unused_unix_files ]
-addl_code = glob(os.path.join(kernel_path, 'addl_code', '*.c'))
-
-hp_kernel_path = os.path.join(SnapPyHP_path, 'kernel')
-
-for file in base_code + unix_code + addl_code:
-    snappy_ext_files.add(file)
-    hp_file = replace_ext(file.replace(kernel_path, hp_kernel_path), 'cpp')
-    assert os.path.exists(hp_file), hp_file
-    hp_snappy_ext_files.add(hp_file, [file])
-
-for file in glob(os.path.join(SnapPyHP_path, 'qd', 'src', '*.cpp')):
-    hp_snappy_ext_files.add(file)
-
-###############################################################################
-# SourceAndObjectFiles for CyOpenGL
-
-orb_ext_files = SourceAndObjectFiles()
-
-Orb_path = os.path.join('src', 'snappy', 'extensions', 'Orb')
-OrbKernel_path = os.path.join(Orb_path, 'kernel')
-
-orb_headers = (
-    glob(os.path.join(OrbKernel_path, 'headers', '*.h')) +
-    glob(os.path.join(OrbKernel_path, 'unix_kit', '*.h')))
-orb_ext_files.set_headers(orb_headers)
-
-orb_cython_deps = [os.path.join(Orb_path, 'cython_src', 'Orb.pxi')]
-orb_cython_deps += glob(os.path.join(Orb_path, 'cython_src', '*pyx'))
-
-orb_ext_files.set_cython_file_language_and_dependencies(
-    os.path.join(Orb_path, 'cython_src', 'Orb.pyx'), 'c', orb_cython_deps)
-
-orb_base_code = glob(os.path.join(OrbKernel_path, 'code', '*.c'))
-orb_unix_code = glob(os.path.join(OrbKernel_path, 'unix_kit', '*.c'))
-
-for file in orb_base_code + orb_unix_code:
-    orb_ext_files.add(file)
-
-###############################################################################
-# SourceAndObjectFiles for CyOpenGL
-
-cy_opengl_path = os.path.join('src', 'snappy', 'extensions', 'CyOpenGL')
-
-cy_opengl_ext_files = SourceAndObjectFiles()
-cy_opengl_ext_files.set_cython_file_language_and_dependencies(
-    os.path.join(cy_opengl_path, 'CyOpenGL.pyx'), 'c', [])
-
-###############################################################################
-# Cythonize
-
-# If we have Cython, regenerate .c files as needed:
-try:
-    from Cython.Build import cythonize
-    from Cython import __version__ as cython_version
-    have_cython = True
-except ImportError as e:
-    have_cython = False
-    cython_import_error = e
-
-def split_version(s : str):
-    return [int(x) for x in s.split('.')]
-
-exts = [ snappy_ext_files,
-         hp_snappy_ext_files,
-         orb_ext_files,
-         cy_opengl_ext_files ]
-
-if not any(  (non_build in sys.argv)
-             for non_build in [ 'clean', 'egg_info', 'dist_info' ]):
-    if have_cython:
         if split_version(cython_version) < split_version(required_cython_version):
             raise ImportError(
                 'Wrong cython version installed. '
                 'Required version: %s. Installed version: %s.' % (
                     required_cython_version, cython_version))
 
-        cythonize([ext.cython_file for ext in exts],
+        cythonize([self.cython_file],
                   compiler_directives={'embedsignature': True},
                   build_dir=cythoned_dir)
-    else:  # No Cython, likely building an sdist
-        for ext in exts:
-            if not exists(ext.cythoned_file):
-                raise ImportError(
-                    no_cython_message +
-                    'Missing Cythoned file: ' + ext.cythoned_file +
-                    '\n[Cython import error: %r]' % cython_import_error +
-                    '\n[Command line arguments: %r]' % sys.argv)
+
+def make_extension(spec) -> Extension:
+    """
+    Uses members of spec to create an Extension, mostly just
+    forwarding the members as arguments to the Extension call.
+    Supports cython.
+
+    Unlike the bare Extension, it supports a slightly more
+    fine-grained dependency tracking:
+       1. The cython file (specified by spec.cython_file) is
+          re-cythoned and the resulting file recompiled
+          if the cython file itself or any .pyx or .pxi file in a
+          directory in cython_paths has changed.
+       2. All source files are re-compiled if any .h file
+          in any directory in spec.include_dirs has changed.
+       3. A source file is re-compiled if the file itself or any file in
+          self.additional_dependencies[SRC_FILE_NAME]
+          has changed.
+    Note that it does not recurse into the subdirectories of a given
+    directory.
+
+    Mandatory members of spec:
+       - name
+       - language
+       - sources
+       - include_dirs
+       - extra_compile_args
+       - extra_link_args
+
+    Optional members of spec:
+       - cython_file
+       - extra_objects
+       - libraries
+       - cython_paths (required if there is a cython_file): Not
+         forwarded to Extension, only used for dependency
+         tracking.
+       - additional_dependencies: Not forwarded to Extension, only used
+         for dependency tracking.
+
+    """
+
+    ext_files = SourceAndObjectFiles()
+    ext_files.set_headers(
+        [ header
+          for include_path in spec.include_dirs
+          for header in glob(os.path.join(include_path, '*.h')) ])
+
+    additional_dependencies = getattr(spec, 'additional_dependencies', {})
+    for src_file in spec.sources:
+        ext_files.add(src_file, additional_dependencies.get(src_file, []))
+
+    if hasattr(spec, 'cython_file'):
+        ext_files.set_cython_file_language_and_dependencies(
+            spec.cython_file,
+            'cpp' if spec.language == 'c++' else 'c',
+            [ cython_file
+              for cython_path in spec.cython_paths
+              for cython_file in (
+                      glob(os.path.join(cython_path, '*.pyx')) +
+                      glob(os.path.join(cython_path, '*.pxi'))) ])
+        ext_files.cythonize()
+
+    return Extension(
+        name = spec.name,
+        sources = ext_files.sources_to_build,
+        include_dirs = spec.include_dirs,
+        language = spec.language,
+        libraries = getattr(spec, 'libraries', None),
+        extra_compile_args = spec.extra_compile_args,
+        extra_link_args = spec.extra_link_args,
+        extra_objects = ext_files.up_to_date_objects + getattr(spec, 'extra_objects', []))
+
+def remove_files(a, b):
+    return [ file
+             for file in a
+             if os.path.basename(file) not in b ]
+
+def compute_dependencies(
+        sources,
+        src,
+        dst,
+        dst_extension = None):
+    return {
+        replace_ext(source.replace(src, dst), dst_extension) : [ source ]
+        for source in sources }
 
 ###############################################################################
-# Common ompiler option
+# The Extensions
 
-if sys.platform == 'win32':
-    # For Windows, check the compiler we will be using.
-    cc = 'msvc'
-    for arg in sys.argv:
-        if arg.startswith('--compiler='):
-            cc = arg.split('=')[1]
+class SharedExtensionSpec:
+    """
+    Not a full spec that can be passed to make_extension.
 
-if sys.platform == 'darwin':
-    # On macOS, the C and C++ code generated by Cython produces lots of these.
-    # Since we cannot do anything about them, the warnings are just noise.
-    # The kernel code does not generate any of them.
-    macOS_quiet_cython = [
-        '-Wno-unreachable-code']
-    macOS_link_args = []
-    macos_arch = sysconfig.get_platform().split('-')[-1]
-    macos_targets = {'x86_64':'10.9', 'arm64': '11', 'universal2': '10.9'}
-    os.environ['MACOSX_DEPLOYMENT_TARGET'] = macos_targets[macos_arch]
+    Used by other Extension specifications which use the shared code
+    in extensions/shared or use the same compiler flags.
+    """
 
-###############################################################################
-# The SnapPy extension
+    base_path = os.path.join('src', 'snappy', 'extensions', 'shared')
+    cython_path = os.path.join(base_path, 'cython_src')
 
-snappy_extra_compile_args = []
-snappy_extra_link_args = []
-if sys.platform == 'win32':
-    if cc == 'msvc':
-        snappy_extra_compile_args.append('/EHsc')
-        # Uncomment to get debugging symbols for msvc.
-        # snappy_extra_compile_args += ['/DDEBUG', '/Zi',
-        #                              '/FdSnapPy.cp37-win_amd64.pdb']
-    else:
-        if sys.version_info == (3, 4):
-            snappy_extra_link_args.append('-lmsvcr100')
+    extra_compile_args = []
+    extra_link_args = []
 
-if sys.platform == 'darwin':
-    snappy_extra_compile_args += macOS_quiet_cython
-    snappy_extra_link_args += macOS_link_args
+    if sys.platform == 'darwin':
+        # On macOS, the C and C++ code generated by Cython produces lots of these.
+        # Since we cannot do anything about them, the warnings are just noise.
+        # The kernel code does not generate any of them.
+        extra_compile_args += [ '-Wno-unreachable-code' ]
+    elif sys.platform == 'win32':
+        if win_cc == 'msvc':
+            extra_compile_args += ['/EHsc']
+            include_debugging_symbols = False
+            if include_debugging_symbols:
+                extra_compile_args += [
+                    '/DDEBUG', '/Zi', '/FdSnapPy.cp37-win_amd64.pdb' ]
+        elif sys.version_info == (3, 4):
+            extra_link_args += ['-lmsvcr100' ]
 
-SnapPyC = Extension(
-    name = 'snappy.extensions.SnapPy',
-    sources = snappy_ext_files.sources_to_build,
+class SnapPyExtensionSpec:
+    """
+    The SnapPy extension. See make_extension for the meaning of the fields.
+    """
+
+    base_path = os.path.join('src', 'snappy', 'extensions', 'SnapPy')
+    kernel_path = os.path.join(base_path, 'kernel')
+    cython_path = os.path.join(base_path, 'cython_src')
+
+    # Simply Passed to Extension.
+    name = 'snappy.extensions.SnapPy'
+    # Simply Passed to Extension.
+    language = 'c'
+    # File to cythonize.
+    cython_file = os.path.join(cython_path, 'SnapPy.pyx')
+
+    # Sources to compile.
+    sources = (
+        glob(os.path.join(kernel_path, 'kernel_code', '*.c')) +
+        remove_files(
+            glob(os.path.join(kernel_path, 'unix_kit', '*.c')),
+            ['unix_UI.c', 'decode_new_DT.c']) +
+        glob(os.path.join(kernel_path, 'addl_code', '*.c')))
+
+    # Passed to Extension.
+    #
+    # Also for dependency tracking: Any change to a .h file in these
+    # directories also forces a recompilation of all sources.
     include_dirs = [
         os.path.join(kernel_path, 'headers'),
         os.path.join(kernel_path, 'headers', 'precision', 'double'),
-        os.path.join(kernel_path, 'unix_kit'),
-        os.path.join(kernel_path, 'addl_code') ],
-    language='c++',
-    extra_compile_args = snappy_extra_compile_args,
-    extra_link_args = snappy_extra_link_args,
-    extra_objects = snappy_ext_files.up_to_date_objects)
+        os.path.join(kernel_path, 'addl_code'),
+        os.path.join(kernel_path, 'unix_kit')
+    ]
 
+    # Purely for dependency tracking:
+    # Any changes to a .pyx or .pxi file in any of these directories
+    # or subdirectories triggers re-cythonizing.
+    cython_paths = [
+        cython_path,
+        os.path.join(cython_path, 'core'),
+        SharedExtensionSpec.cython_path,
+        os.path.join(SharedExtensionSpec.cython_path, 'precision', 'double') ]
 
-###############################################################################
-# The high precision SnapPyHP extension
+    extra_compile_args = SharedExtensionSpec.extra_compile_args
+    extra_link_args = SharedExtensionSpec.extra_link_args
 
-hp_extra_link_args = []
-hp_extra_compile_args = []
-if sys.platform == 'win32' and cc == 'msvc':
-    if platform.architecture()[0] == '32bit':
-        hp_extra_compile_args.append('/arch:SSE2')
-    hp_extra_compile_args += ['/EHsc', '/MT']
-    # Uncomment to get debugging symbols for msvc.
-    # hp_extra_compile_args += ['/DDEBUG', '/Zi',
-    #                           '/FdSnapPyHP.cp37-win_amd64.pdb']
-elif sys.platform == 'darwin':
+class SnapPyHPExtensionSpec:
+    """
+    The SnapPyHP extension. See make_extension for the meaning of the fields.
+    """
+
+    base_path = os.path.join('src', 'snappy', 'extensions', 'SnapPyHP')
+    kernel_path = os.path.join(base_path, 'kernel')
+    cython_path = os.path.join(base_path, 'cython_src')
+
+    name = 'snappy.extensions.SnapPyHP'
+
+    language = 'c++'
+
+    cython_file = os.path.join(cython_path, 'SnapPyHP.pyx')
+
+    # Each .c file in SnapPy has a corresponding .cpp file which
+    # simply includes the .c file. We record this dependency here.
+    snappy_dependencies = compute_dependencies(
+        sources=SnapPyExtensionSpec.sources,
+        src=SnapPyExtensionSpec.base_path,
+        dst=base_path,
+        dst_extension='cpp')
+
+    for src_file in snappy_dependencies.keys():
+        assert os.path.exists(src_file), src_file
+
+    sources = (
+        list(snappy_dependencies.keys()) +
+        glob(os.path.join(base_path, 'qd', 'src', '*.cpp')))
+
+    include_dirs = [
+        os.path.join(SnapPyExtensionSpec.kernel_path, 'headers'),
+        os.path.join(SnapPyExtensionSpec.kernel_path, 'headers', 'precision', 'qd'),
+        os.path.join(SnapPyExtensionSpec.kernel_path, 'kernel_code'),
+        os.path.join(SnapPyExtensionSpec.kernel_path, 'addl_code'),
+        os.path.join(SnapPyExtensionSpec.kernel_path, 'unix_kit'),
+        os.path.join(base_path, 'qd', 'include')
+    ]
+
+    cython_paths = [
+        cython_path,
+        os.path.join(SnapPyExtensionSpec.cython_path, 'core'),
+        SharedExtensionSpec.cython_path,
+        os.path.join(SharedExtensionSpec.cython_path, 'precision', 'qd') ]
+
+    additional_dependencies = snappy_dependencies
+
+    extra_compile_args = SharedExtensionSpec.extra_compile_args
+
+    x86_64_compile_args = ['-mfpmath=sse', '-msse2', '-mieee-fp']
+
+    if sys.platform == 'darwin':
         if macos_arch == 'x86_64':
-            hp_extra_compile_args = ['-mfpmath=sse', '-msse2', '-mieee-fp']
-elif platform.machine() == 'x86_64':
-    hp_extra_compile_args = ['-mfpmath=sse', '-msse2', '-mieee-fp']
+            extra_compile_args += x86_64_compile_args
+    elif sys.platform == 'win32' and win_cc == 'mcvc':
+        if platform.architecture()[0] == '32bit':
+            extra_compile_args += ['/arch:SSE2']
+        extra_compile_args += ['/MT']
+    elif platform.machine() == 'x86_64':
+        x86_64_compile_args = ['-mfpmath=sse', '-msse2', '-mieee-fp']
 
-if have_cython:
-    if [int(x) for x in cython_version.split('.')[:2]] < [3, 0]:
-        if sys.platform == 'win32':
-            hp_extra_compile_args.append('/DFORCE_C_LINKAGE')
-        else:
-            hp_extra_compile_args.append('-DFORCE_C_LINKAGE')
+    if have_cython:
+        if [int(x) for x in cython_version.split('.')[:2]] < [3, 0]:
+            if sys.platform == 'win32':
+                extra_compile_args += ['/DFORCE_C_LINKAGE']
+            else:
+                extra_compile_args += ['-DFORCE_C_LINKAGE']
 
-if sys.platform == 'darwin':
-    hp_extra_compile_args += macOS_quiet_cython
+    extra_link_args = SharedExtensionSpec.extra_link_args
 
-SnapPyHP = Extension(
-    name = 'snappy.extensions.SnapPyHP',
-    sources = hp_snappy_ext_files.sources_to_build,
+class OrbExtensionSpec:
+    """
+    The Orb extension. See make_extension for the meaning of the fields.
+    """
+
+    base_path = os.path.join('src', 'snappy', 'extensions', 'Orb')
+    kernel_path = os.path.join(base_path, 'kernel')
+    cython_path = os.path.join(base_path, 'cython_src')
+
+    name = 'snappy.extensions.Orb'
+
+    language = 'c'
+
+    cython_file = os.path.join(cython_path, 'Orb.pyx')
+
+    sources = (
+        glob(os.path.join(kernel_path, 'code', '*.c')) +
+        glob(os.path.join(kernel_path, 'unix_kit', '*.c')))
+
     include_dirs = [
         os.path.join(kernel_path, 'headers'),
-        os.path.join(kernel_path, 'headers', 'precision', 'qd'),
-        os.path.join(kernel_path, 'unix_kit'),
-        os.path.join(kernel_path, 'addl_code'),
-        os.path.join(kernel_path, 'kernel_code'),
-        os.path.join(SnapPyHP_path, 'qd', 'include') ],
-    language='c++',
-    extra_compile_args = hp_extra_compile_args,
-    extra_link_args = hp_extra_link_args,
-    extra_objects = hp_snappy_ext_files.up_to_date_objects)
+        os.path.join(kernel_path, 'unix_kit')
+    ]
 
-OrbC = Extension(
-    name = 'snappy.extensions.Orb',
-    sources = orb_ext_files.sources_to_build,
-    include_dirs = [os.path.join(OrbKernel_path, 'headers'),
-                    os.path.join(OrbKernel_path, 'unix_kit'),
-                    os.path.join('src', 'snappy', 'extensions')],
-    language = 'c',
-    extra_compile_args = snappy_extra_compile_args,
-    extra_link_args = snappy_extra_link_args,
-    extra_objects = orb_ext_files.up_to_date_objects)
+    cython_paths = [
+        os.path.join(base_path, 'cython_src'),
+        os.path.join(base_path, 'cython_src', 'core'),
+        os.path.join(SharedExtensionSpec.cython_path, 'precision', 'qd')
+    ]
 
-###############################################################################
-# The CyOpenGL extension
-CyOpenGL_includes = []
-CyOpenGL_libs = []
-CyOpenGL_extras = []
-CyOpenGL_extra_compile_args = []
-CyOpenGL_extra_link_args = []
-CyOpenGL_has_headers = False
+    snappy_dependencies = compute_dependencies(
+        sources=os.path.join(SnapPyExtensionSpec.kernel_path, 'unix_kit', 'ostream.c'),
+        src=SnapPyExtensionSpec.base_path,
+        dst=base_path)
 
-if sys.platform == 'darwin':
+    additional_dependencies = snappy_dependencies
+
+    extra_compile_args = SharedExtensionSpec.extra_compile_args
+    extra_link_args = SharedExtensionSpec.extra_link_args
+
+def find_GL_headers_mac():
     OS_X_ver = int(platform.mac_ver()[0].split('.')[1])
     sdk_roots = [
         '/Library/Developer/CommandLineTools/SDKs',
         '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
-         ]
+    ]
     version_strings = [ 'MacOSX10.%d.sdk' % OS_X_ver, 'MacOSX.sdk' ]
     poss_roots = [ '' ] + [
         '%s/%s' % (sdk_root, version_string)
@@ -521,94 +612,127 @@ if sys.platform == 'darwin':
         for version_string in version_strings ]
     header_dir = '/System/Library/Frameworks/OpenGL.framework/Versions/Current/Headers/'
     poss_includes = [ root + header_dir for root in poss_roots ]
-    CyOpenGL_includes += [ path for path in poss_includes if os.path.exists(path)][:1]
-    CyOpenGL_has_headers = any(
-        exists(os.path.join(path, 'gl.h'))
-        for path in CyOpenGL_includes)
-    if not CyOpenGL_has_headers:
+    return [ path for path in poss_includes if os.path.exists(path)][:1]
+
+
+class CyOpenGLExtensionSpec:
+    """
+    The CyOpenGL extension. See make_extension for the meaning of the fields.
+    """
+
+    base_path = os.path.join('src', 'snappy', 'extensions', 'CyOpenGL')
+
+    name = 'snappy.extensions.CyOpenGL'
+
+    language = 'c'
+
+    cython_file = os.path.join(base_path, 'CyOpenGL.pyx')
+    cython_paths = [
+        base_path,
+        os.path.join(base_path, 'common'),
+        os.path.join(base_path, 'legacy'),
+        os.path.join(base_path, 'modern') ]
+
+    sources = []
+
+    additional_dependencies = {}
+
+    include_dirs = []
+    extra_compile_args = SharedExtensionSpec.extra_compile_args
+    extra_link_args = SharedExtensionSpec.extra_link_args
+    extra_objects = []
+    libraries = []
+
+    has_headers = False
+
+    if sys.platform == 'darwin':
+        include_dirs += find_GL_headers_mac()
+
+        has_headers = any(
+            exists(os.path.join(path, 'gl.h'))
+            for path in include_dirs)
+        if not has_headers:
+            print("***WARNING***: Not Building CyOpenGL so many graphics features "
+                  "will not be availble.")
+            print("This is because the OpenGL header gl.h were not found at: %s" %(
+                ', '.join(include_dirs)))
+
+        extra_link_args += ['-framework', 'OpenGL']
+
+    elif sys.platform == 'linux2' or sys.platform == 'linux':
+        libraries += ['GL']
+        gl_header_path = '/usr/include/GL/gl.h'
+        has_headers = exists(gl_header_path)
+
+        if not has_headers:
+            print("***WARNING***: Not Building CyOpenGL so many graphics features "
+                  "will not be availble.")
+            print("This is because the OpenGL header %s was not found." % gl_header_path)
+
+    elif sys.platform == 'win32':
+        # Pick up glew
+        include_dirs += [ base_path ]
+        has_headers = True
+
+        if platform.architecture()[0] == '32bit':
+            extra_objects += [
+                os.path.join(
+                    base_path, 'glew/lib/Release/Win32/glew32s.lib')]
+        else:
+            extra_objects += [
+                os.path.join(
+                    base_path, 'glew/lib/Release/x64/glew32s.lib')]
+
+        if win_cc == 'msvc':
+            extra_objects += ['opengl32.lib']
+        else:
+            extra_objects += ['/mingw/lib/libopengl32.a']
+    else:
         print("***WARNING***: Not Building CyOpenGL so many graphics features "
               "will not be availble.")
-        print("This is because the OpenGL header gl.h were not found at: %s" %(
-            ', '.join(CyOpenGL_includes)))
+        print("This is because we have an unsupported platform %s." % sys.platform)
 
-    CyOpenGL_extra_compile_args += macOS_quiet_cython
-    CyOpenGL_extra_link_args = ['-framework', 'OpenGL']
-    CyOpenGL_extra_link_args += macOS_link_args
+class TwisterCoreExtensionSpec:
+    """
+    The Twister core extension. See make_extension for the meaning of the fields.
+    """
 
-elif sys.platform == 'linux2' or sys.platform == 'linux':
-    CyOpenGL_libs += ['GL']
+    base_path = os.path.join('src', 'snappy', 'twister', 'lib')
+    kernel_path = os.path.join(base_path, 'kernel')
 
-    gl_header_path = '/usr/include/GL/gl.h'
-    CyOpenGL_has_headers = exists(gl_header_path)
+    name = 'snappy.twister.twister_core'
 
-    if not CyOpenGL_has_headers:
-        print("***WARNING***: Not Building CyOpenGL so many graphics features "
-              "will not be availble.")
-        print("This is because the OpenGL header %s was not found." % gl_header_path)
+    language = 'c++'
 
-elif sys.platform == 'win32':
-    # Pick up glew
-    CyOpenGL_includes = [cy_opengl_path]
-    CyOpenGL_has_headers = True
+    sources = [
+        os.path.join(kernel_path, 'twister.cpp'),
+        os.path.join(kernel_path, 'manifold.cpp'),
+        os.path.join(kernel_path, 'parsing.cpp'),
+        os.path.join(kernel_path, 'global.cpp'),
+        os.path.join(base_path, 'py_wrapper.cpp') ]
 
-    if platform.architecture()[0] == '32bit':
-        CyOpenGL_extras += [os.path.join(cy_opengl_path, 'glew/lib/Release/Win32/glew32s.lib')]
-    else:
-        CyOpenGL_extras += [os.path.join(cy_opengl_path, 'glew/lib/Release/x64/glew32s.lib')]
+    include_dirs = [ kernel_path ]
 
-    if cc == 'msvc':
-        CyOpenGL_extras += ['opengl32.lib']
-    else:
-        CyOpenGL_extras += ['/mingw/lib/libopengl32.a']
+    additional_dependencies = {}
 
-else:
-    print("***WARNING***: Not Building CyOpenGL so many graphics features "
-          "will not be availble.")
-    print("This is because we have an unsupported platform %s." % sys.platform)
+    extra_compile_args = SharedExtensionSpec.extra_compile_args
+    if sys.platform == 'win32' and win_cc == 'msvc':
+        extra_compile_args += ['/MT']
 
-
-CyOpenGL = Extension(
-    name = 'snappy.extensions.CyOpenGL',
-    sources = cy_opengl_ext_files.sources_to_build,
-    include_dirs = CyOpenGL_includes,
-    libraries = CyOpenGL_libs,
-    extra_objects = cy_opengl_ext_files.up_to_date_objects + CyOpenGL_extras,
-    extra_compile_args = CyOpenGL_extra_compile_args,
-    extra_link_args = CyOpenGL_extra_link_args,
-    language='c++'
-)
-
-###############################################################################
-# Twister extension
-
-twister_main_path = os.path.join('src', 'snappy', 'twister', 'lib')
-twister_kernel_path = os.path.join(twister_main_path, 'kernel')
-
-twister_ext_files = SourceAndObjectFiles()
-twister_ext_files.add(os.path.join(twister_main_path, 'py_wrapper.cpp'))
-for file in ['twister.cpp', 'manifold.cpp', 'parsing.cpp', 'global.cpp']:
-    twister_ext_files.add(os.path.join(twister_kernel_path, file))
-
-twister_extra_compile_args = []
-twister_extra_link_args = []
-if sys.platform == 'win32' and cc == 'msvc':
-    twister_extra_compile_args += ['/EHsc', '/MT']
-
-TwisterCore = Extension(
-    name = 'snappy.twister.twister_core',
-    sources = twister_ext_files.sources_to_build,
-    include_dirs=[twister_kernel_path],
-    extra_compile_args=twister_extra_compile_args,
-    extra_link_args=twister_extra_link_args,
-    language='c++',
-    extra_objects = twister_ext_files.up_to_date_objects)
+    extra_link_args = []
 
 ###############################################################################
 # snappy
 
-ext_modules = [SnapPyC, SnapPyHP, OrbC, TwisterCore]
-if CyOpenGL_has_headers:
-    ext_modules.append(CyOpenGL)
+ext_modules = [
+    make_extension(SnapPyExtensionSpec),
+    make_extension(SnapPyHPExtensionSpec),
+    make_extension(OrbExtensionSpec),
+    make_extension(TwisterCoreExtensionSpec)
+]
+
+if CyOpenGLExtensionSpec.has_headers:
+    ext_modules.append(make_extension(CyOpenGLExtensionSpec))
 elif (os.environ.get('SNAPPY_ALWAYS_BUILD_CYOPENGL', 'False')
       not in ['0', 'false', 'False']):
     raise RuntimeError('Could not find CyOpenGL requirements but '
@@ -738,8 +862,8 @@ setup( name = 'snappy',
         options={
             "build_ext": {
                 "force": any(
-                    len(ext.sources_to_build) > 0
-                    for ext in exts)
+                    len(ext_module.sources) > 0
+                    for ext_module in ext_modules)
             }
         }
 )
