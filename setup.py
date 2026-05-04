@@ -422,7 +422,11 @@ class SharedExtensionSpec:
     """
 
     base_path = os.path.join('src', 'snappy', 'extensions', 'shared')
+    kernel_path = os.path.join(base_path, 'kernel')
     cython_path = os.path.join(base_path, 'cython_src')
+
+    include_dirs = [ os.path.join(kernel_path, 'unix_kit') ]
+    sources = glob(os.path.join(kernel_path, 'unix_kit'))
 
     extra_compile_args = []
     extra_link_args = []
@@ -470,7 +474,7 @@ class SnapPyExtensionSpec:
     #
     # Also for dependency tracking: Any change to a .h file in these
     # directories also forces a recompilation of all sources.
-    include_dirs = [
+    include_dirs = SharedExtensionSpec.include_dirs + [
         os.path.join(kernel_path, 'headers'),
         os.path.join(kernel_path, 'headers', 'precision', 'double'),
         os.path.join(kernel_path, 'addl_code'),
@@ -485,6 +489,17 @@ class SnapPyExtensionSpec:
         os.path.join(cython_path, 'core'),
         SharedExtensionSpec.cython_path,
         os.path.join(SharedExtensionSpec.cython_path, 'precision', 'double') ]
+
+    # Register additional depdencies:
+    # For example, SnapPy/kernel/unix_kit/ostream.c simply includes
+    # the corresponding file in shared/kernel/unix_kit.
+    #
+    shared_dependencies = compute_dependencies(
+        sources=SharedExtensionSpec.sources,
+        src=SharedExtensionSpec.base_path,
+        dst=base_path)
+
+    additional_dependencies = shared_dependencies
 
     extra_compile_args = SharedExtensionSpec.extra_compile_args
     extra_link_args = SharedExtensionSpec.extra_link_args
@@ -519,7 +534,7 @@ class SnapPyHPExtensionSpec:
         list(snappy_dependencies.keys()) +
         glob(os.path.join(base_path, 'qd', 'src', '*.cpp')))
 
-    include_dirs = [
+    include_dirs = SharedExtensionSpec.include_dirs + [
         os.path.join(SnapPyExtensionSpec.kernel_path, 'headers'),
         os.path.join(SnapPyExtensionSpec.kernel_path, 'headers', 'precision', 'qd'),
         os.path.join(SnapPyExtensionSpec.kernel_path, 'kernel_code'),
@@ -534,7 +549,14 @@ class SnapPyHPExtensionSpec:
         SharedExtensionSpec.cython_path,
         os.path.join(SharedExtensionSpec.cython_path, 'precision', 'qd') ]
 
-    additional_dependencies = snappy_dependencies
+    # As with SnapPyHPExtension
+    shared_dependencies = compute_dependencies(
+        sources=SharedExtensionSpec.sources,
+        src=SharedExtensionSpec.base_path,
+        dst=base_path,
+        dst_extension='cpp')
+
+    additional_dependencies = {**snappy_dependencies, **shared_dependencies}
 
     extra_compile_args = SharedExtensionSpec.extra_compile_args
 
@@ -578,7 +600,7 @@ class OrbExtensionSpec:
         glob(os.path.join(kernel_path, 'code', '*.c')) +
         glob(os.path.join(kernel_path, 'unix_kit', '*.c')))
 
-    include_dirs = [
+    include_dirs = SharedExtensionSpec.include_dirs + [
         os.path.join(kernel_path, 'headers'),
         os.path.join(kernel_path, 'unix_kit')
     ]
@@ -589,12 +611,12 @@ class OrbExtensionSpec:
         os.path.join(SharedExtensionSpec.cython_path, 'precision', 'qd')
     ]
 
-    snappy_dependencies = compute_dependencies(
-        sources=os.path.join(SnapPyExtensionSpec.kernel_path, 'unix_kit', 'ostream.c'),
-        src=SnapPyExtensionSpec.base_path,
+    shared_dependencies = compute_dependencies(
+        sources=SharedExtensionSpec.sources,
+        src=SharedExtensionSpec.base_path,
         dst=base_path)
 
-    additional_dependencies = snappy_dependencies
+    additional_dependencies = shared_dependencies
 
     extra_compile_args = SharedExtensionSpec.extra_compile_args
     extra_link_args = SharedExtensionSpec.extra_link_args

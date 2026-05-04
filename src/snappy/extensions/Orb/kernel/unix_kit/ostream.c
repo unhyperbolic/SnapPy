@@ -1,1 +1,1 @@
-#include "../../../SnapPy/kernel/unix_kit/ostream.c"
+#include "../../../shared/kernel/unix_kit/ostream.c"
