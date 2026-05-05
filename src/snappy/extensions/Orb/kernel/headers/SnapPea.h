@@ -26,6 +26,8 @@
 #ifndef _SnapPea_
 #define _SnapPea_
 
+#include "real_type.h"
+
 /*
  *	Note:  values of the SolutionType enum are stored as integers in
  *	the triangulation.doc file format.  Changing the order of the

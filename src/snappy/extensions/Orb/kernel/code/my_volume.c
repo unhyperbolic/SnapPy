@@ -1,7 +1,7 @@
 #include "kernel.h"
-#include "gsl_sf_dilog.h"
 
-static Complex Li_2( Complex z, Boolean *ok );
+#include "dilog.h"
+
 static Complex U( Complex z, double *angles, Boolean *ok );
 
 /* Volume computed using formula in "A volume forumla for generalized hyperbolic tetrahedra" by Ushijima */
@@ -123,7 +123,7 @@ static Complex U( Complex z, double *angles, Boolean *ok)
 {
   int i,j;
 static const int opposite[]={5,4,3};
-  Complex result = Li_2(z, ok), w, w1,w2, dilogw;
+  Complex result = complex_volume_dilog(z), w, w1,w2, dilogw;
 
   for(i=0;i<3;i++)
   {
@@ -142,7 +142,7 @@ static const int opposite[]={5,4,3};
       }
 
       w = complex_mult( w, z );
-      dilogw = Li_2( w, ok );
+      dilogw = complex_volume_dilog(w);
 
       result = complex_plus( result, dilogw );
   }
@@ -160,7 +160,7 @@ static const int opposite[]={5,4,3};
       }
 
       w = complex_mult( w, z );
-      dilogw = Li_2( w, ok );
+      dilogw = complex_volume_dilog(w);
 
       result = complex_minus( result, dilogw );
   }
@@ -169,32 +169,4 @@ static const int opposite[]={5,4,3};
 
   return result;
 }
-
-
-static Complex Li_2( Complex z, Boolean *ok )
-{
-
-  Complex w;
-  gsl_sf_result re, im; 
-
-  gsl_sf_complex_dilog_e( complex_modulus(z), atan2(z.imag,  z.real), &re, &im);
-
-  if (re.val != re.val )
-  {
-	w.real = 0;
-	*ok = FALSE;
-  }
-  else  w.imag = re.val;   	/* ok yes. this looks suspect.  the gsl dilog functions is returning */
-				/* nan in some answers so this is a way around in the mean time */
-  if (im.val != im.val )	/* from what i've seen the nan are occuring when the answer should be zero */
-  {
-	w.imag = 0;
-	*ok = FALSE;
-  }
-  else  w.imag = im.val;
-
-  return w;
-}
-
-
 

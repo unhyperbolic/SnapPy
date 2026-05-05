@@ -582,10 +582,13 @@ class OrbExtensionSpec:
 
     sources = (
         glob(os.path.join(kernel_path, 'code', '*.c')) +
+        glob(os.path.join(kernel_path, 'addl_code', '*.c')) +
         glob(os.path.join(kernel_path, 'unix_kit', '*.c')))
 
     include_dirs = [
         os.path.join(kernel_path, 'headers'),
+        os.path.join(kernel_path, 'headers', 'precision', 'double'),
+        os.path.join(kernel_path, 'addl_code'),
         os.path.join(kernel_path, 'unix_kit')
     ]
 
@@ -596,7 +599,8 @@ class OrbExtensionSpec:
     ]
 
     snappy_dependencies = compute_dependencies(
-        sources=os.path.join(SnapPyExtensionSpec.kernel_path, 'unix_kit', 'ostream.c'),
+        sources=[os.path.join(SnapPyExtensionSpec.kernel_path, 'addl_code', 'dilog.c'),
+                 os.path.join(SnapPyExtensionSpec.kernel_path, 'unix_kit', 'ostream.c')],
         src=SnapPyExtensionSpec.base_path,
         dst=base_path)
 
