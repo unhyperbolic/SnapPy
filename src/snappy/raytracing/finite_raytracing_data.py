@@ -1,5 +1,4 @@
 from snappy.snap import t3mlite as t3m
-from snappy import Triangulation
 
 from ..matrix import make_matrix, make_vector
 
