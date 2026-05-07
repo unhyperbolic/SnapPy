@@ -28,10 +28,10 @@ from .exceptions import (SnapPeaFatalError,
 
 from typing import Union, Tuple, List, Optional
 
-class TriangulationMixIn:
+class TriangulationBase:
     from .exterior_to_link import exterior_to_link
 
-class ManifoldMixIn(TriangulationMixIn):
+class ManifoldBase(TriangulationBase):
     from .verify import verify_hyperbolicity
     from .margulis import margulis
     from .len_spec import (length_spectrum_alt_gen,
@@ -44,11 +44,11 @@ class ManifoldMixIn(TriangulationMixIn):
     from .raytracing import inside_view
 
 # Subclass to be able to monkey-patch
-class Triangulation(extensions.SnapPy.Triangulation, TriangulationMixIn):
+class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
     __doc__ = extensions.SnapPy.Triangulation.__doc__
 
 # Subclass to be able to monkey-patch
-class TriangulationHP(extensions.SnapPyHP.Triangulation, TriangulationMixIn):
+class TriangulationHP(extensions.SnapPyHP.Triangulation, TriangulationBase):
     __doc__ = extensions.SnapPyHP.Triangulation.__doc__
 
 # We want Manifold to be a subclass of Triangulation.
@@ -57,7 +57,7 @@ class TriangulationHP(extensions.SnapPyHP.Triangulation, TriangulationMixIn):
 # in the presence of a diamond pattern seem to work just
 # fine. In particular, we do not double allocate the underlying
 # C structures.
-class Manifold(extensions.SnapPy.Manifold, Triangulation, ManifoldMixIn):
+class Manifold(extensions.SnapPy.Manifold, Triangulation, ManifoldBase):
     __doc__ = extensions.SnapPy.Manifold.__doc__
 
     def identify(self, extends_to_link=False):
@@ -113,7 +113,7 @@ class Manifold(extensions.SnapPy.Manifold, Triangulation, ManifoldMixIn):
 
 # We want ManifoldHP to be a subclass of TriangulationHP.
 # See comment about Manifold and the diamond pattern.
-class ManifoldHP(extensions.SnapPyHP.Manifold, TriangulationHP, ManifoldMixIn):
+class ManifoldHP(extensions.SnapPyHP.Manifold, TriangulationHP, ManifoldBase):
     __doc__ = extensions.SnapPyHP.Manifold.__doc__
 
     def low_precision(self):
@@ -249,11 +249,11 @@ def isomorphisms_to(self,
         resolved_other)
 
 isomorphisms_to.__doc__ = extensions.SnapPy.Triangulation._isomorphisms_to.__doc__
-TriangulationMixIn.isomorphisms_to = isomorphisms_to
+TriangulationBase.isomorphisms_to = isomorphisms_to
 
 from . import snap
-snap.add_methods(ManifoldMixIn)
-snap.add_methods(TriangulationMixIn, hyperbolic=False)
+snap.add_methods(ManifoldBase)
+snap.add_methods(TriangulationBase, hyperbolic=False)
 
 from . import canonical
 Manifold.canonical_retriangulation = canonical.canonical_retriangulation
