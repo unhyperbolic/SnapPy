@@ -29,6 +29,9 @@ from .exceptions import (SnapPeaFatalError,
 from typing import Union, Tuple, List, Optional
 
 class TriangulationBase:
+    from .snap.t3mlite.spun import (_normal_surface_equations,
+                                    normal_surfaces,
+                                    normal_boundary_slopes)
     from .exterior_to_link import exterior_to_link
 
 class ManifoldBase(TriangulationBase):
@@ -470,14 +473,6 @@ DTcodec.exterior = _link_exterior
 link_objects += ['DTcodec']
 
 __all__ += link_objects
-
-# Add spun-normal surface features via FXrays
-import FXrays
-from .snap.t3mlite import spun as _spun
-for mfld_class in [Triangulation, Manifold, ManifoldHP]:
-    for method in ['_normal_surface_equations', 'normal_surfaces',
-                   'normal_boundary_slopes']:
-        setattr(mfld_class, method, getattr(_spun, method))
 
 import textwrap
 
