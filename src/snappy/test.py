@@ -15,7 +15,7 @@ import snappy.raytracing.test
 import snappy.len_spec.test
 import snappy.margulis.test
 import snappy.drilling.test
-import snappy.canonical
+import snappy.canonical_retriangulation
 import snappy.cusps.cusp_area_matrix
 import snappy.cusps.cusp_areas_from_matrix
 import snappy.isometry_signature
@@ -64,7 +64,7 @@ def additional_doctests(verbose=False, print_info=True):
              'ManifoldHP' : snappy.ManifoldHP}
     return doctest_modules(
         [ snappy.isometry_signature,
-          snappy.canonical,
+          snappy.canonical_retriangulation,
           snappy.cusps.cusp_area_matrix,
           snappy.cusps.cusp_areas_from_matrix
          ],

@@ -42,7 +42,7 @@ class ManifoldBase(TriangulationBase):
                         cusp_translations)
     from .cusps.cusp_area_matrix import cusp_area_matrix
     from .raytracing import inside_view
-    from .canonical import canonical_retriangulation
+    from .canonical_retriangulation import canonical_retriangulation
 
 # Subclass to be able to monkey-patch
 class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
