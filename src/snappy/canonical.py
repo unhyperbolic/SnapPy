@@ -1,17 +1,17 @@
 from . import verify
-from . import Triangulation, TriangulationHP, Manifold, ManifoldHP
 
-from typing import Optional, Union, Sequence, Tuple
+from typing import Sequence, Tuple, Union
 
-__all__ = ['canonical_retriangulation', 'canonical_retriangulation_hp']
+__all__ = ['canonical_retriangulation']
 
-def _canonical_retriangulation(
-        manifold : Union[Manifold, ManifoldHP],
-        verified : bool,
-        interval_bits_precs : Sequence[int],
-        exact_bits_prec_and_degrees : Sequence[Tuple[int, int]],
-        verbose : bool) -> Union[Triangulation, TriangulationHP,
-                                 Manifold, ManifoldHP]:
+def canonical_retriangulation(
+        manifold : Union["Manifold", "ManifoldHP"],
+        verified : bool = False,
+        interval_bits_precs : Sequence[int] = verify.default_interval_bits_precs,
+        exact_bits_prec_and_degrees : Sequence[Tuple[int, int]] = verify.default_exact_bits_prec_and_degrees,
+        verbose : bool = False) -> Union[
+            "Triangulation", "TriangulationHP",
+            "Manifold", "ManifoldHP"]:
     """
     Returns a triangulation canonically associated to the hyperbolic manifold.
     That is, the triangulation is (up to combinatorial isomorphism relabeling
@@ -157,10 +157,11 @@ def _canonical_retriangulation(
             canonical retriangulation.
     :return:
             If the canonical cell decomposition exists entirely of
-            (hyperbolic ideal) tetrahedra, a :class:`Manifold` with those
-            tetrahedra.
-            Otherwise, a :class:`Triangulation` that is a subdivision of the
-            canonical cell decomposition.
+            (hyperbolic ideal) tetrahedra, a :class:`Manifold`
+            (or :class:`ManifoldHP`)
+            with those tetrahedra.
+            Otherwise, a :class:`Triangulation` (or :class:`TriangulationHP`)
+            that is a subdivision of the canonical cell decomposition.
     """
 
     # More information on the canonical retriangulation can be found in the
@@ -196,54 +197,8 @@ def _canonical_retriangulation(
             exact_bits_prec_and_degrees=exact_bits_prec_and_degrees,
             verbose=verbose)
     else:
-        # Note that the SnapPea kernel actually ignores Dehn-fillings
-        # when computing the canonical retriangulation.
-        if not all(manifold.cusp_info('complete?')):
-            # Never executed because of above "if".
-            manifold = manifold.filled_triangulation()
-            if not all(manifold.cusp_info('complete?')):
-                raise ValueError(
-                    'Could not compute filled triangulation. '
-                    'Are the filling coefficients co-prime integers?')
-
         K = manifold._canonical_retriangulation()
         if K.has_finite_vertices():
             return K
         else:
-            if isinstance(manifold, ManifoldHP):
-                return ManifoldHP(K)
-            else:
-                return Manifold(K)
-
-# Wraps _canonical_retriangulation to have the correct return type
-def canonical_retriangulation(
-        manifold : Manifold,
-        verified : bool = False,
-        interval_bits_precs : Sequence[int] = verify.default_interval_bits_precs,
-        exact_bits_prec_and_degrees : Sequence[Tuple[int, int]] = verify.default_exact_bits_prec_and_degrees,
-        verbose : bool = False) -> Union[Triangulation, Manifold]:
-    return _canonical_retriangulation(
-        manifold,
-        verified = verified,
-        interval_bits_precs = interval_bits_precs,
-        exact_bits_prec_and_degrees = exact_bits_prec_and_degrees,
-        verbose = verbose)
-canonical_retriangulation.__doc__ = _canonical_retriangulation.__doc__
-            
-# Wraps _canonical_retriangulation to have the correct return type
-def canonical_retriangulation_hp(
-        manifold : ManifoldHP,
-        verified : bool = False,
-        interval_bits_precs : Sequence[int] = verify.default_interval_bits_precs,
-        exact_bits_prec_and_degrees : Sequence[Tuple[int, int]] = verify.default_exact_bits_prec_and_degrees,
-        verbose : bool = False) -> Union[TriangulationHP, ManifoldHP]:
-    return _canonical_retriangulation(
-        manifold,
-        verified = verified,
-        interval_bits_precs = interval_bits_precs,
-        exact_bits_prec_and_degrees = exact_bits_prec_and_degrees,
-        verbose = verbose)
-canonical_retriangulation_hp.__doc__ = _canonical_retriangulation.__doc__
-
-
-
+            return K.with_hyperbolic_structure()

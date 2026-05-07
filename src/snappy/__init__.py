@@ -42,6 +42,7 @@ class ManifoldBase(TriangulationBase):
                         cusp_translations)
     from .cusps.cusp_area_matrix import cusp_area_matrix
     from .raytracing import inside_view
+    from .canonical import canonical_retriangulation
 
 # Subclass to be able to monkey-patch
 class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
@@ -254,10 +255,6 @@ TriangulationBase.isomorphisms_to = isomorphisms_to
 from . import snap
 snap.add_methods(ManifoldBase)
 snap.add_methods(TriangulationBase, hyperbolic=False)
-
-from . import canonical
-Manifold.canonical_retriangulation = canonical.canonical_retriangulation
-ManifoldHP.canonical_retriangulation = canonical.canonical_retriangulation_hp
 
 def complex_volume(manifold, verified_modulo_2_torsion=False,
                    bits_prec=None):
