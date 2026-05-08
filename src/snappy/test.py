@@ -50,6 +50,20 @@ browser_tests = [x for x in snappy.extensions.SnapPyHP.__test__
 for key in identify_tests + triangulation_tests + browser_tests:
     snappy.extensions.SnapPyHP.__test__.pop(key)
 
+globs = {
+    'Triangulation' : snappy.Triangulation,
+    'TriangulationHP' : snappy.TriangulationHP,
+    'Manifold' : snappy.Manifold,
+    'ManifoldHP' : snappy.ManifoldHP
+}
+
+globs_hp = {
+    'Triangulation' : snappy.TriangulationHP,
+    'TriangulationHP' : snappy.TriangulationHP,
+    'Manifold' : snappy.ManifoldHP,
+    'ManifoldHP' : snappy.ManifoldHP
+}
+
 def additional_doctests(verbose=False, print_info=True):
     """
     I noticed that some of my changes to move code from here into
@@ -60,8 +74,6 @@ def additional_doctests(verbose=False, print_info=True):
     There ought to be a better way to do this...
     """
 
-    globs = {'Manifold' : snappy.Manifold,
-             'ManifoldHP' : snappy.ManifoldHP}
     return doctest_modules(
         [ snappy.isometry_signature,
           snappy.canonical_retriangulation,
@@ -73,36 +85,24 @@ def additional_doctests(verbose=False, print_info=True):
         extraglobs = globs)
 additional_doctests.__name__ = 'snappy.<HARD TO REACH>'
 
-def SnapPy_doctests(verbose=False, print_info=True):
-    globs = { 'Triangulation' : snappy.Triangulation,
-              'TriangulationHP' : snappy.TriangulationHP,
-              'Manifold' : snappy.Manifold,
-              'ManifoldHP' : snappy.ManifoldHP }
-    return doctest_modules(
-        [ snappy.extensions.SnapPy ],
-        verbose=verbose,
-        print_info=print_info,
-        extraglobs=globs)
-SnapPy_doctests.__name__ = 'snappy.extensions.SnapPy'
-
-def SnapPyHP_doctests(verbose=False, print_info=True):
-    globs = { 'Triangulation' : snappy.TriangulationHP,
-              'TriangulationHP' : snappy.TriangulationHP,
-              'Manifold' : snappy.ManifoldHP,
-              'ManifoldHP' : snappy.ManifoldHP }
-    return doctest_modules(
-        [ snappy.extensions.SnapPyHP ],
-        verbose=verbose,
-        print_info=print_info,
-        extraglobs=globs)
-SnapPyHP_doctests.__name__ = 'snappy.extensions.SnapPyHP'
+def make_doctest_runner(
+        module, verbose=False, print_info=True, high_precision=False):
+    def run(verbose=verbose, print_info=print_info):
+        return doctest_modules(
+            [ module ],
+            verbose=verbose,
+            print_info=print_info,
+            extraglobs = globs_hp if high_precision else globs)
+    run.__name__ = module.__name__
+    return run
 
 modules = [
     snappy.exterior_to_link.test.run_doctests,
     snappy.numeric_output_checker.run_doctests,
     snappy.number,
-    SnapPy_doctests,
-    SnapPyHP_doctests,
+    make_doctest_runner(snappy.extensions.SnapPy),
+    make_doctest_runner(snappy.extensions.SnapPyHP,
+                        high_precision=True),
     snappy.database,
     additional_doctests,
     snappy,
