@@ -103,7 +103,7 @@ modules = [
     make_doctest_runner(snappy.extensions.SnapPy),
     make_doctest_runner(snappy.extensions.SnapPyHP,
                         high_precision=True),
-    snappy.database,
+    make_doctest_runner(snappy.database),
     additional_doctests,
     snappy,
     snappy.cusps.test.run_doctests,

@@ -399,8 +399,6 @@ from . import twister
 # manifold tables themselves from the snappy_manifold package.
 
 from . import database
-database.Manifold = Manifold
-database.Triangulation = Triangulation
 snappy_module = sys.modules[__name__]
 database_objects = []
 known_manifold_packages = [('snappy_manifolds', True),

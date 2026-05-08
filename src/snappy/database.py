@@ -1,10 +1,4 @@
 """
-This module uses the Manifold class from the SnapPy extension
-module. After the Manifold class has been defined, the "__init__.py"
-module for "snappy" itself sets::
-
-  database.Manifold = Manifold
-
 This file simply defines the ManifoldTable class.  The ManifoldTables
 that come with actual data are defined in external packages, such as
 the required "snappy_manifolds".  Such a package must provide a
@@ -261,6 +255,7 @@ class ManifoldTable():
         """
 
         if M is None:
+            from . import Manifold
             M = Manifold('empty')
 
         # Get fillings, if any
@@ -390,6 +385,8 @@ class ManifoldTable():
                             return N
                 except RuntimeError:
                     pass
+
+        from . import Triangulation
 
         mfld = Triangulation(mflds[0]) # Drop the hyperbolic structure
         # Check for identical triangulations.
