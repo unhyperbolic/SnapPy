@@ -1248,7 +1248,8 @@ class Mcomplex:
         files.write_SnapPea_file(self, data)
         return data.getvalue()
 
-    def snappy_triangulation(self, remove_finite_vertices=True):
+    def snappy_triangulation(
+            self, remove_finite_vertices=True, triangulation_class = None):
         """
         >>> Mcomplex('4_1').snappy_manifold().homology()
         Z
@@ -1298,7 +1299,10 @@ class Mcomplex:
                 for i in range(4):
                     peripheral_curves.append(16*[0])
 
-        M = snappy.Triangulation('empty')
+        if triangulation_class is None:
+            triangulation_class = snappy.Triangulation
+    
+        M = triangulation_class('empty')
         M._from_tetrahedra_gluing_data(tetrahedra_data=tet_data,
                                        num_or_cusps=torus_cusps,
                                        num_nonor_cusps=0,

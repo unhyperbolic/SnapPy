@@ -13,8 +13,6 @@ from .cusps import (
     reorder_vertices_and_get_post_drill_infos,
     refill_and_adjust_peripheral_curves)
 
-from .. import Manifold, ManifoldHP
-
 from ..geometric_structure.geodesic.geodesic_start_point_info import GeodesicStartPointInfo, compute_geodesic_start_point_info
 from ..geometric_structure import (add_r13_geometry,
                                    add_filling_information)
@@ -23,13 +21,13 @@ from ..geometric_structure.geodesic.line import R13LineWithMatrix
 from ..snap.t3mlite import Mcomplex
 from ..exceptions import InsufficientPrecisionError
 
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 
 def drill_word(manifold,
                word : str,
                verified : bool = False,
                bits_prec : Optional[int] = None,
-               verbose : bool = False) -> Manifold:
+               verbose : bool = False) -> Union['Manifold', 'ManifoldHP']:
     """
     Drills the geodesic corresponding to the given word in the unsimplified
     fundamental group. Here is an example::
@@ -141,7 +139,7 @@ def drill_words(manifold,
                 words : Sequence[str],
                 verified : bool = False,
                 bits_prec : Optional[int] = None,
-                verbose : bool = False) -> Manifold:
+                verbose : bool = False) -> Union['Manifold', 'ManifoldHP']:
     """
     A generalization of :meth:`drill_word <Manifold.drill_word>` to drill
     several geodesics simultaneously. It takes a list of words in the
@@ -334,10 +332,12 @@ def drill_words_implementation(
     post_drill_infos : Sequence[CuspPostDrillInfo] = (
         reorder_vertices_and_get_post_drill_infos(drilled_mcomplex))
 
-    # Convert python triangulation to SnapPea kernel triangulation.
+    # Convert Mcomplex triangulation to Manifold or ManifoldHP.
     # Note that this will remove the finite vertices created by
     # drill_geodesics.
-    drilled_manifold = drilled_mcomplex.snappy_manifold()
+    drilled_triangulation = drilled_mcomplex.snappy_triangulation(
+        triangulation_class=manifold._triangulation_class)        
+    drilled_manifold = drilled_triangulation.with_hyperbolic_structure()
 
     # If there was a filled cusp whose core curve was not drilled, we need
     # to refill it. If there was a filled cusp whose core curve was drilled,
@@ -420,37 +420,3 @@ def drill_geodesics(mcomplex : Mcomplex,
     debug.check_peripheral_curves(result.Tetrahedra)
 
     return result
-
-def drill_word_hp(manifold,
-                  word : str,
-                  verified : bool = False,
-                  bits_prec : Optional[int] = None,
-                  verbose : bool = False) -> ManifoldHP:
-    return drill_word(
-        manifold,
-        word = word,
-        verified = verified,
-        bits_prec = bits_prec,
-        verbose = verbose).high_precision()
-drill_word_hp.__doc__ = drill_word.__doc__
-
-def drill_words_hp(manifold,
-                   words : Sequence[str],
-                   verified : bool = False,
-                   bits_prec : Optional[int] = None,
-                   verbose : bool = False) -> ManifoldHP:
-    return drill_words(
-        manifold,
-        words = words,
-        verified = verified,
-        bits_prec = bits_prec,
-        verbose = verbose).high_precision()
-drill_words_hp.__doc__ = drill_words.__doc__
-
-def _add_methods(mfld_class, high_precision=False):
-    if high_precision:
-        mfld_class.drill_word = drill_word_hp
-        mfld_class.drill_words = drill_words_hp
-    else:
-        mfld_class.drill_word = drill_word
-        mfld_class.drill_words = drill_words

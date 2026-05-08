@@ -46,6 +46,7 @@ class ManifoldBase(TriangulationBase):
     from .cusps.cusp_area_matrix import cusp_area_matrix
     from .raytracing import inside_view
     from .canonical_retriangulation import canonical_retriangulation
+    from .drilling import drill_word, drill_words
 
 # Subclass to be able to monkey-patch
 class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
@@ -177,6 +178,8 @@ extensions.SnapPy._manifold_class = Manifold
 extensions.SnapPy._triangulation_class = Triangulation
 extensions.SnapPyHP._triangulation_class = TriangulationHP
 extensions.SnapPyHP._manifold_class = ManifoldHP
+Triangulation._triangulation_class = Triangulation
+TriangulationHP._triangulation_class = TriangulationHP
 
 __all__ = ['Triangulation', 'Manifold', 'ManifoldHP', 'AbelianGroup',
            'FundamentalGroup', 'HolonomyGroup', 'HolonomyGroupHP',
@@ -258,10 +261,6 @@ TriangulationBase.isomorphisms_to = isomorphisms_to
 from . import snap
 snap.add_methods(ManifoldBase)
 snap.add_methods(TriangulationBase, hyperbolic=False)
-
-from . import drilling
-drilling._add_methods(Manifold)
-drilling._add_methods(ManifoldHP, high_precision=True)
 
 def all_translations(self, verified=False, bits_prec=None):
     """
