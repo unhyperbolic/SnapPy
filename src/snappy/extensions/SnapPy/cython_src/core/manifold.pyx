@@ -725,6 +725,64 @@ cdef class Manifold(Triangulation):
                 Real2Number(PI_SQUARED_BY_2) * Number('I'))
         return self._number_(result)
 
+    def complex_volume(self, verified_modulo_2_torsion=False,
+                       bits_prec=None):
+        """
+        Returns the complex volume modulo :math:`i \\pi^2` which is given by
+
+        .. math::
+            \\text{vol} + i \\text{CS}
+
+        where :math:`\\text{CS}` is the (unnormalized) Chern-Simons invariant.
+
+            >>> M = Manifold('5_2')
+            >>> M.complex_volume() # doctest: +NUMERIC6
+            2.82812209 - 3.02412838*I
+
+        Note that :meth:`chern_simons <snappy.Manifold.chern_simons>`
+        normalizes the Chern-Simons invariant by dividing it by
+        :math:`2 \\pi^2 = 19.7392...` ::
+
+            >>> M.chern_simons() # doctest: +NUMERIC6
+            -0.153204133297152
+
+        More examples::
+
+            >>> M.dehn_fill((1,2))
+            >>> M.complex_volume() # doctest: +NUMERIC6
+            2.22671790 + 1.52619361*I
+            >>> M = Manifold("3_1") # A non-hyperbolic example.
+            >>> cvol = M.complex_volume()
+            >>> cvol.real() # doctest: +NUMERIC6
+            0
+            >>> cvol.imag() # doctest: +NUMERIC6
+            -1.64493407
+
+        If no cusp is filled or there is only one cusped (filled or
+        unfilled), the complex volume can be verified up to multiples
+        of :math:`i \\pi^2 /2` by passing ``verified_modulo_2_torsion = True``
+        when inside SageMath. Higher precision can be requested
+        with ``bits_prec``::
+
+            sage: M = Manifold("m015")
+            sage: M.complex_volume(verified_modulo_2_torsion=True, bits_prec = 93) # doctest: +NUMERIC21
+            2.828122088330783162764? + 1.910673824035377649698?*I
+            sage: M = Manifold("m015(3,4)")
+            sage: M.complex_volume(verified_modulo_2_torsion=True) # doctest: +NUMERIC6
+            2.625051576? - 0.537092383?*I
+
+        """
+        if verified_modulo_2_torsion:
+            return verify.verified_complex_volume_torsion(
+                self, bits_prec=bits_prec)
+
+        if bits_prec:
+            raise Exception("Arbitrary precision for complex volume only "
+                            "supported for verified computations and cusped "
+                            "manifolds.")
+
+        return self._complex_volume()
+
     def volume(self, accuracy=False, verified = False, bits_prec = None):
         """
         Returns the volume of the current solution to the hyperbolic
