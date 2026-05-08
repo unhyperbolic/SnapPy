@@ -313,4 +313,68 @@ class CuspNeighborhood(CCuspNeighborhood):
 
     Instantiate as M.cusp_neighborhood()
     """
-    pass
+
+    def all_translations(self, verified=False, bits_prec=None):
+        """
+        Returns the (complex) Euclidean translations of the meridian
+        and longitude for each cusp measured with respect to the cusp neighborhood.
+
+        The result is a list of pairs, the second entry corresponding to a
+        longitude is always real::
+
+            >>> from snappy import Manifold
+            >>> M = Manifold("v3227")
+            >>> N = M.cusp_neighborhood()
+            >>> N.all_translations() # doctest: +NUMERIC9
+            [(-0.152977162509284 + 0.747697694854404*I, 0.868692062725708), (-0.152977162509284 + 0.747697694854404*I, 0.868692062725708), (0.0961611977895952 + 0.725536253181650*I, 0.895226186134782)]
+
+        Often, one is interested in making the cusp neighborhoods as large as possible first::
+
+            >>> N.set_displacement(100,0)
+            >>> N.set_displacement(100,1)
+            >>> N.set_displacement(100,2)
+            >>> N.all_translations() # doctest: +NUMERIC9
+            [(-0.477656250512815 + 2.33461303362557*I, 2.71240613125259), (-0.259696455247511 + 1.26930345526993*I, 1.47470541152065), (0.131389112265699 + 0.991330873713731*I, 1.22318540718077)]
+
+        This can also be achieved by :py:meth:`Manifold.cusp_translations` which
+        would have made a different choice of disjoint cusp neighborhoods though::
+
+            >>> M.cusp_translations() # doctest: +NUMERIC6
+            [(-0.315973594129651 + 1.54436599614183*I, 1.79427928161946), (-0.315973594129649 + 1.54436599614182*I, 1.79427928161946), (0.198620491993677 + 1.49859164484929*I, 1.84908538602825)]
+
+        This method supports arbitrary precision ::
+
+            >>> N.set_displacement(1.125, 0)
+            >>> N.set_displacement(0.515625, 1)
+            >>> N.set_displacement(0.3125, 2)
+            >>> N.all_translations(bits_prec = 120) # doctest: +NUMERIC30
+            [(-0.47120283346076781167174343474008914 + 2.3030710375877078211095122873223488*I, 2.6757599281290843845710310925394911), (-0.25618853688042434043044508297577899 + 1.2521580040549576537090841783446072*I, 1.4547854392045669515377748986943560), (0.13143677360753666862808198126761923 + 0.99169047854575721271560179767750893*I, 1.2236291171413362101960100623801910)]
+
+        and can return verified intervals ::
+
+            sage: N.all_translations(verified = True) # doctest: +NUMERIC9
+            [(-0.47120283346? + 2.30307103759?*I, 2.67575992813?), (-0.256188536881? + 1.252158004055?*I, 1.454785439205?), (0.131436773608? + 0.991690478546?*I, 1.2236291171413?)]
+            sage: N.all_translations(verified = True, bits_prec = 120) # doctest: +NUMERIC30
+            [(-0.4712028334607678116717434347401? + 2.3030710375877078211095122873224?*I, 2.6757599281290843845710310925395?), (-0.25618853688042434043044508297578? + 1.25215800405495765370908417834461?*I, 1.454785439204566951537774898694356?), (0.131436773607536668628081981267619? + 0.991690478545757212715601797677509?*I, 1.223629117141336210196010062380191?)]
+
+        that are guaranteed to contain the true translations of disjoint cusp
+        neighborhoods (the element corresponding to a longitude is always
+        in a ``RealIntervalField``). The verified translations might correspond
+        to cusp neighborhoods smaller than the given ones to be able to verify
+        that they are disjoint.
+
+        **Remark:** Since the code is (potentially) non-deterministic, the result of ::
+
+            [ N.all_translations(verified = True)[i] for i in range(M.num_cusps()) ]
+
+        is not verified to correspond to disjoint cusp neighborhoods.
+        """
+
+        if verified or bits_prec:
+            # Use the implementation in verify.cusp_translations that uses
+            # tetrahedra_shapes and ComplexCuspNeighborhood
+            return verify.cusp_translations_for_neighborhood(
+                self, verified=verified, bits_prec=bits_prec)
+
+        # Use the implementation in the SnapPea kernel
+        return [ self.translations(i) for i in range(self.num_cusps()) ]
