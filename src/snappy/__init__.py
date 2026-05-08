@@ -33,6 +33,10 @@ class TriangulationBase:
                                     normal_surfaces,
                                     normal_boundary_slopes)
     from .exterior_to_link import exterior_to_link
+    from .snap.nsagetools import (alexander_polynomial,
+                                  homological_longitude)
+    from .snap.slice_obs_HKL import slice_obstruction_HKL
+    from .snap.fox_milnor import fox_milnor_test
 
 class ManifoldBase(TriangulationBase):
     from .verify import verify_hyperbolicity
@@ -47,6 +51,14 @@ class ManifoldBase(TriangulationBase):
     from .raytracing import inside_view
     from .canonical_retriangulation import canonical_retriangulation
     from .drilling import drill_word, drill_words
+    from .snap import (polished_holonomy,
+                       tetrahedra_field_gens,
+                       trace_field_gens,
+                       invariant_trace_field_gens,
+                       holonomy_matrix_entries)
+    from .snap.nsagetools import (hyperbolic_torsion,
+                                  hyperbolic_adjoint_torsion,
+                                  hyperbolic_SLN_torsion)
 
 # Subclass to be able to monkey-patch
 class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
@@ -257,10 +269,6 @@ def isomorphisms_to(self,
 
 isomorphisms_to.__doc__ = extensions.SnapPy.Triangulation._isomorphisms_to.__doc__
 TriangulationBase.isomorphisms_to = isomorphisms_to
-
-from . import snap
-snap.add_methods(ManifoldBase)
-snap.add_methods(TriangulationBase, hyperbolic=False)
 
 def all_translations(self, verified=False, bits_prec=None):
     """
