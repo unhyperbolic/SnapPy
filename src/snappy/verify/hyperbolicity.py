@@ -3,18 +3,16 @@ from .. import snap
 from . import exceptions
 
 __all__ = [
-    'check_logarithmic_gluing_equations_and_positively_oriented_tets',
+    'check_pos_imaginary_parts_and_lifts_to_log_gluing_equations',
     'verify_hyperbolicity' ]
 
 if _within_sage:
     from sage.symbolic.constants import pi
-    from ..sage_helper import I
-
+    from ..sage_helper import I, vector
 
 class FalseTuple(tuple):
     def __nonzero__(self):
         return False
-
 
 class NonIntegralFillingsError(RuntimeError):
     """
@@ -23,14 +21,11 @@ class NonIntegralFillingsError(RuntimeError):
     """
     def __init__(self, manifold):
         self.manifold = manifold
-
-    def __str__(self):
-        return ('Manifold has non-integral Dehn-filings: %s') % self.manifold
-
+        super.__init__('Manifold has non-integral Dehn-filings: %s' % manifold)
 
 @sage_method
-def check_logarithmic_gluing_equations_and_positively_oriented_tets(
-        manifold, shape_intervals):
+def check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
+        manifold, shape_intervals) -> None:
     """
     Given a SnapPy manifold manifold and complex intervals for the shapes
     shape_intervals that are certified to contain a solution to the
@@ -48,7 +43,7 @@ def check_logarithmic_gluing_equations_and_positively_oriented_tets(
 
         sage: from snappy import Manifold
         sage: M = Manifold("m019")
-        sage: check_logarithmic_gluing_equations_and_positively_oriented_tets(
+        sage: check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
         ...    M, M.tetrahedra_shapes('rect', intervals=True))
 
 
@@ -56,12 +51,11 @@ def check_logarithmic_gluing_equations_and_positively_oriented_tets(
     to contain negatively oriented tetrahedra::
 
         sage: M = Manifold("iMzzzQcabcefghhhkxxjqoobo_abBa")
-        sage: check_logarithmic_gluing_equations_and_positively_oriented_tets(
+        sage: check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
         ...    M, M.tetrahedra_shapes('rect', intervals=True))    # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
         ...
         ShapePositiveImaginaryPartNumericalVerifyError: Numerical verification that shape has positive imaginary part has failed: Im(0.4800996900657? - 0.0019533695046?*I) > 0
-
 
     """
 
@@ -70,72 +64,57 @@ def check_logarithmic_gluing_equations_and_positively_oriented_tets(
         if not (m.is_integer() and l.is_integer()):
             raise NonIntegralFillingsError(manifold)
 
+    # A list
+    #    z_0 z'_0 z''_0 z_1 z'_1 z''_1 ...
+    all_shapes = [
+        shape
+        for z in shape_intervals
+        for shape in [ z, 1 / (1 - z), ((z - 1) / z) ] ]
+
     # Check that the shapes have positive imaginary part.
-    for shape in shape_intervals:
+    for shape in all_shapes:
         if not shape.imag() > 0:
             raise exceptions.ShapePositiveImaginaryPartNumericalVerifyError(
                 shape)
 
-    # Compute the logarithms of z, z', z''
-    logZ = [             z.log() for z in shape_intervals ]
-    logZp = [ (1 / (1 - z)).log() for z in shape_intervals ]
-    logZpp = [ ((z - 1) / z).log() for z in shape_intervals ]
+    args = vector(shape.arg() for shape in all_shapes)
 
-    # A list
-    #    log(z_0) log(z'_0) log(z''_0) log(z_1) log(z'_1) log (z''_1) ...
-    logs = [ z for triple in zip(logZ, logZp, logZpp) for z in triple ]
-
-    # Number of tetrahedra and cusps
-    n_tet = manifold.num_tetrahedra()
-    n_cusps = manifold.num_cusps()
-
-    # The gluing equations in logarithmic form
-    equations = manifold.gluing_equations()
-
-    # Compute the LHS of the gluing equations
+    # Compute the args of the LHS of the gluing
+    # equations (in logarithmic form)
     #     a_0 * log(z_0) + b_0 * log(z'_0) + c_0 * log(z''_0) + ...
     # Also, see manifold.gluing_equations
-    LHSs = [
-        sum([l * expo for l, expo in zip(logs, equation)])
-        for equation in equations ]
+    LHSs = manifold.gluing_equations() * args
 
     # Get the ComplexIntervalField of the shape intervals
-    CIF = shape_intervals[0].parent()
-    RIF = CIF.real_field()
+    RIF = shape_intervals[0].real().parent()
     # 2 pi i in that field
-    two_pi_i = CIF(2 * pi * I)
+    two_pi = RIF(2 * pi)
+    epsilon = RIF(0.0625)
 
-    # Index of the next gluing equation to check
-    LHS_index = 0
+    num_edges = manifold.num_tetrahedra()
 
-    # The first n_tet gluing equations are edge equations
-    for edge_index in range(n_tet):
-        # An edge equation should sum up to 2 pi i
-        if not abs(LHSs[LHS_index] - two_pi_i) < RIF(0.1):
-            raise exceptions.EdgeEquationLogLiftNumericalVerifyError(
-                LHSs[LHS_index])
-        LHS_index += 1
+    # Compute the RHS of the gluing equations
 
-    # Then there are one, respectively, two equations per cusp
-    for cusp_index in range(n_cusps):
+    # Edge equations gives two_pi
+    RHSs = num_edges * [ two_pi ]
 
-        # For a complete cusp, we have two equations (meridian
-        # and longitude), for both of them the log's add up to 0
+    for complete in manifold.cusp_info('complete?'):
+        if complete:
+            # Complete cusp gives equation for meridian and longitude
+            # that should each give 0.
+            RHSs += 2 * [ 0 ]
+        else:
+            # Incomplete cusp gives equation for filling curve.
+            RHSs += [ two_pi ]
 
-        # For a filled cusp, we have only one equation (for the
-        # curve we fill), the log's add up to 2 pi i.
-        num_LHSs, value = (
-            (2, 0) if manifold.cusp_info(cusp_index)['complete?'] else
-            (1, two_pi_i))
-
-        # Check the one or two equations
-        for j in range(num_LHSs):
-            if not abs(LHSs[LHS_index] - value) < RIF(0.1):
+    for i, (LHS, RHS) in enumerate(zip(LHSs, RHSs)):
+        if not abs(LHS - RHS) < epsilon:
+            if i < num_edges:
+                raise exceptions.EdgeEquationLogLiftNumericalVerifyError(
+                    LHS)
+            else:
                 raise exceptions.CuspEquationLogLiftNumericalVerifyError(
-                    LHSs[LHS_index], value)
-            # Advance to the next gluing equation
-            LHS_index += 1
-
+                    LHS, RHS)
 
 @sage_method
 def verify_hyperbolicity(manifold, verbose=False, bits_prec=None,
@@ -194,7 +173,7 @@ def verify_hyperbolicity(manifold, verbose=False, bits_prec=None,
 
     Under the hood, the function will call the ``CertifiedShapesEngine`` to produce
     intervals certified to contain a solution to the rectangular gluing equations.
-    It then calls ``check_logarithmic_gluing_equations_and_positively_oriented_tets``
+    It then calls ``check_pos_imaginary_parts_and_lifts_to_log_gluing_equations``
     to verify that the logarithmic gluing equations are fulfilled and that all
     tetrahedra are positively oriented.
     """
@@ -208,7 +187,7 @@ def verify_hyperbolicity(manifold, verbose=False, bits_prec=None,
         return FalseTuple((False, []))
 
     try:
-        check_logarithmic_gluing_equations_and_positively_oriented_tets(
+        check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
             manifold, shape_intervals)
     except exceptions.NumericalVerifyError as e:
         if verbose:

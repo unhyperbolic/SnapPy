@@ -119,7 +119,7 @@ class RealCuspCrossSection(CuspCrossSectionBase):
 
         Verify that the tetrahedra shapes form a complete manifold:
 
-        sage: check_logarithmic_gluing_equations_and_positively_oriented_tets(M,shapes)
+        sage: check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(M,shapes)
         sage: e = RealCuspCrossSection.fromManifoldAndShapes(M, shapes)
         sage: e.normalize_cusps()
         sage: e.compute_tilts()

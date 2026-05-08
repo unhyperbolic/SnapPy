@@ -60,11 +60,9 @@ class ManifoldBase(TriangulationBase):
                                   hyperbolic_adjoint_torsion,
                                   hyperbolic_SLN_torsion)
 
-# Subclass to be able to monkey-patch
 class Triangulation(extensions.SnapPy.Triangulation, TriangulationBase):
     __doc__ = extensions.SnapPy.Triangulation.__doc__
 
-# Subclass to be able to monkey-patch
 class TriangulationHP(extensions.SnapPyHP.Triangulation, TriangulationBase):
     __doc__ = extensions.SnapPyHP.Triangulation.__doc__
 

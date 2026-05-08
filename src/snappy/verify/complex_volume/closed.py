@@ -116,7 +116,7 @@ def verified_complex_volume_closed_torsion(manifold, bits_prec=None):
         'rect', bits_prec=bits_prec, intervals=True)
 
     # Check it is a valid hyperbolic structure
-    hyperbolicity.check_logarithmic_gluing_equations_and_positively_oriented_tets(
+    hyperbolicity.check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
         manifold, shapes)
 
     # Compute holonomy

@@ -90,7 +90,7 @@ def interval_checked_canonical_triangulation(M, bits_prec=None):
     c = RealCuspCrossSection.fromManifoldAndShapes(M, shapes)
 
     # Use interval arithmetics to verify hyperbolicity
-    hyperbolicity.check_logarithmic_gluing_equations_and_positively_oriented_tets(
+    hyperbolicity.check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
         M, shapes)
 
     # Normalize cusp area. This is not needed when only 1 cusp

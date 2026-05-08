@@ -117,7 +117,7 @@ def compute_volume(manifold, verified, bits_prec=None):
 
     if verified:
         # If requested, check it is a valid hyperbolic structure
-        hyperbolicity.check_logarithmic_gluing_equations_and_positively_oriented_tets(
+        hyperbolicity.check_pos_imaginary_parts_and_lifts_to_log_gluing_equations(
             manifold, shape_intervals)
 
     # Sum up the volumes of all the tetrahedra
