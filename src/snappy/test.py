@@ -16,14 +16,11 @@ import snappy.len_spec.test
 import snappy.margulis.test
 import snappy.drilling.test
 import snappy.canonical_retriangulation
-import snappy.cusps.cusp_area_matrix
-import snappy.cusps.cusp_areas_from_matrix
 import snappy.isometry_signature
 import snappy.exterior_to_link.test
 import snappy.pari
 import snappy.test_cases
 import snappy.numeric_output_checker
-import snappy.cusps
 
 from snappy.sage_helper import _within_sage
 from snappy.testing import (doctest_modules, cyopengl_works,
@@ -64,27 +61,6 @@ globs_hp = {
     'ManifoldHP' : snappy.ManifoldHP
 }
 
-def additional_doctests(verbose=False, print_info=True):
-    """
-    I noticed that some of my changes to move code from here into
-    its own files caused some loss of test coverage.
-
-    In a panic, adding them explicitly here.
-
-    There ought to be a better way to do this...
-    """
-
-    return doctest_modules(
-        [ snappy.isometry_signature,
-          snappy.canonical_retriangulation,
-          snappy.cusps.cusp_area_matrix,
-          snappy.cusps.cusp_areas_from_matrix
-         ],
-        verbose=verbose,
-        print_info=print_info,
-        extraglobs = globs)
-additional_doctests.__name__ = 'snappy.<HARD TO REACH>'
-
 def make_doctest_runner(
         module, verbose=False, print_info=True, high_precision=False):
     def run(verbose=verbose, print_info=print_info):
@@ -104,14 +80,14 @@ modules = [
     make_doctest_runner(snappy.extensions.SnapPyHP,
                         high_precision=True),
     make_doctest_runner(snappy.database),
-    additional_doctests,
+    make_doctest_runner(snappy.canonical_retriangulation),
+    make_doctest_runner(snappy.isometry_signature),
     snappy,
     snappy.cusps.test.run_doctests,
     snappy.snap.test.run_doctests,
     snappy.matrix,
     snappy.geometric_structure.test.run_doctests,
     snappy.tiling.test.run_doctests,
-    snappy.cusps.test.run_doctests,
     snappy.raytracing.test.run_doctests,
     snappy.len_spec.test.run_doctests,
     snappy.margulis.test.run_doctests,
