@@ -1,6 +1,6 @@
 """
 
->>> o = Orbifold(os.path.join(test_files_paths[0], '6_5^2.7.orb'))
+>>> o = Orbifold(os.path.join(test_files_paths[0], 'example.orb'))
 >>> o.volume() # doctest: +NUMERIC9
 0.117838420347115
 
