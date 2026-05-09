@@ -1,9 +1,9 @@
 cdef class OrbTriangulation:
     """
 
-    >>> from snappy import Orb
-    >>> o = Orb.OrbifoldTriangulation("ORB_FILE.orb")
-    >>> o.retriangulate() # Recreates triangulation from diagram, forgets what user entered for singular locus
+    >>> o = Orb.OrbifoldTriangulation("ORB_FILE.orb") # doctest: +SKIP
+     # Recreates triangulation from diagram, forgets what user entered for singular locus
+    >>> o.retriangulate() # doctest: +SKIP
 
     """
 

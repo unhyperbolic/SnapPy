@@ -1,14 +1,24 @@
 cdef class Orbifold(OrbTriangulation):
     """
 
-    >>> from snappy import Orb
-    >>> o = Orb.Orbifold(bytes("ORB_FILE.orb"))
-    >>> o.volume()
+    >>> o = Orbifold(Triangulation("m007(3,1)").filled_triangulation())
+    >>> o.solution_type() # doctest: +SKIP
+
+    >>> o.volume() # doctest: +NUMERIC9
+    1.01494160640966
+
+    >>> o = Orbifold(bytes("ORB_FILE.orb")) # doctest: +SKIP
+    >>> o.volume() # doctest: +SKIP
     0.9231643666930148
-    >>> o.retriangulate() # Recreates triangulation from diagram, forgets what user entered for singular locus
-    >>> o.volume() # So we get a different volume
+
+    # Recreates triangulation from diagram, forgets what user entered for singular locus
+
+    >>> o.retriangulate()  # doctest: +SKIP
+
+    # So we get a different volume
+    >>> o.volume() # doctest: +SKIP
     7.327724753417753
-    >>> o.retriangulate()
+    >>> o.retriangulate() # doctest: +SKIP
 
     """
 

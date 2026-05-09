@@ -21,6 +21,8 @@ import snappy.exterior_to_link.test
 import snappy.pari
 import snappy.test_cases
 import snappy.numeric_output_checker
+import snappy.extensions.Orb
+import snappy.tests.test
 
 from snappy.sage_helper import _within_sage
 from snappy.testing import (doctest_modules, cyopengl_works,
@@ -58,7 +60,8 @@ globs_hp = {
     'Triangulation' : snappy.TriangulationHP,
     'TriangulationHP' : snappy.TriangulationHP,
     'Manifold' : snappy.ManifoldHP,
-    'ManifoldHP' : snappy.ManifoldHP
+    'ManifoldHP' : snappy.ManifoldHP,
+    'Orbifold' : snappy.extensions.Orb.Orbifold
 }
 
 def make_doctest_runner(
@@ -95,7 +98,9 @@ modules = [
     snappy.ptolemy.test.run_doctests,
     spherogram.test.run_doctests,
     snappy.verify.test.run_doctests,
-    snappy.test_cases
+    make_doctest_runner(snappy.extensions.Orb),
+    snappy.test_cases,
+    snappy.tests.test.run_doctests
 ]
 
 slow_modules = [
