@@ -339,7 +339,7 @@ static Boolean verify_casson(CassonFormat *cf)
                 EdgeInfo * ei = cf->head;
 
                 if (ei == NULL) {
-                    // uFatalError("verify_casson 1", "casson_io.c");
+                    uFatalError("verify_casson 1", "casson_io.c");
                     return FALSE;
                 }
 
