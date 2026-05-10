@@ -347,7 +347,7 @@ static Boolean verify_casson(CassonFormat *cf)
                     TetEdgeInfo * tei = ei->head;
 
                     if (tei == NULL) {
-                        // uFatalError("verify_casson 2", "casson_io.c");
+                        uFatalError("verify_casson 2", "casson_io.c");
                         return FALSE;
                     }
 
