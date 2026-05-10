@@ -318,6 +318,7 @@ static CassonFormat *read_casson_struct(
     CassonFormat * cf = NEW_STRUCT(CassonFormat);
     if (!fill_casson_struct(cf, str)) {
         free_casson_format(cf);
+        return NULL;
     }
 
     return cf;
