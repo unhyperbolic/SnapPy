@@ -100,7 +100,7 @@ Triangulation *read_triangulation_from_string(
         uFatalError("read_triangulation_from_string", "unix file io");
         return NULL;
     }
-	  
+
     theTriangulationData = ReadNewFileFormat(file_data);
     
     data_to_triangulation(theTriangulationData, &manifold);

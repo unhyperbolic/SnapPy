@@ -72,7 +72,7 @@ void read_orb_from_string(
         (*trig)->name = (char*) my_malloc(name_length + 1);
         if ((*trig)->name == NULL)
         {
-            /* uFatalError */
+            uFatalError("read_orb_from_string 1", "orb_io.c");
             return;
         }
         memcpy((*trig)->name, name_start, name_length);
@@ -104,6 +104,10 @@ void read_orb(
     if ( fseek(fp, 0, SEEK_END) != 0 ||
          (filesize = ftell(fp) ) == -1 ||
          fseek(fp, 0, SEEK_SET) != 0) {
+
+        fclose(fp);
+
+        uFatalError("read_orb 2", "orb_io.c");
         return;
     }
 
@@ -111,12 +115,16 @@ void read_orb(
     buffer[filesize] = '\0';
 
     if ( fread(buffer, filesize, 1, fp) != 1) {
+        fclose(fp);
         free(buffer);
+
+        uFatalError("read_orb 3", "orb_io.c");
         return;
     }
 
     read_orb_from_string(buffer, trig, diagram);
 
+    fclose(fp);
     free(buffer);
 }
 
