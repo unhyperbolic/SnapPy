@@ -1,8 +1,10 @@
 from snappy import testing
 import snappy.tests
+import snappy.tests.io
 import snappy.tests.orb
 
 modules = [
+    snappy.tests.io,
     snappy.tests.orb
 ]
 

@@ -830,7 +830,7 @@ setup( name = 'snappy',
            'snappy/raytracing/shaders' : ['*.glsl', '*.png'],
            'snappy/raytracing/zoom_slider': ['*.png', '*.gif'],
            'snappy/raytracing/zoom_slider': ['*.png'],
-           'snappy/tests/files': ['*.orb'],
+           'snappy/tests/files': ['*.orb', '*.tri'],
            'snappy/dev/vericlosed/orb' : ['orb_solution_for_snappea_finite_triangulation_mac'],
        },
        package_dir = {
