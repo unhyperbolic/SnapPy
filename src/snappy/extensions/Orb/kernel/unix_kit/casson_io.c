@@ -331,49 +331,39 @@ static Boolean verify_casson(CassonFormat *cf)
         return FALSE;
     }
 
-    for (int i = 0; i < cf->num_tet; i++) {
-	Boolean check[4][4];
-        for (int j = 0; j < 4; j++) {
-            for (int k = 0; k < 4; k++) {
-		check[j][k] = j == k;
+    Boolean * tet_edges = NEW_ARRAY(6 * cf->num_tet, Boolean);
 
-                EdgeInfo * ei = cf->head;
+    for (int i = 0; i < 6 * cf->num_tet; i++) {
+        tet_edges[i] = FALSE;
+    }
 
-                if (ei == NULL) {
-                    uFatalError("verify_casson 1", "casson_io.c");
-                    return FALSE;
-                }
+    for (EdgeInfo * ei = cf->head; ei != NULL; ei = ei->next) {
+        if (ei->head == NULL) {
+            uFatalError("verify_casson 1", "cassion_io.c");
+            my_free(tet_edges);
+            return FALSE;
+        }
 
-                while (ei != NULL) {
-                    TetEdgeInfo * tei = ei->head;
-
-                    if (tei == NULL) {
-                        uFatalError("verify_casson 2", "casson_io.c");
-                        return FALSE;
-                    }
-
-                    while (tei != NULL) {
-                        if (tei->tet_index == i) {
-                            if (check[tei->f1][tei->f2]) return TRUE;
-
-                            check[tei->f1][tei->f2] = TRUE;
-                            check[tei->f2][tei->f1] = TRUE;
-                        }
-                        tei = tei->next;
-                    }
-                    ei = ei->next;
-                }
-
-                for (int j = 0; j < 4; j++)
-                    for (int k = 0; k < 4; k++)
-                        if (check[j][k] == FALSE) {
-                            uFatalError("verify_casson 3", "casson_io.c");
-                            return FALSE;
-                        }
+        for (TetEdgeInfo * tei = ei->head; tei != NULL; tei = tei->next) {
+            if (tei->f1 == tei->f2) {
+                uFatalError("verify_casson 2", "cassion_io.c");
+                my_free(tet_edges);
+                return FALSE;
             }
+
+            int i = 6 * tei->tet_index + edge_between_faces[tei->f1][tei->f2];
+            tet_edges[i] = TRUE;
         }
     }
 
+    for (int i = 0; i < 6 * cf->num_tet; i++) {
+        if (tet_edges[i] == FALSE) {
+            my_free(tet_edges);
+            return FALSE;
+        }
+    }
+   
+    my_free(tet_edges);
     return TRUE;
 }
 
