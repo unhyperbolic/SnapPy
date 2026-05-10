@@ -316,12 +316,11 @@ static CassonFormat *read_casson_struct(
     char **str)
 {
     CassonFormat * cf = NEW_STRUCT(CassonFormat);
-    if (!fill_casson_struct(cf, str)) {
-        free_casson_format(cf);
-        return NULL;
-    }
-
-    return cf;
+    if (fill_casson_struct(cf, str))
+        return cf;
+        
+    free_casson_format(cf);
+    return NULL;
 }
 
 /* corresponds verify_casson_format in gui/organizer.cpp */
