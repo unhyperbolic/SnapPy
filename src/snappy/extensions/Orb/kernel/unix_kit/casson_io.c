@@ -174,7 +174,7 @@ static Boolean fill_casson_struct(
                     " %d %d%n",
                     &e->one_vertex, &e->other_vertex, &consumed) != 2)
             {
-                //                uFatalError("fill_casson_struct 2", "casson_io.c");
+                uFatalError("fill_casson_struct 2", "casson_io.c");
                 return FALSE;
             }
 
@@ -207,7 +207,7 @@ static Boolean fill_casson_struct(
 
             if (sscanf(
                     *str, "%d%c%c%n", &t->tet_index, &f1, &f2, &consumed) != 3) {
-                //                uFatalError("fill_casson_struct 3", "casson_io.c");
+                uFatalError("fill_casson_struct 3", "casson_io.c");
                 return FALSE;
             }
 
@@ -222,14 +222,14 @@ static Boolean fill_casson_struct(
             if ('u' <= f1 && f1 <= 'x') {
                 t->f1 = f1 - 'u';
             } else {
-                //                uFatalError("fill_casson_struct 4", "casson_io.c");
+                uFatalError("fill_casson_struct 4", "casson_io.c");
                 return FALSE;
             }
 
             if ('u' <= f2 && f2 <= 'x') {
                 t->f2 = f2 - 'u';
             } else {
-                //                uFatalError("fill_casson_struct 5", "casson_io.c");
+                uFatalError("fill_casson_struct 5", "casson_io.c");
                 return FALSE;
             }
 
