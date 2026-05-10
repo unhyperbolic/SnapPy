@@ -339,7 +339,7 @@ static Boolean verify_casson(CassonFormat *cf)
                 EdgeInfo * ei = cf->head;
 
                 if (ei == NULL) {
-                    uFatalError("verify_casson 1", "casson_io.c");
+                    // uFatalError("verify_casson 1", "casson_io.c");
                     return FALSE;
                 }
 
@@ -347,7 +347,7 @@ static Boolean verify_casson(CassonFormat *cf)
                     TetEdgeInfo * tei = ei->head;
 
                     if (tei == NULL) {
-                        uFatalError("verify_casson 2", "casson_io.c");
+                        // uFatalError("verify_casson 2", "casson_io.c");
                         return FALSE;
                     }
 
@@ -366,7 +366,7 @@ static Boolean verify_casson(CassonFormat *cf)
                 for (int j = 0; j < 4; j++)
                     for (int k = 0; k < 4; k++)
                         if (check[j][k] == FALSE) {
-                            uFatalError("verify_casson 3", "casson_io.c");
+                            // uFatalError("verify_casson 3", "casson_io.c");
                             return FALSE;
                         }
             }
