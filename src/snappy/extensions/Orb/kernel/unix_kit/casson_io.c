@@ -158,7 +158,7 @@ static Boolean fill_casson_struct(
                 " %d %d %lf%n",
                 &e->index, &e->singular_index, &e->singular_order,
                 &consumed) != 3) {
-            //            uFatalError("fill_casson_struct 1", "casson_io.c");
+            uFatalError("fill_casson_struct 1", "casson_io.c");
             return FALSE;
         }
 
