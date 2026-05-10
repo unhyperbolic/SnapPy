@@ -158,7 +158,7 @@ static Boolean fill_casson_struct(
                 " %d %d %lf%n",
                 &e->index, &e->singular_index, &e->singular_order,
                 &consumed) != 3) {
-            uFatalError("fill_casson_struct 1", "casson_io.c");
+            //            uFatalError("fill_casson_struct 1", "casson_io.c");
             return FALSE;
         }
 
@@ -174,7 +174,7 @@ static Boolean fill_casson_struct(
                     " %d %d%n",
                     &e->one_vertex, &e->other_vertex, &consumed) != 2)
             {
-                uFatalError("fill_casson_struct 2", "casson_io.c");
+                //                uFatalError("fill_casson_struct 2", "casson_io.c");
                 return FALSE;
             }
 
@@ -207,7 +207,7 @@ static Boolean fill_casson_struct(
 
             if (sscanf(
                     *str, "%d%c%c%n", &t->tet_index, &f1, &f2, &consumed) != 3) {
-                uFatalError("fill_casson_struct 3", "casson_io.c");
+                //                uFatalError("fill_casson_struct 3", "casson_io.c");
                 return FALSE;
             }
 
@@ -222,14 +222,14 @@ static Boolean fill_casson_struct(
             if ('u' <= f1 && f1 <= 'x') {
                 t->f1 = f1 - 'u';
             } else {
-                uFatalError("fill_casson_struct 4", "casson_io.c");
+                //                uFatalError("fill_casson_struct 4", "casson_io.c");
                 return FALSE;
             }
 
             if ('u' <= f2 && f2 <= 'x') {
                 t->f2 = f2 - 'u';
             } else {
-                uFatalError("fill_casson_struct 5", "casson_io.c");
+                //                uFatalError("fill_casson_struct 5", "casson_io.c");
                 return FALSE;
             }
 
@@ -265,7 +265,7 @@ static Boolean fill_casson_struct(
                     &e->v_inner_product2,
                     &consumed) != 4)
             {
-                uFatalError("fill_casson_struct 6", "casson_io.c");
+                //                uFatalError("fill_casson_struct 6", "casson_io.c");
                 return FALSE;
             }
             *str += consumed;
@@ -274,7 +274,7 @@ static Boolean fill_casson_struct(
             {
                 if (sscanf(*str, " %lf%n", &t->dihedral_angle, &consumed) != 1)
                 {
-                    uFatalError("fill_casson_struct 7", "casson_io.c");
+                    //                    uFatalError("fill_casson_struct 7", "casson_io.c");
                     return FALSE;
                 }
                 *str += consumed;
@@ -291,7 +291,7 @@ static Boolean fill_casson_struct(
         {
             int index;
             if (sscanf(*str, " %d%n", &index, &consumed) != 1) {
-                uFatalError("fill_casson_struct 8", "casson_io.c");
+                //                uFatalError("fill_casson_struct 8", "casson_io.c");
                 return FALSE;
             }
             *str += consumed;
@@ -299,7 +299,7 @@ static Boolean fill_casson_struct(
             for (TetEdgeInfo * t = e->head; t != NULL; t = t->next) {
                 for (int i = 0; i < 8; i++) {
                     if (sscanf(*str, " %d%n", &t->curves[i], &consumed) != 1) {
-                        uFatalError("fill_casson_struct 9", "casson_io.c");
+                        //                        uFatalError("fill_casson_struct 9", "casson_io.c");
                         return FALSE;
                     }
                     *str += consumed;
@@ -339,7 +339,7 @@ static Boolean verify_casson(CassonFormat *cf)
                 EdgeInfo * ei = cf->head;
 
                 if (ei == NULL) {
-                    uFatalError("verify_casson 1", "casson_io.c");
+                    //                    uFatalError("verify_casson 1", "casson_io.c");
                     return FALSE;
                 }
 
@@ -347,7 +347,7 @@ static Boolean verify_casson(CassonFormat *cf)
                     TetEdgeInfo * tei = ei->head;
 
                     if (tei == NULL) {
-                        uFatalError("verify_casson 2", "casson_io.c");
+                        //                        uFatalError("verify_casson 2", "casson_io.c");
                         return FALSE;
                     }
 
@@ -366,7 +366,7 @@ static Boolean verify_casson(CassonFormat *cf)
                 for (int j = 0; j < 4; j++)
                     for (int k = 0; k < 4; k++)
                         if (check[j][k] == FALSE) {
-                            uFatalError("verify_casson 3", "casson_io.c");
+                            //                            uFatalError("verify_casson 3", "casson_io.c");
                             return FALSE;
                         }
             }
