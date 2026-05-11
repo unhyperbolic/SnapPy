@@ -1,6 +1,6 @@
 from .. import number
 
-import os
+import os, sys, time
 
 SolutionType = [
     'not attempted',

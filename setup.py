@@ -581,7 +581,9 @@ class OrbExtensionSpec:
     cython_file = os.path.join(cython_path, 'Orb.pyx')
 
     sources = (
-        glob(os.path.join(kernel_path, 'code', '*.c')) +
+        remove_files(
+            glob(os.path.join(kernel_path, 'code', '*.c')),
+            ['unix_UI.c']) +
         glob(os.path.join(kernel_path, 'addl_code', '*.c')) +
         glob(os.path.join(kernel_path, 'unix_kit', '*.c')))
 

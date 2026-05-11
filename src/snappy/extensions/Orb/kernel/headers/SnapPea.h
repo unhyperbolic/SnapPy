@@ -500,19 +500,35 @@ extern int uQuery(const char *message, const int num_responses,
  *	is present), uQuery should return the default_response.
  */
 
-extern void uFatalError(char *function, char *file);
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+void uFatalError(const char *function, const char *file);
+
 /*
  *	Informs the user that a fatal error has occurred in the given
  *	function and file, and then exits.
  */
 
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+void uAbortMemoryFull(void);
 extern void uAbortMemoryFull(void);
+
 /*
  *	Informs the user that the available memory has been exhausted,
  *	and aborts SnapPea.
  */
 
-extern void uPrepareMemFullMessage(void);
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+void uPrepareMemFullMessage(void);
+
 /*
  *	uMemoryFull() is a tricky function, because the system may not find
  *	enough memory to display an error message.  (I tried having it stash
@@ -522,9 +538,25 @@ extern void uPrepareMemFullMessage(void);
  *	a (hidden) dialog box.  Call it once when the UI initializes.
  */
 
-extern void			uLongComputationBegins(char *message, Boolean is_abortable);
-extern FuncResult	uLongComputationContinues(void);
-extern void			uLongComputationEnds(void);
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+void         uLongComputationBegins(const char *message,
+                                    Boolean is_abortable);
+
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+FuncResult   uLongComputationContinues(void);
+
+extern
+#ifdef _MSC_VER
+ __declspec(dllexport)
+#endif
+void         uLongComputationEnds(void);
+
 /*
  *	The kernel uses these three functions to inform the UI of a long
  *	computation.  The UI relays this information to the user in whatever

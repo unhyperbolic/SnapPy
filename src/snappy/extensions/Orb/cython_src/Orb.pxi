@@ -1,5 +1,17 @@
+# Python API
+cdef extern from "Python.h":
+    ctypedef struct PyObject
+
+    PyObject* PyErr_Occurred()
+
 cdef extern from "stdlib.h":
     void free(void *mem)
+
+# C library declarations
+
+cdef extern from *:
+    ctypedef char* const_char_ptr "const char*"
+    ctypedef int const_int "const int"
 
 cdef extern from *:
     """
@@ -16,6 +28,12 @@ cdef extern from "SnapPea.h":
         Real imag
 
     ctypedef char Boolean
+
+    ctypedef enum c_FuncResult "FuncResult":
+        func_OK = 0
+        func_cancelled
+        func_failed
+        func_bad_input
 
     ctypedef enum c_SolutionType "SolutionType":
         not_attempted
