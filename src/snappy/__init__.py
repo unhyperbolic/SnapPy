@@ -4,19 +4,21 @@
 # logging.debug('This message should go to the log file')
 import sys
 from . import extensions
-from .extensions.SnapPy import (AbelianGroup,
-                     FundamentalGroup,
-                     SymmetryGroup,
-                     Isometry,
-                     AlternatingKnotExteriors,
-                     NonalternatingKnotExteriors,
-                     pari)
-from .extensions.SnapPy import DirichletDomain
-from .extensions.SnapPyHP import DirichletDomain as DirichletDomainHP
-from .extensions.SnapPy import CuspNeighborhood
-from .extensions.SnapPyHP import CuspNeighborhood as CuspNeighborhoodHP
-from .extensions.SnapPy import HolonomyGroup
-from .extensions.SnapPyHP import HolonomyGroup as HolonomyGroupHP
+from .extensions.SnapPy import (
+    AbelianGroup,
+    FundamentalGroup,
+    SymmetryGroup,
+    Isometry,
+    AlternatingKnotExteriors,
+    NonalternatingKnotExteriors,
+    pari,
+    DirichletDomain,
+    CuspNeighborhood,
+    HolonomyGroup)
+from .extensions.SnapPyHP import (
+    DirichletDomain as DirichletDomainHP,
+    CuspNeighborhood as CuspNeighborhoodHP,
+    HolonomyGroup as HolonomyGroupHP)
 
 # seed the kernel's random number generator.
 import time
