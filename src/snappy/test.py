@@ -19,7 +19,6 @@ import snappy.canonical_retriangulation
 import snappy.isometry_signature
 import snappy.exterior_to_link.test
 import snappy.pari
-import snappy.test_cases
 import snappy.numeric_output_checker
 import snappy.extensions.Orb
 import snappy.tests.test
@@ -99,7 +98,6 @@ modules = [
     spherogram.test.run_doctests,
     snappy.verify.test.run_doctests,
     make_doctest_runner(snappy.extensions.Orb),
-    snappy.test_cases,
     snappy.tests.test.run_doctests
 ]
 

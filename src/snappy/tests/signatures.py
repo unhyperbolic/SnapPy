@@ -1,9 +1,4 @@
 """
-IMPORTANT: Python only recognises this as a doc string if there is
-nothing before it. In particular, add any includes after the doc string.
-
-Doc tests that we do not want to show up in the documentation.
-
 Decorated isomorphism signature
 -------------------------------
 
@@ -153,111 +148,9 @@ Test isometry_signature's of_link and filling.
 
 >>> Manifold("o9_44206(2,3)").isometry_signature(of_link=True)
 'jLLvMQQacggfiihhijkkjkehhtb_abBabBbabaab'
-
-Class hierarchy
----------------
-
->>> isinstance(Manifold("m004"), Triangulation)
-True
-
->>> isinstance(ManifoldHP("m004"), TriangulationHP)
-True
-
-Low precision and high precision comparisons
---------------------------------------------
->>> M   = Manifold("m004")
->>> Mhp = Manifold("m004")
->>> N   = Manifold("m003")
->>> Nhp = Manifold("m003")
->>> M.is_isometric_to(M)
-True
->>> M.is_isometric_to(Mhp)
-True
->>> Mhp.is_isometric_to(M)
-True
->>> Mhp.is_isometric_to(Mhp)
-True
->>> M.is_isometric_to(N)
-False
->>> M.is_isometric_to(Nhp)
-False
->>> Mhp.is_isometric_to(N)
-False
->>> Mhp.is_isometric_to(Nhp)
-False
-
->>> O = Triangulation("mvvLALQQQhfghjjlilkjklaaaaaffffffff",
-... remove_finite_vertices = False)
->>> O.has_finite_vertices()
-True
->>> Ohp = TriangulationHP("mvvLALQQQhfghjjlilkjklaaaaaffffffff",
-... remove_finite_vertices = False)
->>> Ohp.has_finite_vertices()
-True
-
->>> len(O.isomorphisms_to(O))
-8
->>> len(O.isomorphisms_to(Ohp))
-8
->>> len(Ohp.isomorphisms_to(O))
-8
->>> len(Ohp.isomorphisms_to(Ohp))
-8
->>> len(M.isomorphisms_to(O))
-0
->>> len(M.isomorphisms_to(Ohp))
-0
->>> len(Mhp.isomorphisms_to(O))
-0
->>> len(Mhp.isomorphisms_to(Ohp))
-0
-
-Canonical retriangulation
--------------------------
-
-Some cases that should be rejected
-
->>> M = Manifold("m004(3,4)")
->>> M.canonical_retriangulation() # doctest: +ELLIPSIS
-Traceback (most recent call last):
-...
-ValueError: Canonical retriangulation needs all cusps to be complete.
-
-sage: M.canonical_retriangulation(verified=True) # doctest: +ELLIPSIS
-Traceback (most recent call last):
-...
-ValueError: Canonical retriangulation needs all cusps to be complete.
-
-Cusp areas
-----------
-
->>> M = Manifold('o9_44210')
->>> M.cusp_areas(policy='greedy') # doctest: +NUMERIC9
-[7.053940530873898, 3.2712450270, 2.7091590087]
->>> M.cusp_areas(policy='greedy', first_cusps=[]) # doctest: +NUMERIC9
-[7.053940530873898, 3.2712450270, 2.7091590087]
->>> M.cusp_areas(policy='greedy', first_cusps=[0,]) # doctest: +NUMERIC9
-[7.053940530873898, 3.2712450270, 2.7091590087]
->>> M.cusp_areas(policy='greedy', first_cusps=[0,1]) # doctest: +NUMERIC9
-[7.053940530873898, 3.2712450270, 2.7091590087]
->>> M.cusp_areas(policy='greedy', first_cusps=[0,1,2]) # doctest: +NUMERIC9
-[7.053940530873898, 3.2712450270, 2.7091590087]
->>> M.cusp_areas(policy='greedy', first_cusps=[0,2,1]) # doctest: +NUMERIC9
-[7.053940530873898, 2.3513135103, 3.7690945490]
->>> M.cusp_areas(policy='greedy', first_cusps=[1,]) # doctest: +NUMERIC9
-[2.30025338030798, 10.0315765558665, 0.883442685721903]
-
-Cusp translations
------------------
-
->>> M = Manifold("s776")
->>> M.cusp_translations(policy = 'greedy', first_cusps = [], bits_prec = 100) # doctest: +NUMERIC21
-[(0.70710678118654752440084436210 + 1.8708286933869706927918743662*I, 2.8284271247461900976033774484), (0.35355339059327376220042218105 + 0.93541434669348534639593718308*I, 1.4142135623730950488016887242), (0.35355339059327376220042218105 + 0.93541434669348534639593718308*I, 1.4142135623730950488016887242)]
-
-
 """
 
 if not __doc__:
     raise Exception("doc string with tests was not recognized.")
 
-from . import Manifold, ManifoldHP, Triangulation, TriangulationHP
+from .. import Manifold, ManifoldHP, Triangulation, TriangulationHP

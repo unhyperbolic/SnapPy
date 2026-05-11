@@ -1,10 +1,17 @@
 from snappy import testing
+
 import snappy.tests
 import snappy.tests.io
+import snappy.tests.signatures
+import snappy.tests.precisions
 import snappy.tests.orb
+import snappy.tests.misc
 
 modules = [
     snappy.tests.io,
+    snappy.tests.signatures,
+    snappy.tests.precisions,
+    snappy.tests.misc,
     snappy.tests.orb
 ]
 
