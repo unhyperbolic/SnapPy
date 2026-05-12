@@ -497,6 +497,12 @@ typedef struct NormalSurfaceList            NormalSurfaceList;
 #define CONST
 /* #define CONST const */
 
+#ifdef _MSC_VER
+#define DLL_EXPORT_SPEC __declspec(dllexport)
+#else
+#define DLL_EXPORT_SPEC
+#endif
+
 #ifdef FORCE_C_LINKAGE
 #ifdef __cplusplus
 extern "C" {
@@ -507,23 +513,21 @@ extern "C" {
 
 #include "kernel_namespace.h"
 
+
+
 /*
  *  The UI provides the following functions for use by the kernel:
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void uAcknowledge(const char *message);
 /**<
  *  Presents the string *message to the user and waits for acknowledgment ("OK").
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 int uQuery(const char *message, const int num_responses,
                 const char *responses[], const int default_response);
 /**<
@@ -536,9 +540,7 @@ int uQuery(const char *message, const int num_responses,
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void uFatalError(const char *function, const char *file);
 /**<
  *  Informs the user that a fatal error has occurred in the given
@@ -546,9 +548,7 @@ void uFatalError(const char *function, const char *file);
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void uAbortMemoryFull(void);
 /**<
  *  Informs the user that the available memory has been exhausted,
@@ -556,9 +556,7 @@ void uAbortMemoryFull(void);
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void uPrepareMemFullMessage(void);
 /**<
  *  uMemoryFull() is a tricky function, because the system may not find
@@ -570,9 +568,7 @@ void uPrepareMemFullMessage(void);
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void         uLongComputationBegins(const char *message,
                                     Boolean is_abortable);
 /**<
@@ -633,18 +629,14 @@ void         uLongComputationBegins(const char *message,
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 FuncResult   uLongComputationContinues(void);
 /**<
  * See uLongComputationBegins().
  */
 
 extern
-#ifdef _MSC_VER
- __declspec(dllexport)
-#endif
+DLL_EXPORT_SPEC
 void         uLongComputationEnds(void);
 /**<
  * See uLongComputationBegins().
