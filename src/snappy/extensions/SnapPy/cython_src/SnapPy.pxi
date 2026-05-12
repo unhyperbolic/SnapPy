@@ -1,19 +1,6 @@
-# Python API
-cdef extern from "Python.h":
-    ctypedef struct PyObject
-
-    void PyErr_SetInterrupt()
-    PyObject* PyErr_Occurred()
-
 # Quiet down warnings that Cython always generates
 cdef extern from "warnings.h":
     pass
-
-# C library declarations
-
-cdef extern from *:
-    ctypedef char* const_char_ptr "const char*"
-    ctypedef int const_int "const int"
 
 cdef extern from "stdlib.h":
     ctypedef unsigned long size_t
@@ -33,23 +20,10 @@ cdef extern from "string.h":
 # datatypes to be of type Real_struct instead of Real
 
 cdef extern from "SnapPea.h":
-    ctypedef struct Real_struct:
-        Real x
-
-    ctypedef struct Complex:
-        Real real
-        Real imag
-
-    Real Real_from_string(char* num_string)
-
     Real PI
     Real TWO_PI
-    ctypedef struct Complex:
-        Real real
-        Real imag
 
 cdef extern from "SnapPea.h":
-    ctypedef char Boolean
     ctypedef unsigned char Permutation
 
     ctypedef enum c_SolutionType "SolutionType":
@@ -65,12 +39,6 @@ cdef extern from "SnapPea.h":
     ctypedef enum c_FillingStatus "FillingStatus":
         complete
         filled
-
-    ctypedef enum c_FuncResult "FuncResult":
-        func_OK = 0
-        func_cancelled
-        func_failed
-        func_bad_input
 
     ctypedef enum c_MatrixParity "MatrixParity":
         orientation_reversing = 0

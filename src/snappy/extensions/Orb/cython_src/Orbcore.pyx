@@ -1,3 +1,5 @@
+include "../../shared/cython_src/misc.pxi"
+include "../../shared/cython_src/SnapPea.pxi"
 include "Orb.pxi"
 include "../../shared/cython_src/basic_conversions.pyx"
 include "../../shared/cython_src/number_conversions.pyx"

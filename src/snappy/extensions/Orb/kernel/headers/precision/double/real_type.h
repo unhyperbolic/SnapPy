@@ -24,6 +24,8 @@ typedef double Real_struct;
 
 #include "end_namespace.h"
 
+#define Real_from_string(x) (atof((char *)x))
+
 #define REAL_MAX DBL_MAX
 
 #endif
