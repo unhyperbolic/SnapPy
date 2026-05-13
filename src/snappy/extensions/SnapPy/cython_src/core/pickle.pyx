@@ -89,7 +89,9 @@ cdef pickle_triangulation(c_Triangulation *tri):
             result += filling[:2]
     for j in range(tri_data.num_tetrahedra):
         result += pickle_tetrahedron_data(&tri_data.tetrahedron_data[j], flag)
-    return result + bytes(tri_data.name)
+    result += bytes(tri_data.name)
+    free_triangulation_data(tri_data)
+    return result
 
 cdef pickle_tetrahedron_data(c_TetrahedronData* data, int flag):
     cdef int i, j, v, f

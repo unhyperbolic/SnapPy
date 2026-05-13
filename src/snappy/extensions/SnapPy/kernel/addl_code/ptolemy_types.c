@@ -18,8 +18,8 @@ void allocate_identification_of_variables(
     id->powers = NEW_ARRAY(num, int);
 
     for (i = 0; i < num; i++) {
-	id->variables[i][0] = 0;
-	id->variables[i][1] = 0;
+	id->variables[i][0] = NULL;
+	id->variables[i][1] = NULL;
     }
 }
 
@@ -28,8 +28,8 @@ void free_identification_of_variables(
 
     int i;
     for (i = 0; i < id.num_identifications; i++) {
-	free(id.variables[i][0]);
-	free(id.variables[i][1]);
+	my_free(id.variables[i][0]);
+	my_free(id.variables[i][1]);
     }
     
     my_free(id.signs);
@@ -54,10 +54,14 @@ void allocate_integer_matrix_with_explanations(
 
     for (i = 0; i < num_rows; i++) {
 	m->entries[i] = NEW_ARRAY(num_cols, int);
-	m->explain_row[i] = 0;
+	m->explain_row[i] = NULL;
 	for (j = 0; j < num_cols; j++) {
 	    m->entries[i][j] = 0;
 	}
+    }
+
+    for (j = 0; j < num_cols; j++) {
+        m->explain_column[j] = NULL;
     }
 }
 
@@ -73,14 +77,16 @@ void free_integer_matrix_with_explanations(Integer_matrix_with_explanations m) {
 
     if (m.explain_row) {
 	for (i = 0; i < m.num_rows; i++) {
-	    free(m.explain_row[i]);
+	    my_free(m.explain_row[i]);
 	}
+        my_free(m.explain_row);
     }
 
     if (m.explain_column) {
 	for (i = 0; i < m.num_cols; i++) {
-	    free(m.explain_column[i]);
+	    my_free(m.explain_column[i]);
 	}
+        my_free(m.explain_column);
     }
 }
 

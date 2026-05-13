@@ -238,13 +238,18 @@ cdef convert_and_free_identification_of_variables(
                    c_vars.powers[i],
                    to_str(c_vars.variables[i][0]),
                    to_str(c_vars.variables[i][1])))
+
+    free_identification_of_variables(c_vars)
+
     return var_list
 
 
 # convert and free an integer matrix from C
 cdef convert_and_free_integer_matrix(
         Integer_matrix_with_explanations c_matrix):
+
     if not c_matrix.entries:
+        free_integer_matrix_with_explanations(c_matrix)
         return []
 
     python_matrix = [[c_matrix.entries[i][j]
