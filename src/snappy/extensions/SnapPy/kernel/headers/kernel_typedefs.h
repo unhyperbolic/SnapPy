@@ -408,12 +408,15 @@ typedef struct extra Extra;
 
 #ifdef __cplusplus
 
-#define CDECL   __cdecl
-//#define CDECL cdecl
+#define EXTERN_C_BEGIN_SCOPE extern "C" {
+#define EXTERN_C_END_SCOPE }
 
 #else
 
-#define CDECL   /* We're not using C++, so CDECL may be empty. */
+/* We're not using C++, so macros may be empty. */
+
+#define EXTERN_C_BEGIN_SCOPE
+#define EXTERN_C_END_SCOPE
 
 #endif
 

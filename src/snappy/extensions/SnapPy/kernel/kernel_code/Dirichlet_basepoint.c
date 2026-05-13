@@ -260,7 +260,9 @@ static Boolean      apex_is_higher(Real height1, Real height2, Solution apex1, S
 static FuncResult   solve_three_equations(Constraint *equations[3], Solution solution);
 static void         initialize_t2(Solution solution, O31Matrix t2);
 static void         sort_gen_list(MatrixPairList *gen_list, int num_matrix_pairs);
+EXTERN_C_BEGIN_SCOPE
 static int          compare_image_height(const void *ptr1, const void *ptr2);
+EXTERN_C_END_SCOPE
 static Real       length3(Real v[3]);
 static Real       inner3(Real u[3], Real v[3]);
 static void       copy3(Solution dest, const Solution source);

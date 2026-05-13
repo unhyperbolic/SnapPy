@@ -427,13 +427,17 @@ static void         find_good_geodesics(Tile *tiling, int num_translates, Tile *
 static Boolean      tile_is_good(Tile *tile, Real cutoff_length, Real spine_radius);
 static Real         distance_to_origin(Tile *tile);
 static void         sort_by_length(Tile **geodesic_list, int num_good_geodesics);
+EXTERN_C_BEGIN_SCOPE
 static int          compare_lengths(const void *tile0, const void *tile1);
+EXTERN_C_END_SCOPE
 static void         eliminate_powers(Tile **geodesic_list, int *num_good_geodesics, Real cutoff_length);
 static void         eliminate_its_powers(Tile **geodesic_list, int num_good_geodesics, int i0, Real cutoff_length);
 static void         eliminate_conjugates(Tile **geodesic_list, int *num_good_geodesics, Tile *tiling, int num_translates, Real spine_radius);
 static void         make_conjugator_list(Tile ***conjugator_list, int *num_conjugators, Tile *tiling, int num_translates);
 static void         add_conjugators_to_list(Tile *root, Tile **conjugator_list, int *num_conjugators);
+EXTERN_C_BEGIN_SCOPE
 static int          compare_translation_distances(const void *tile0, const void *tile1);
+EXTERN_C_END_SCOPE
 static void         initialize_elimination_flags(Tile **geodesic_list, int num_good_geodesics);
 static void         eliminate_its_conjugates(Tile **geodesic_list, int num_good_geodesics, int i0, Tile **conjugator_list, int num_conjugators, Real spine_radius);
 static void         compress_geodesic_list(Tile **geodesic_list, int *num_good_geodesics);

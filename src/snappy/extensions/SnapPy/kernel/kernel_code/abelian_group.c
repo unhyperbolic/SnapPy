@@ -40,7 +40,9 @@ typedef struct prime_power
     struct prime_power  *next;
 } PrimePower;
 
+EXTERN_C_BEGIN_SCOPE
 static int compare_prime_powers(const void *pp0, const void *pp1);
+EXTERN_C_END_SCOPE
 
 void expand_abelian_group(
     AbelianGroup *g)

@@ -357,7 +357,9 @@ static void                 add_horoball_if_necessary(TilingTet *tiling_tet, Til
 static Boolean              contains_north_pole(TilingTet *tiling_tet, VertexIndex v);
 static void                 free_tiling_tet_tree(TilingTet *tiling_tree_root);
 static CuspNbhdHoroballList *transfer_horoballs(TilingHoroball **horoball_linked_list);
+EXTERN_C_BEGIN_SCOPE
 static int                  compare_horoballs(const void *horoball0, const void *horoball1);
+EXTERN_C_END_SCOPE
 static void                 cull_duplicate_horoballs(Cusp *cusp, CuspNbhdHoroballList *aHoroballList);
 
 /*
