@@ -96,7 +96,7 @@
 #include "kernel.h"
 #include "Dirichlet.h"
 #include <stdlib.h>     /* needed for qsort() */
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  *  The Dirichlet domain computation begins with a large cube enclosing the
@@ -3384,4 +3384,4 @@ static void rewrite_gen_list(
         }
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

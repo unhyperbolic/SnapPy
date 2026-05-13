@@ -99,7 +99,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  *  MAX_ITERATIONS puts an upper bound on the number of iterations
@@ -270,4 +270,4 @@ Boolean appears_rational(
      */
     return FALSE;
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

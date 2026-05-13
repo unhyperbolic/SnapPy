@@ -23,7 +23,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 #ifdef _QD_REAL_SNAPPY_
 #include "dilog.h"
@@ -288,4 +288,4 @@ Real birectangular_tetrahedron_volume(
 
     return tetrahedron_volume;
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

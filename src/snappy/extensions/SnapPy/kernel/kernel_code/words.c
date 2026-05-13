@@ -31,7 +31,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static int length_of_group_word(int *word);
 
@@ -155,4 +155,4 @@ int * copy_group_word(
     return new_word;
 }
  
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

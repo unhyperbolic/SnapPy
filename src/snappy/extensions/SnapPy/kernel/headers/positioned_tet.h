@@ -22,7 +22,7 @@
 #include "kernel_typedefs.h"
 #include "triangulation.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 typedef struct
 {
@@ -34,7 +34,7 @@ typedef struct
     Orientation orientation;
 } PositionedTet;
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

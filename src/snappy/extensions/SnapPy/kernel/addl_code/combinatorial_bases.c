@@ -35,7 +35,7 @@
  *
  */
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 void install_combinatorial_bases( Triangulation *manifold,
                                   MatrixInt22   *matrices )
@@ -114,4 +114,4 @@ void install_shortest_with_matrices(
 
         uFatalError("install_shortest_with_matrices", "shortest_cusp_basis");
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

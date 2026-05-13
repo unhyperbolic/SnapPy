@@ -18,7 +18,7 @@
 #include "kernel.h"
 #include "isometry.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /**
  *  Symmetries are just Isometries from a manifold to itself.
@@ -151,7 +151,7 @@ struct SymmetryGroup
 
 };
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

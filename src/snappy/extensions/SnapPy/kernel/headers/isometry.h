@@ -78,7 +78,7 @@
 #define _isometry_
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 typedef struct Isometry     Isometry;
 
@@ -182,7 +182,7 @@ struct IsometryList
 
 };
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

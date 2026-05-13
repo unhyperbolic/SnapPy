@@ -122,7 +122,7 @@
 
 #include "dilog.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static void initialize_safe_epsilon(void);
 static void initialize_coefficients(void);
@@ -474,4 +474,4 @@ Real Lobachevsky_via_dilog(Real t)
     return 0.5*complex_volume_dilog(z).imag;
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

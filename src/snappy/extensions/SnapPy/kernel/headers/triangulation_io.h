@@ -67,7 +67,7 @@
  *  in SnapPea.h.  It depends on some of the typedefs there.
  */
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 typedef struct TriangulationData    TriangulationData;
 typedef struct CuspData             CuspData;
@@ -107,7 +107,7 @@ struct TetrahedronData
     Complex         filled_shape;
 };
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 /* Local Variables:                      */
 /* mode: c                               */
 /* c-basic-offset: 4                     */

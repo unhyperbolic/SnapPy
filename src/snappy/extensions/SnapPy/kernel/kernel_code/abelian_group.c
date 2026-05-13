@@ -30,7 +30,7 @@
 
 #include "kernel.h"
 #include <stdlib.h>     /* needed for qsort() */
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 
 typedef struct prime_power
@@ -368,4 +368,4 @@ void free_abelian_group(
         my_free(g);
     }
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

@@ -31,7 +31,7 @@
 #define _Dirichlet_
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 
 /**
@@ -135,7 +135,7 @@ extern void         precise_generators(MatrixPairList *gen_list);
 
 extern FuncResult   Dirichlet_bells_and_whistles(WEPolyhedron *polyhedron);
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 

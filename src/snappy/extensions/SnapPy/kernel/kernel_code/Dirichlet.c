@@ -81,7 +81,7 @@
  */
 
 #include "Dirichlet.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  *  simplify_generators() considers one MatrixPair to be simpler than
@@ -853,4 +853,4 @@ static int *letter_to_word(
     return word;
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

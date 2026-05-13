@@ -18,7 +18,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 #define NAME_SUFFIX     " cover"
 
@@ -509,4 +509,4 @@ Triangulation *construct_cover(
 
     return covering_manifold;
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

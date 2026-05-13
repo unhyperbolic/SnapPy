@@ -11,7 +11,7 @@
 #include "unix_file_io.h"
 #include "ostream.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 #define READ_OLD_FILE_FORMAT 0
 
@@ -710,4 +710,4 @@ char *string_triangulation(
     return stream.buffer;
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

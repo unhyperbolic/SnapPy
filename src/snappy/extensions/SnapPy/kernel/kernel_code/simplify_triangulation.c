@@ -166,7 +166,7 @@
 
 #include "kernel.h"
 #include <stdlib.h>     /* needed for rand() */
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  *  ORDER_FOUR_ITERATIONS_IN_SIMPLIFY tells how many times
@@ -2675,4 +2675,4 @@ void all_tetrahedra_changeable(Triangulation *manifold){
 }
 
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

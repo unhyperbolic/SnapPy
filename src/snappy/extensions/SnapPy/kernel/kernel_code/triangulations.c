@@ -56,7 +56,7 @@
 
 #include "kernel.h"
 #include <stdio.h>  /* for snprintf() in check_neighbors_and_gluings() */
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static int  count_the_edge_classes(Triangulation *manifold);
 
@@ -1067,4 +1067,4 @@ Permutation compose_permutations(
 
     return result;
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

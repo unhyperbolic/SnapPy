@@ -13,7 +13,7 @@
 #ifndef _tersest_triangulation_
 #define _tersest_triangulation_
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /**
  *  Here's how the information from the TerseTriangulation data structure
@@ -91,7 +91,7 @@
  */
 typedef unsigned char TersestTriangulation[18];
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

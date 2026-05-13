@@ -143,7 +143,7 @@
 #include "kernel.h"
 #include "Dirichlet.h"
 #include <stdlib.h>     /* needed for qsort() */
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  *  If an iteration of the linear programming algorithm moves the basepoint
@@ -1606,4 +1606,4 @@ static void copy3(
     for (i = 0; i < 3; i++)
         dest[i] = source[i];
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

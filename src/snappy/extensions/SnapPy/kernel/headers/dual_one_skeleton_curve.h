@@ -39,7 +39,7 @@
 
 #include "SnapPea.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /**
  *  An array of four Booleans represents the intersection
@@ -111,7 +111,7 @@ struct DualOneSkeletonCurve
 
 };
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

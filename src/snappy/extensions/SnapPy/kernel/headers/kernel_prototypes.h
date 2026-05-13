@@ -12,7 +12,7 @@
 #include "SnapPea.h"
 #include "positioned_tet.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 
 /************************************************************************/
@@ -1204,7 +1204,7 @@ extern int *copy_group_word(int *word);
  *  Make copy of null-terminated array.
  */
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

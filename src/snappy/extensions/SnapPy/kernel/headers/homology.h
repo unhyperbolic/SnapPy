@@ -34,7 +34,7 @@
  *  This file (homology.h) is intended solely for inclusion in SnapPea.h.
  */
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 
 typedef long int MatrixEntry;
@@ -56,7 +56,7 @@ typedef struct
     MatrixEntry **relations;
 } RelationMatrix;
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 /* Local Variables:                      */
 /* mode: c                               */
 /* c-basic-offset: 4                     */

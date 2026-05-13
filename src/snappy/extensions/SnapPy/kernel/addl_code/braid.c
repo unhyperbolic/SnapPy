@@ -1,7 +1,7 @@
 #include "link_projection.h"
 #include "kernel.h"
 #include "stdlib.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
  * This file provides the function 
@@ -253,7 +253,7 @@ static KLPProjection* braid_projection(int n, int length, int* word){
   return(proj);
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 /*
  * Local Variables:

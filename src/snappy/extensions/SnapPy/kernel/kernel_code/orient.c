@@ -83,7 +83,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static void             reverse_orientation(Tetrahedron *tet);
 static void             renumber_neighbors_and_gluings(Tetrahedron *tet);
@@ -865,4 +865,4 @@ void fix_peripheral_orientations(
     if( reversed_meridian ) 
         uAcknowledge("Meridians have been reversed to ensure right-handed {M,L} pairs.");
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

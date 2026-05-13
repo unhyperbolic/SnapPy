@@ -8,7 +8,7 @@
 
 #include "SnapPea.h"
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /* Compute the isomorphism signature for a given triangulation.
  *
@@ -26,6 +26,6 @@ char* get_isomorphism_signature(Triangulation*, Boolean ignore_orientation);
 
 Triangulation* triangulation_from_isomorphism_signature(const char*);
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif

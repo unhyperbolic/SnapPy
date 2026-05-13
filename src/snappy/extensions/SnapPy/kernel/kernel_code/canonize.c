@@ -20,7 +20,7 @@
  */
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 FuncResult canonize(
     Triangulation   *manifold)
@@ -46,4 +46,4 @@ FuncResult canonize(
 
     return func_OK;
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

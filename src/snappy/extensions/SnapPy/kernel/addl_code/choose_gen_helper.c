@@ -1,5 +1,5 @@
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 void choose_gen_tetrahedron_info(Triangulation    *manifold, 
                                  int tet_index, 
@@ -59,4 +59,4 @@ void choose_gen_tetrahedron_info(Triangulation    *manifold,
   }
 }
   
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

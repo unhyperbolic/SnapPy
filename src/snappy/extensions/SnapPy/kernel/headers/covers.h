@@ -32,7 +32,7 @@
  *  This file (covers.h) is intended solely for inclusion in SnapPea.h.
  */
 
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /**
  *  A covering is "regular" iff for any two lifts of a point in the base
@@ -136,7 +136,7 @@ typedef enum
     /* eventually an option for dihedral covers could be added */
 } PermutationSubgroup;
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 /* Local Variables:                      */
 /* mode: c                               */

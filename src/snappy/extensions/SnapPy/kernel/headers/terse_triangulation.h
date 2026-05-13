@@ -16,7 +16,7 @@
 #define _terse_triangulation_
 
 #include "kernel.h"
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /**
  *  This data structure describes a Triangulation in a "terse" format.
@@ -119,7 +119,7 @@ struct TerseTriangulation
 
 };
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif
 /* Local Variables:                      */

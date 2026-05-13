@@ -200,7 +200,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /* Issues: 
  * - subdivide_1_4 move does not preserve peripheral curves and cusp
@@ -1806,4 +1806,4 @@ static Real my_round(
     return floor(0.5 + x);
 }
 
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "kernel_namespace.h"
+SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 #define BUFFER_SIZE 1000
 
@@ -787,4 +787,4 @@ void get_ptolemy_equations_boundary_map_1(
 		    "ptolemy_equations");
     }
 }
-#include "end_namespace.h"
+SNAPPEA_NAMESPACE_END_SCOPE
