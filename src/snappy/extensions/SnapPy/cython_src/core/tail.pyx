@@ -89,6 +89,7 @@ cdef c_Triangulation* triangulation_from_bytes(bytestring) except ? NULL:
     for n from 0 <= n < 1 + N:
         c_terse.which_gluing[n] = int(byteseq[m])
         m += 1
+    c_terse.CS_is_present = 0
     c_triangulation = terse_to_tri(&c_terse)
     free(c_terse.glues_to_old_tet)
     free(c_terse.which_old_tet)
