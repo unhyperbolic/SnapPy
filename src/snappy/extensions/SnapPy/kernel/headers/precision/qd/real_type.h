@@ -25,6 +25,8 @@ SNAPPEA_NAMESPACE_END_SCOPE
 #define TWO_PI           ((qd_real)qd_real::_2pi)
 */
 
+#define Real_literal(x) (qd_real(#x))
+
 #define Real_from_string(x) (qd_real((char *)x))
 #define Real_write(num, buffer, size, digits) ( (num).write(buffer, size, digits) ) 
 
