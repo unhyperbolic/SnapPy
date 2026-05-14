@@ -110,25 +110,18 @@
  * We hard code them here as rational numbers so the division gives them with
  * full precision of the Real type.
  *
- * Unfortunately, that means that this code needs to be changed when switching
- * to precision beyond quad-double.
- * 
  * Each subsequent term has at most half the modulus of the previous term in
  * series (1), respectively, series (3) at least after the first two dozen
  * terms. The remainder of the series is thus bound by the current term and
- * we can stop once the term is smaller than the epsilon of the Real type (
- * we are even adding a bit of safety margin, yielding safe_epsilon).
+ * we can stop once the term is smaller than the epsilon of the Real type.
  */ 
 
 #include "dilog.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
-static void initialize_safe_epsilon(void);
 static void initialize_coefficients(void);
 
-static Boolean safe_epsilon_initialized = FALSE;
-static Real safe_epsilon;
 #define NUMBER_OF_TERMS 210
 
 /* coefficients[i] stores the coefficient c_k with k = 3 + 2 * i
@@ -166,64 +159,6 @@ const static Real bernoulli_fractions[17][3] = {
     { 65443,     -362903,               870 },
     {  8605,  1001259881,             14322 },
     { 25271,  -305065927,               510 } };
-    
-
-static
-void initialize_safe_epsilon(void)
-{
-    /* determine what the epsilon of the Real type is 
-     * and save it in safe_epsilon */
-    Real number, s1, s2;
-
-    /* Bail if already done */
-    if (safe_epsilon_initialized) {
-	return;
-    }
-    number = ((Real) 4) / ((Real) 3);
-
-    /* The test number. It is the floating point approximation
-     * of 4/3.
-     * We are determining whether our epsilon is small enough
-     * by making sure that adding 1 * epsilon or 2 * epsilon
-     * yields the same floating point number.
-     *
-     * Remark: If, for some strange reason, the floating point
-     * number is the result of number + epsilon rounded up, then
-     * number + epsilon would always be different from number,
-     * no matter how small epsilon. Thus we choose to compute
-     * s1 = number + epsilon and s2 = number + (2 * epsilon)
-     * and compare s1 and s2. Notice that 
-     * number + (2 * epsilon) might differ from 
-     * (number + epsilon) + epsilon.
-     *
-     * Remark: Quad doubles have 212 bits precision, but the
-     * exponents of the four doubles used in the four quad
-     * doubles do not need to be aligned. Thus, 1 + 2^-i
-     * can be represented exactly by a quad double even when 
-     * i is much larger than 212.
-     * Thus using 1 as test number will fail. We instead use
-     * 4/3 because it is 
-     * 1.0101010101010101010101010101.... in binary.
-     */
-
-    safe_epsilon = 1.0;
-
-    do {
-	/* Half epsilon */
-	safe_epsilon *= 0.5;
-
-	/* Until we can't distinguish adding 
-	 * one or two epsilons to number */
-	s1 = number +        safe_epsilon;
-	s2 = number + (2.0 * safe_epsilon);
-
-    } while (s1 != s2);
-
-    /* 3-bits extra safety */
-    safe_epsilon *= 0.125;
-
-    safe_epsilon_initialized = TRUE;
-}
 
 static
 void initialize_coefficients(void)
@@ -306,7 +241,7 @@ Complex dilog_small(Complex z)
 	terms[i-1] = complex_div(z_power, denom);
 
 	/* Stop computing, desired precision is achieved */
-	if ((i > 10) && complex_modulus(terms[i-1]) < safe_epsilon)
+	if ((i > 10) && complex_modulus(terms[i-1]) < REAL_EPSILON)
 	    break;
 
 	/* Stop computing, term number limit hit */
@@ -353,7 +288,7 @@ Complex dilog_near_one(Complex z)
 	terms[i] = complex_mult(coefficients[i], u_power);
 
 	/* Stop computing, desired precision is achieved */
-	if ((i > 25) && (complex_modulus(terms[i]) < safe_epsilon))
+	if ((i > 25) && (complex_modulus(terms[i]) < REAL_EPSILON))
 	    break;
 
 	if (i >= NUMBER_OF_COEFFICIENTS - 1)
@@ -411,9 +346,6 @@ Complex dilog_left(Complex z)
 Complex complex_volume_dilog(Complex z)
 {
     Real rsquare = complex_modulus_squared(z); /* |z|^2 */
-
-    /* initialization */
-    initialize_safe_epsilon();
 
     /* |z| < 1/3 */
     if (rsquare < 1.0/9.0) {

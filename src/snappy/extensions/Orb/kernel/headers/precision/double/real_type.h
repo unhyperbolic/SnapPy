@@ -29,5 +29,6 @@ SNAPPEA_NAMESPACE_END_SCOPE
 #define Real_from_string(x) (atof((char *)x))
 
 #define REAL_MAX DBL_MAX
+#define REAL_EPSILON DBL_EPSILON
 
 #endif
