@@ -26,6 +26,8 @@ typedef double Real_struct;
 
 SNAPPEA_NAMESPACE_END_SCOPE
 
+#define Real_literal(x) (x)
+
 #define Real_from_string(x) (atof((char *)x))
 
 #define REAL_MAX DBL_MAX
