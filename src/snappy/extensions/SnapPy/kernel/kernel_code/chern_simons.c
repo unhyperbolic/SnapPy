@@ -103,8 +103,9 @@
  */
 
 /*
- * Matthias Goerner 2018/06/24 - Extended the coefficients we store for the
- * dilogarithm series so that we no longer need a dilogarithm callback
+ * Matthias Goerner 2018/06/24 - Removing diloagrithm callback from
+ * triangulation and extending the coefficients stored for the dilogarithm
+ * series instead.
  */
 
 #include <stdlib.h>
@@ -177,7 +178,7 @@ void compute_CS_value_from_fudge(
     Real  computed_value[2];
 
     if (manifold->CS_fudge_is_known == TRUE
-	&& compute_CS(manifold, computed_value) == func_OK)
+        && compute_CS(manifold, computed_value) == func_OK)
     {
         manifold->CS_value_is_known     = TRUE;
         manifold->CS_value[ultimate]    = computed_value[ultimate]    + manifold->CS_fudge[ultimate];
@@ -198,7 +199,7 @@ void compute_CS_fudge_from_value(
     Real  computed_value[2];
 
     if (manifold->CS_value_is_known == TRUE
-	&& compute_CS(manifold, computed_value) == func_OK)
+        && compute_CS(manifold, computed_value) == func_OK)
     {
         manifold->CS_fudge_is_known     = TRUE;
         manifold->CS_fudge[ultimate]    = manifold->CS_value[ultimate]    - computed_value[ultimate];
@@ -381,7 +382,7 @@ static Complex alg1_compute_Fu(
     Boolean         *Li2_error_flag
 )
 {
-    Complex         Fu, dilog;
+    Complex         Fu;
     Tetrahedron     *tet;
     static const Complex    minus_i = {0.0, -1.0};
 
@@ -454,18 +455,19 @@ static Complex alg1_compute_Fu(
          tet != &manifold->tet_list_end;
          tet = tet->next)
     {
-	dilog = Li2
-          (
-	   complex_div
-	   (
-	    tet->shape[filled]->cwl[which_approximation][0].log,
-	    TwoPiI
-	    ),
-	   tet->shape_history[filled],
-	   Li2_error_flag
-	   );
+        /*
+         *  To compute the dilogarithm of z, Li2() wants to be
+         *  passed w = log(z) / 2 pi i and the shape_history of z.
+         */
 
-        Fu = complex_plus(Fu, dilog);
+        Fu = complex_plus(
+             Fu,
+             Li2(
+                 complex_div(
+                             tet->shape[filled]->cwl[which_approximation][0].log,
+                             TwoPiI),
+                 tet->shape_history[filled],
+                 Li2_error_flag));
     }
 
     /*
