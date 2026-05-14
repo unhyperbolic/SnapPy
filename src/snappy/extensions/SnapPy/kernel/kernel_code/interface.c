@@ -89,16 +89,10 @@ void set_triangulation_name(
         my_free(manifold->name);
 
     /*
-     *  Allocate space for the new name . . .
+     *  Allocate space for the new name and copy it in.
      */
 
-    manifold->name = NEW_ARRAY(strlen(new_name) + 1, char);
-
-    /*
-     *  . . . and copy it in.
-     */
-
-    strcpy(manifold->name, new_name);
+    manifold->name = my_strdup(new_name);
 }
 
 

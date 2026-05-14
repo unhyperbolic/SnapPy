@@ -721,8 +721,7 @@ Triangulation *triangulate_punctured_torus_bundle(
     }
     else
     {
-        data->name = NEW_ARRAY(strlen(BIG_BUNDLE_NAME) + 1, char);
-        strcpy(data->name, BIG_BUNDLE_NAME);
+        data->name = my_strdup(BIG_BUNDLE_NAME);
     }
 
     /*

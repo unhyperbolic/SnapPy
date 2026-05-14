@@ -105,8 +105,7 @@ void data_to_triangulation(
     /*
      *  Allocate and copy the name.
      */
-    manifold->name = NEW_ARRAY(strlen(data->name) + 1, char);
-    strcpy(manifold->name, data->name);
+    manifold->name = my_strdup(data->name);
 
     /*
      *  Set up the global information.
@@ -365,8 +364,7 @@ void triangulation_to_data(
 
     if (manifold->name != NULL)
     {
-        data->name = NEW_ARRAY(strlen(manifold->name) + 1, char);
-        strcpy(data->name, manifold->name);
+        data->name = my_strdup(manifold->name);
     }
     else
         data->name = NULL;
@@ -587,8 +585,7 @@ void copy_triangulation(
      *  Allocate space for the name, and copy it it.
      */
 
-    destination->name = NEW_ARRAY(strlen(source->name) + 1, char);
-    strcpy(destination->name, source->name);
+    destination->name = my_strdup(source->name);
 
     /*
      *  Initialize the doubly linked lists.

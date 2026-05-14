@@ -201,8 +201,7 @@ Triangulation *subdivide(
 
     new_triangulation = NEW_STRUCT(Triangulation);
     initialize_triangulation(new_triangulation);
-    new_triangulation->name = NEW_ARRAY(strlen(new_name) + 1, char);
-    strcpy(new_triangulation->name, new_name);
+    new_triangulation->name = my_strdup(new_name);
     new_triangulation->num_tetrahedra   = 32 * old_triangulation->num_tetrahedra;
     new_triangulation->num_cusps        = old_triangulation->num_cusps;
     new_triangulation->num_or_cusps     = old_triangulation->num_or_cusps;

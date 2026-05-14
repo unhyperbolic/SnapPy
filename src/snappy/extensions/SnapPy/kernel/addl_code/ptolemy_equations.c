@@ -304,7 +304,7 @@ void get_ptolemy_equations_identified_coordinates(
 				 ptolemy_index[2],ptolemy_index[3],
 				 tet->index);
 			id->variables[index_in_id][0] = 
-			    fakestrdup(face_ptolemy);
+			    my_strdup(face_ptolemy);
 
 			snprintf(other_face_ptolemy, BUFFER_SIZE,
 				 "c_%d%d%d%d_%d",
@@ -312,7 +312,7 @@ void get_ptolemy_equations_identified_coordinates(
 				 other_ptolemy_index[2],other_ptolemy_index[3],
 				 other_tet->index);
 			id->variables[index_in_id][1] = 
-			    fakestrdup(other_face_ptolemy);
+			    my_strdup(other_face_ptolemy);
 
 			id->signs[index_in_id] =
 			    _compute_sign(ptolemy_index,
@@ -383,10 +383,10 @@ void get_ptolemy_equations_identified_face_classes(
 
 		snprintf(face_class, BUFFER_SIZE,
 			 "s_%d_%d", face, tet->index);
-		id->variables[index_in_id][0] = fakestrdup(face_class);
+		id->variables[index_in_id][0] = my_strdup(face_class);
 		snprintf(other_face_class, BUFFER_SIZE,
 			"s_%d_%d", other_face, other_tet->index);
-		id->variables[index_in_id][1] = fakestrdup(other_face_class);
+		id->variables[index_in_id][1] = my_strdup(other_face_class);
 
 		id->signs[index_in_id] = -1;
 
@@ -438,7 +438,7 @@ void get_ptolemy_equations_action_by_decoration_change(
 		     "diagonal_entry_%d_on_cusp_%d", diag_entry, cusp_index);
 
 	    column_index = cusp_index * (N-1) + diag_entry;
-	    m->explain_column[column_index] = fakestrdup(explain_column);
+	    m->explain_column[column_index] = my_strdup(explain_column);
 	}
     }
 
@@ -462,7 +462,7 @@ void get_ptolemy_equations_action_by_decoration_change(
 			 ptolemy_index[0], ptolemy_index[1], 
 			 ptolemy_index[2], ptolemy_index[3],
 			 tet->index);
-		m->explain_row[row_index] = fakestrdup(explain_row);
+		m->explain_row[row_index] = my_strdup(explain_row);
 
 		/* for each vertex */
   	        for (vertex = 0; vertex < 4; vertex++) {
@@ -565,7 +565,7 @@ void _fill_tet_face_to_index_data(
 
 		if (explanations) {
 		    snprintf(explain, BUFFER_SIZE, "s_%d_%d", face, tet->index);
-		    explanations[index] = fakestrdup(explain);
+		    explanations[index] = my_strdup(explain);
 		}
 
 		/* Allocate new index for next tet and face */
@@ -618,7 +618,7 @@ void get_ptolemy_equations_boundary_map_3(
         /* Make a new column */
 
 	snprintf(explain_column, BUFFER_SIZE, "tet_%d", tet->index);
-	m->explain_column[tet->index] = fakestrdup(explain_column);
+	m->explain_column[tet->index] = my_strdup(explain_column);
 	
         /* Boundary of tetrahedron consists of four faces */
 
@@ -678,7 +678,7 @@ void get_ptolemy_equations_boundary_map_2(
 
 	snprintf(explain_row, BUFFER_SIZE,
 		 "edge_%d",row_index);
-	m->explain_row[row_index] = fakestrdup(explain_row);
+	m->explain_row[row_index] = my_strdup(explain_row);
 	
 	/* Iterate through all the PositionedTetrahedron's incident to this
 	   edge, i.e., we find all tetrahedra in all positions such that
@@ -743,7 +743,7 @@ void get_ptolemy_equations_boundary_map_1(
     for (row_index = 0; row_index < manifold->num_cusps; row_index++) {
 	snprintf(explain_row, BUFFER_SIZE,
 		"cusp_%d", row_index);
-	m->explain_row[row_index] = fakestrdup(explain_row);
+	m->explain_row[row_index] = my_strdup(explain_row);
     }
 
     /* Iterate through all the edges,
@@ -759,7 +759,7 @@ void get_ptolemy_equations_boundary_map_1(
 
 	snprintf(explain_column, BUFFER_SIZE,
 		"edge_%d",column_index);
-	m->explain_column[column_index] = fakestrdup(explain_column);
+	m->explain_column[column_index] = my_strdup(explain_column);
 
 	/* Take a positioned tet incident to this edge */
 

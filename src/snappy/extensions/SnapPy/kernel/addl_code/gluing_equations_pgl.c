@@ -70,7 +70,7 @@ void _explain_columns(Triangulation *manifold,
 			edge);
 
 		m->explain_column[column_index] = 
-		    fakestrdup(explanation);
+		    my_strdup(explanation);
 	    }
 	}
     }
@@ -112,7 +112,7 @@ void get_edge_gluing_equations_pgl(Triangulation *manifold,
 
 	  snprintf(explanation, MAX_EXPLANATION_SIZE,
 		  "edge_%d_%d", edge_level, edge_index);
-	    m->explain_row[eqn_index] = fakestrdup(explanation);
+	    m->explain_row[eqn_index] = my_strdup(explanation);
 
 	    /* create a new row for the corresponding gluing equation,
 	       eqn is an array of exponents for cross ratios */
@@ -258,7 +258,7 @@ void get_face_gluing_equations_pgl(Triangulation* manifold,
 			    ptolemy_index[0], ptolemy_index[1],
 			    ptolemy_index[2], ptolemy_index[3],
 			    tet->index);
-		    m->explain_row[eqn_index] = fakestrdup(explanation);
+		    m->explain_row[eqn_index] = my_strdup(explanation);
 
 		    /* make a new row for a new gluing equation */
 		    eqn = m->entries[eqn_index];
@@ -339,7 +339,7 @@ void get_internal_gluing_equations_pgl(Triangulation *manifold,
 			ptolemy_index[0], ptolemy_index[1],
 			ptolemy_index[2], ptolemy_index[3],
 			tet->index);
-		m->explain_row[eqn_index] = fakestrdup(explanation);
+		m->explain_row[eqn_index] = my_strdup(explanation);
 		
 		/* Make new row for a new gluing equation */
 		eqn = m->entries[eqn_index];

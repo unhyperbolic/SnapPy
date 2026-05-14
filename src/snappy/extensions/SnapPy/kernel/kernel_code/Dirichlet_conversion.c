@@ -135,8 +135,7 @@ static Triangulation *try_Dirichlet_to_triangulation(
      *  Allocate and copy the name.
      */
 
-    triangulation->name = NEW_ARRAY(strlen(DEFAULT_NAME) + 1, char);
-    strcpy(triangulation->name, DEFAULT_NAME);
+    triangulation->name = my_strdup(DEFAULT_NAME);
 
     /*
      *  Allocate the Tetrahedra.

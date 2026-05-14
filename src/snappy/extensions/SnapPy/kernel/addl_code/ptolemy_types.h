@@ -120,6 +120,4 @@ int number_of_edges(Triangulation *manifold);
 Boolean is_canonical_face_class_representative(
     Tetrahedron *tet, int face);
 
-char *fakestrdup (const char *s);
-
 #endif

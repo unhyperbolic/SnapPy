@@ -407,8 +407,7 @@ static void set_up_new_triangulation(
     /*
      *  Copy in the name requested by the UI.
      */
-    (*new_manifold)->name = NEW_ARRAY(strlen(new_name) + 1, char);
-    strcpy((*new_manifold)->name, new_name);
+    (*new_manifold)->name = my_strdup(new_name);
 
     /*
      *  The triangulation algorithm guarantees that the new_manifold

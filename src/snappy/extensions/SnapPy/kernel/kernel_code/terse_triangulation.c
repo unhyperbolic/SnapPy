@@ -675,8 +675,7 @@ static Triangulation *bare_bones_triangulation(
     /*
      *  Set the manifold's name to DEFAULT_NAME.
      */
-    manifold->name = NEW_ARRAY(strlen(DEFAULT_NAME) + 1, char);
-    strcpy(manifold->name, DEFAULT_NAME);
+    manifold->name = my_strdup(DEFAULT_NAME);
 
     /*
      *  Record the number of Tetrahedra.
