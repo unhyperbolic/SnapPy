@@ -828,7 +828,7 @@ cdef class Manifold(Triangulation):
         else:
             return self._number_(vol)
 
-    cdef _old_chern_simons(self):
+    cdef _kernel_chern_simons(self):
         """
         Return the Chern-Simons invariant as a Number.  The value
         is computed using SnapPea's original algorithm, which is
@@ -856,7 +856,7 @@ cdef class Manifold(Triangulation):
         """
         Return the Chern-Simons invariant as a Number.  The value
         is computed with Zickert's algorithm, for cusped manifolds,
-        or by _old_chern_simons if all cusps are filled.
+        or by _kernel_chern_simons if all cusps are filled.
         """
         cdef Complex volume
         cdef Real cs_value
@@ -866,14 +866,14 @@ cdef class Manifold(Triangulation):
         solution_type = self.solution_type()
         if solution_type in ('not attempted', 'no solution found'):
             raise ValueError('The solution type is: %s' % solution_type)
-        if True not in self.cusp_info('is_complete'):
-            result = self._old_chern_simons()
-        else:
+        if any(self.cusp_info('is_complete')):
             self._cusped_complex_volume(&volume, &accuracy)
             cs_value = volume.imag / PI_SQUARED_BY_2
             result = Real2Number(cs_value)
             result.accuracy = accuracy - 1 if accuracy else None
             set_CS_value(self.c_triangulation, cs_value)
+        else:
+            result = self._kernel_chern_simons()
         return result
 
     def chern_simons(self, accuracy = False):
