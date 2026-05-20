@@ -558,7 +558,8 @@ GroupPresentation *compute_unsimplified_presentation(
 			 && solution_type != degenerate_solution);
 
 #ifdef ORB
-    new_choose_generators(manifold, FALSE); /* DJH */
+    choose_generators(manifold, compute_vertices, FALSE);
+    /* new_choose_generators(manifold, FALSE); */
 #else
     choose_generators(manifold, compute_vertices, FALSE);
 #endif
@@ -599,16 +600,18 @@ static void compute_matrix_generators(
 			      MoebiusTransformation);
 
 #ifdef ORB
+    /*
     use_identities =
         !(get_filled_solution_type(manifold) == nongeometric_solution
          || get_filled_solution_type(manifold) == geometric_solution);
     if (!use_identities) {
-        new_matrix_generators(manifold, group->itsMatrices); /* DJH */
+        new_matrix_generators(manifold, group->itsMatrices);
         Moebius_array_to_O31_array( group->itsMTs,
                                     group->itsMatrices,
                                     manifold->num_generators);
-    }
-#else
+                                    } */
+#endif
+    
     /* MC 2013-03-20: now checks if matrix_generators fails.*/
     use_identities = ( solution_type == not_attempted
 		       || solution_type == no_solution );
@@ -624,7 +627,7 @@ static void compute_matrix_generators(
 				      manifold->num_generators);
 	}
     }
-#endif
+
     if ( use_identities )
     {
         int i;
@@ -698,7 +701,7 @@ static void compute_one_edge_relation(
      *  nominally at least two of them.)
      */
 #ifdef ORB
-    if (edge->num_incident_generators < 2 && !edge->is_singular)
+    if (edge->num_incident_generators < 2 && !edge->orb_is_singular)
 #else
     if (edge->num_incident_generators < 2)
 #endif
@@ -711,7 +714,7 @@ static void compute_one_edge_relation(
     new_word->itsLength         = 0;
     new_word->is_Dehn_relation  = FALSE;
 #ifdef ORB
-    if (edge->is_singular && edge->singular_order == 0) {
+    if (edge->orb_is_singular && edge->orb_singular_order == 0) {
         new_word->next               = group->itsParabolicRelations;
         group->itsParabolicRelations = new_word;
         group->itsNumParabolicRelations++;
@@ -784,10 +787,10 @@ static void compute_one_edge_relation(
         uFatalError("compute_one_edge_relation", "fundamental_group");
 
 #ifdef ORB
-    if (edge->is_singular && edge->singular_order != 0.0)
+    if (edge->orb_is_singular && edge->orb_singular_order != 0.0)
     {
         int length = new_word->itsLength;
-        int n = edge->singular_order;
+        int n = edge->orb_singular_order;
         
         for (int i = 1; i < n; i++) {
             int j;

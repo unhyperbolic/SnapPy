@@ -301,6 +301,14 @@ cdef class Triangulation():
                     self._set_PDcode(LM.PD_code())
                     self.set_c_triangulation(
                         get_triangulation_from_PythonKLP(klp, remove_finite_vertices))
+                elif first_line.find('% orb') > -1:
+                    IF ORB:
+                        read_orb(
+                            to_byte_str(pathname),
+                            &self.c_triangulation,
+                            NULL)
+                    ELSE:
+                        raise NotImplementedError('Experimental ORB support not enabled')
                 else:
                     self.set_c_triangulation(read_triangulation(to_byte_str(pathname)))
 
@@ -393,6 +401,9 @@ cdef class Triangulation():
         >>> M.num_cusps()
         2
         """
+        if self.c_triangulation is NULL:
+            raise ValueError('The Triangulation is empty.')
+
         if cusp_type == 'all':
             return get_num_cusps(self.c_triangulation)
         elif cusp_type == 'orientable':
@@ -418,6 +429,15 @@ cdef class Triangulation():
         """
         count_cusps(self.c_triangulation)
         return get_num_fake_cusps(self.c_triangulation)
+
+    def _orb_num_singularities(self) -> int:
+        """
+        Number of singular arcs.
+        """
+        if self.c_triangulation is NULL:
+            raise ValueError('The Triangulation is empty.')
+
+        return self.c_triangulation.orb_num_singular_arcs
 
     def orientation_cover(self):
         """
@@ -1082,6 +1102,10 @@ cdef class Triangulation():
                     repr += '(0,0)'
                 else:
                     repr += '(%g,%g)'% info['filling']
+            IF ORB:
+                for i in range(self.c_triangulation.orb_num_singular_arcs):
+                    info = self._orb_singularity_info(i)
+                    repr += '(%g)' % info.singular_order
             return repr
 
     def name(self) -> str:
@@ -1231,6 +1255,42 @@ cdef class Triangulation():
             for i, fill in enumerate(filling_data):
                 Triangulation.dehn_fill(self, fill, i)
 
+    IF ORB:
+        def _orb_cone_fill(self,
+                           singular_order : Union[float, list[float]],
+                           singular_index : Optional[SupportsIndex] = None) -> None:
+            cdef int num
+
+            if self.c_triangulation is NULL:
+                raise ValueError('The Triangulation is empty.')
+
+            num = self.c_triangulation.orb_num_singular_arcs
+
+            if singular_index is not None:
+                singular_index = valid_index(
+                    singular_index,
+                    num,
+                    'The specified singular arc (%s) does not exist.')
+
+                self._cache.clear(message='cone_fill')
+
+                orb_set_singularity_info(
+                    self.c_triangulation,
+                    singular_index,
+                    Object2Real(singular_order))
+            else:
+                if len(singular_order) > num:
+                    raise IndexError('You provided singular orders for too '
+                                     'many singular arcs. There are only %d.' % num)
+
+                self._cache.clear(message='cone_fill')
+
+                for singular_index, singular_order in enumerate(singular_order):
+                    orb_set_singularity_info(
+                        self.c_triangulation,
+                        singular_index,
+                        Object2Real(singular_order))
+
     # When doctesting, the M,L coefficients acquire an accuracy of 8.
     # So we have to include the zeros in the doctest string.
     def cusp_info(self, data_spec=None):
@@ -1292,6 +1352,43 @@ cdef class Triangulation():
     def _testing_compute_cusp_orientabilities(self):
         testing_compute_cusp_orientabilities(self.c_triangulation)
         self._cache.clear(message='compute_cusp_orientabilities')
+
+    IF ORB:
+        def _orb_singularity_info(self, data_spec=None):
+            """
+            Returns an info object containing information about the given
+            singular arc.
+            """
+
+            cdef int singular_index
+            cdef Real singular_order
+
+            if self.c_triangulation is NULL:
+                raise ValueError('The Triangulation is empty.')
+
+            if data_spec is None:
+                return ListOnePerLine(
+                    [self._orb_singularity_info(i)
+                     for i in range(self._orb_num_singularities())])
+            if isinstance(data_spec, str):
+                return [s[data_spec] for s in self._orb_singularity_info()]
+            singular_index = valid_index(
+                data_spec,
+                self._orb_num_singularities(),
+                'The specified singular arc (%s) does not exist.')
+
+            orb_get_singularity_info(self.c_triangulation,
+                                     singular_index,
+                                     &singular_order,
+                                     NULL)
+
+            info = {
+                'index' : singular_index,
+                'singular_order' : Real2float(singular_order)
+                # inner product???
+            }
+
+            return SingularityInfo(**info)
 
     def reverse_orientation(self) -> None:
         """

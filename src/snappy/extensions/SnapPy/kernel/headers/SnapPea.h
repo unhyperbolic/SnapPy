@@ -59,6 +59,11 @@ typedef enum
     other_solution,         /**<  volume <= 0, but not flat or degenerate                     */
     no_solution,            /**<  gluing equations could not be solved                        */
     externally_computed     /**<  tetrahedra shapes were inserted into the triangulation      */
+#ifdef ORB
+    ,
+    step_failed,
+    invalid_solution
+#endif
 } SolutionType;
 
 /**
@@ -2749,6 +2754,39 @@ extern Real volume(Triangulation *manifold, int *precision);
  *  of decimal places of accuracy, and places the result in the
  *  variable *precision.
  */
+
+/************************************************************************/
+/*                                                                      */
+/*                    orb_hyperbolic_structure.c                        */
+/*                                                                      */
+/************************************************************************/
+
+extern SolutionType orb_find_hyperbolic_structure(
+    Triangulation *manifold,
+    Boolean        manual);
+
+/************************************************************************/
+/*                                                                      */
+/*                           orb_interface.c                            */
+/*                                                                      */
+/************************************************************************/
+
+extern void orb_get_singularity_info( Triangulation *manifold,
+                                      int            singular_index,
+                                      Real           *singular_order,
+                                      Real           *inner_product);
+
+extern void orb_set_singularity_info( Triangulation *manifold,
+                                      int           singular_index,
+                                      Real          singular_order);
+
+/************************************************************************/
+/*                                                                      */
+/*                           orb_volume.c                               */
+/*                                                                      */
+/************************************************************************/
+
+extern Real orb_volume(Triangulation *manifold, Boolean *ok);
 
 SNAPPEA_NAMESPACE_END_SCOPE
 

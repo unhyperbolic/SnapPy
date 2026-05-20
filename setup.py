@@ -3,6 +3,9 @@ Installation script for the snappy module.
 
 Depends heavily on setuptools.
 """
+
+compile_as_orb = True
+
 no_setuptools_message = """
 You need to have setuptools installed to build the snappy module. See:
 
@@ -323,6 +326,7 @@ class SourceAndObjectFiles():
 
         cythonize([self.cython_file],
                   compiler_directives={'embedsignature': True},
+                  compile_time_env={'ORB' : compile_as_orb},
                   build_dir=cythoned_dir)
 
 def make_extension(spec) -> Extension:
@@ -468,6 +472,10 @@ class SnapPyExtensionSpec:
             ['unix_UI.c', 'decode_new_DT.c']) +
         glob(os.path.join(kernel_path, 'addl_code', '*.c')))
 
+    if not compile_as_orb:
+        sources = [ source for source in sources
+                    if 'orb_' not in source ]
+
     # Passed to Extension.
     #
     # Also for dependency tracking: Any change to a .h file in these
@@ -489,6 +497,13 @@ class SnapPyExtensionSpec:
         os.path.join(SharedExtensionSpec.cython_path, 'precision', 'double') ]
 
     extra_compile_args = SharedExtensionSpec.extra_compile_args
+
+    if compile_as_orb:
+        if sys.platform == 'win32':
+            extra_compile_args += ['/DORB']
+        else:
+            extra_compile_args += ['-DORB']
+
     extra_link_args = SharedExtensionSpec.extra_link_args
 
 ext_modules.append(make_extension(SnapPyExtensionSpec))

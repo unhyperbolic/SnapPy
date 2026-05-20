@@ -14,7 +14,6 @@
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
-
 /************************************************************************/
 /*                                                                      */
 /*                              chern_simons.c                          */
@@ -66,6 +65,9 @@ void compute_fourth_corner(
  *  ideal vertices, compute the location of the fourth.
  */
 
+#ifdef ORB
+extern void orb_set_use_orb_conventions(Boolean use_orb_conventions);
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -352,7 +354,6 @@ extern void orient_edge_classes(Triangulation *manifold);
  *  incident Tetrahedron.
  */
 
-
 /************************************************************************/
 /*                                                                      */
 /*                      elements_generate_group.c                       */
@@ -531,7 +532,6 @@ extern Boolean tetrahedron_is_geometric(Tetrahedron *tet);
  *  A tetrahedron is geometric iff all dihedral angles lie in the
  *  range [-FLAT_EPSILON, pi + FLAT_EPSILON].
  */
-
 
 /************************************************************************/
 /*                                                                      */
@@ -1141,6 +1141,11 @@ extern void free_tetrahedron(Tetrahedron *tet);
  *  remove the Tetrahedron from any doubly linked list it may be on.
  */
 
+#ifdef ORB
+extern void free_edge_class(EdgeClass *edge_class);
+extern void free_cusp(Cusp * cusp);
+#endif
+
 /**
  *  What you'd expect.  See triangulation.c for details.
  */
@@ -1235,6 +1240,41 @@ extern int *copy_group_word(int *word);
 /**<
  *  Make copy of null-terminated array.
  */
+
+#ifdef ORB
+
+/************************************************************************/
+/*                                                                      */
+/*                         orb_cusp_area.c                              */
+/*                                                                      */
+/************************************************************************/
+
+extern void orb_normalize_cusps(Triangulation *manifold);
+
+/************************************************************************/
+/*                                                                      */
+/*                    orb_hyperbolic_structure.c                        */
+/*                                                                      */
+/************************************************************************/
+
+extern Real orb_minor1(GL4RMatrix matrix, int row, int col);
+
+/* ORB-TODO: move to canonize??? */
+
+extern void orb_compute_tilts(Triangulation *manifold);
+
+/************************************************************************/
+/*                                                                      */
+/*                    orb_identify_solution_type.c                      */
+/*                                                                      */
+/************************************************************************/
+
+extern void orb_identify_solution_type(Triangulation *manifold);
+extern Boolean orb_contains_flat_tetrahedra( Triangulation *manifold );
+extern Boolean orb_solution_is_degenerate(Triangulation *manifold);
+extern void orb_compute_cusp_euler_characteristics(Triangulation *manifold);
+
+#endif
 
 SNAPPEA_NAMESPACE_END_SCOPE
 

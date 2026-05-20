@@ -13,6 +13,8 @@ import math
 import string
 import time
 import typing
+from typing import Union, Optional, SupportsIndex
+
 python_major_version = sys.version_info.major
 
 cdef extern from "real_type.h":
@@ -345,15 +347,23 @@ class CuspInfo(Info):
                 return ('Cusp %-2d: complete %s of shape %s' %
                         (self.index, self.topology, self.shape) )
             else:
-                return ('Cusp %-2d: %s, not filled'%
+                return ('Cusp %-2d: %s, not filled' %
                         (self.index, self.topology) )
         else:
-            return ('Cusp %-2d: %s with Dehn filling coefficients (M, L) = %s'%
+            return ('Cusp %-2d: %s with Dehn filling coefficients (M, L) = %s' %
                     (self.index, self.topology, self.filling) )
     _obsolete = {'complete?'          : 'is_complete',
                  'holonomy precision' : 'holonomy_accuracy',
                  'shape precision'    : 'shape_accuracy'}
 
+class SingularityInfo(Info):
+    def __repr__(self):
+        if self.singular_order == 0.0:
+            return ('Arc %-2d: Annular cusp (singular order = 0)' %
+                    self.index)
+        else:
+            return ('Arc %-2d: Singular of order = %g' %
+                    (self.index, self.singular_order))
 
 class DualCurveInfo(Info):
     def __repr__(self):
