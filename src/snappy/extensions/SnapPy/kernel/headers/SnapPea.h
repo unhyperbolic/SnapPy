@@ -2755,41 +2755,12 @@ extern Real volume(Triangulation *manifold, int *precision);
  *  variable *precision.
  */
 
-/************************************************************************/
-/*                                                                      */
-/*                    orb_hyperbolic_structure.c                        */
-/*                                                                      */
-/************************************************************************/
+#ifdef ORB
 
-extern SolutionType orb_find_hyperbolic_structure(
-    Triangulation *manifold,
-    Boolean        manual);
+#include "Orb.h"
 
-/************************************************************************/
-/*                                                                      */
-/*                           orb_interface.c                            */
-/*                                                                      */
-/************************************************************************/
-
-extern int orb_get_num_singular_edges( Triangulation *manifold);
+#endif
     
-extern void orb_get_singularity_info( Triangulation *manifold,
-                                      int            singular_index,
-                                      Real           *singular_order,
-                                      Real           *inner_product);
-
-extern void orb_set_singularity_info( Triangulation *manifold,
-                                      int           singular_index,
-                                      Real          singular_order);
-
-/************************************************************************/
-/*                                                                      */
-/*                           orb_volume.c                               */
-/*                                                                      */
-/************************************************************************/
-
-extern Real orb_volume(Triangulation *manifold, Boolean *ok);
-
 SNAPPEA_NAMESPACE_END_SCOPE
 
 #ifdef FORCE_C_LINKAGE
