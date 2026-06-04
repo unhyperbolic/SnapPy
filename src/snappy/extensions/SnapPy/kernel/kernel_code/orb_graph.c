@@ -1015,7 +1015,7 @@ extern void dump_triangulation(
     for (tet = manifold->tet_list_begin.next; tet != &manifold->tet_list_end;
          tet = tet->next) {
         for (i = 0; i < 6; i++)
-            printf("%12.6f", tet->orb_tet_shape->dihedral_angle[ultimate][i]);
+            printf("%12.6f", (double)(tet->orb_tet_shape->dihedral_angle[ultimate][i]));
         printf("\n");
     }
 }
