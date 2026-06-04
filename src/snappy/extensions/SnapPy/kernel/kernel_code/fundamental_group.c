@@ -830,8 +830,11 @@ static void compute_Dehn_relations(
     for ( cusp = manifold->cusp_list_begin.next;
           cusp != &manifold->cusp_list_end;
           cusp = cusp->next )
-	if ( cusp->topology == torus_cusp || cusp->topology == Klein_cusp )
+    {
+        CuspTopology topology = get_cusp_topology(cusp);
+	if ( topology == torus_cusp || topology == Klein_cusp )
             group->itsNumCusps++;
+    }
 #else
     group->itsNumCusps      = manifold->num_cusps;
 #endif
@@ -848,7 +851,9 @@ static void compute_Dehn_relations(
         cusp = find_cusp(manifold, i);
 
 #ifdef ORB
-        if ( cusp->topology != torus_cusp && cusp->topology != Klein_cusp )
+        CuspTopology topology = get_cusp_topology(cusp);
+
+        if ( topology != torus_cusp && topology != Klein_cusp )
             continue;
 #endif
         

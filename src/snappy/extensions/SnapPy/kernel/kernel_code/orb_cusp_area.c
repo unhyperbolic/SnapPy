@@ -16,7 +16,10 @@ void orb_normalize_cusps(
     for (Cusp *cusp = manifold->cusp_list_begin.next;
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next)
-        if (cusp->topology == torus_cusp || cusp->topology == Klein_cusp)
+    {
+        CuspTopology topology = get_cusp_topology(cusp);
+        
+        if (topology == torus_cusp || topology == Klein_cusp)
         {
             Real scalar = safe_sqrt(cusp->orb_cusp_shape->area / ORB_CUSP_AREA);
 
@@ -44,6 +47,7 @@ void orb_normalize_cusps(
                     if (tet->cusp[i] == cusp)
                         tet->orb_tet_shape->orientation_parameter[ultimate] *= scalar;
         }
+    }
 
     for (Tetrahedron *tet = manifold->tet_list_begin.next;
          tet != &manifold->tet_list_end;

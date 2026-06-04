@@ -743,9 +743,8 @@ static void create_real_cusps(
     {
         theCusps[i] = NEW_STRUCT(Cusp);
         initialize_cusp(theCusps[i]);
-        theCusps[i]->topology = unknown_topology;
+        set_cusp_topology(theCusps[i], torus_cusp);
         theCusps[i]->index = i;
-        theCusps[i]->is_finite = FALSE;
         INSERT_BEFORE(theCusps[i], &manifold->cusp_list_end);
         manifold->num_cusps++;
         manifold->num_or_cusps++;
@@ -815,9 +814,8 @@ static void create_finite_vertices(
         thePoles[i] = NEW_STRUCT(Cusp);
 
         initialize_cusp(thePoles[i]);
-        thePoles[i]->topology = unknown_topology;
+        set_cusp_topology(thePoles[i], sphere_cusp);
         thePoles[i]->index = i - 2;
-        thePoles[i]->is_finite = TRUE;
         INSERT_BEFORE(thePoles[i], &manifold->cusp_list_end);
     }
 
@@ -1089,10 +1087,10 @@ static void add_longitudes_and_meridians(
         theMeeting = &gamma->meeting[i];
 
         if (theMeeting->type == Cross) {
-            if (theMeeting->tet[0]->cusp[3]->topology == torus_cusp)
+            if (get_cusp_topology(theMeeting->tet[0]->cusp[3]) == torus_cusp)
                 needsCurves[theMeeting->component[0]] = TRUE;
 
-            if (theMeeting->tet[0]->cusp[2]->topology == torus_cusp)
+            if (get_cusp_topology(theMeeting->tet[0]->cusp[2]) == torus_cusp)
                 needsCurves[theMeeting->component[1]] = TRUE;
 
             if (theMeeting->component[0] == theMeeting->component[1])
