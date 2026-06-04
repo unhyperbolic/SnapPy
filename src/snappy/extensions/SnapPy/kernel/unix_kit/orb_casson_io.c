@@ -790,20 +790,20 @@ void orb_write_casson_format_to_stream(
             set_left_edge(edge, &ptet0);
             PositionedTet ptet = ptet0;
 
-            ostream_printf(stream, " %21.16f", edge->orb_edge_shape->inner_product[ultimate]);
+            ostream_printf(stream, " %21.16f", (double)edge->orb_edge_shape->inner_product[ultimate]);
 
             int top = remaining_face[ptet.left_face][ptet.near_face];
             ostream_printf(stream, " %21.16f",
-                           ptet.tet->cusp[top]->orb_cusp_shape->inner_product[ultimate]);
+                           (double)ptet.tet->cusp[top]->orb_cusp_shape->inner_product[ultimate]);
 
             int bottom = remaining_face[ptet.near_face][ptet.left_face];
             ostream_printf(stream, " %21.16f",
-                           ptet.tet->cusp[bottom]->orb_cusp_shape->inner_product[ultimate]);
+                           (double)ptet.tet->cusp[bottom]->orb_cusp_shape->inner_product[ultimate]);
 
             do {
                 ostream_printf(
                     stream, " %21.16f",
-                    ptet.tet->orb_tet_shape->dihedral_angle
+                    (double)ptet.tet->orb_tet_shape->dihedral_angle
                         [ultimate]
                         [edge_between_faces[ptet.near_face][ptet.left_face]]);
                 veer_left(&ptet);
