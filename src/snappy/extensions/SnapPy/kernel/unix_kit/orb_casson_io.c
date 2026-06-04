@@ -705,7 +705,7 @@ void orb_write_casson_format_to_stream(
     {
         ostream_printf(stream, "%3d %2d", index, edge->orb_singular_index + 1);
 
-        ostream_printf(stream, " %04.3f", edge->orb_singular_order);
+        ostream_printf(stream, " %04.3f", (double)edge->orb_singular_order);
 
         PositionedTet ptet0;
         set_left_edge(edge, &ptet0);
@@ -726,7 +726,7 @@ void orb_write_casson_format_to_stream(
                 veer_left(&ptet);
             } while (!same_positioned_tet(&ptet, &ptet0));
 
-            ostream_printf(stream, " %21.16f", err);
+            ostream_printf(stream, " %21.16f", (double)err);
         }
 
         if (include_geometric_structure_and_cusp_indices)
@@ -734,28 +734,28 @@ void orb_write_casson_format_to_stream(
             if (ptet.tet->cusp[remaining_face[ptet.left_face][ptet.near_face]]
                     ->index > -1)
                 ostream_printf(stream, " %2d",
-                               ptet.tet->cusp[remaining_face[ptet.left_face]
+                               (double)ptet.tet->cusp[remaining_face[ptet.left_face]
                                                             [ptet.near_face]]
                                        ->index +
                                    1);
             else
                 ostream_printf(
                     stream, " %2d",
-                    ptet.tet
+                    (double)ptet.tet
                         ->cusp[remaining_face[ptet.left_face][ptet.near_face]]
                         ->index);
 
             if (ptet.tet->cusp[remaining_face[ptet.near_face][ptet.left_face]]
                     ->index > -1)
                 ostream_printf(stream, " %2d",
-                               ptet.tet->cusp[remaining_face[ptet.near_face]
+                               (double)ptet.tet->cusp[remaining_face[ptet.near_face]
                                                             [ptet.left_face]]
                                        ->index +
                                    1);
             else
                 ostream_printf(
                     stream, " %2d",
-                    ptet.tet
+                    (double)ptet.tet
                         ->cusp[remaining_face[ptet.near_face][ptet.left_face]]
                         ->index);
         }
