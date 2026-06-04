@@ -28,9 +28,6 @@ struct OrbCuspShape
     Real                inner_product[4];
     Real                area;
     int                 index;
-    Real                orbifold_euler_characteristic;
-    int                 num_cone_points;
-    int                 *cone_points;
 };
 
 SNAPPEA_NAMESPACE_END_SCOPE

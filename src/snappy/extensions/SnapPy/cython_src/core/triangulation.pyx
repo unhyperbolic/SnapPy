@@ -437,7 +437,7 @@ cdef class Triangulation():
         if self.c_triangulation is NULL:
             raise ValueError('The Triangulation is empty.')
 
-        return self.c_triangulation.orb_num_singular_arcs
+        return orb_get_num_singular_edges(self.c_triangulation)
 
     def orientation_cover(self):
         """
@@ -1103,7 +1103,7 @@ cdef class Triangulation():
                 else:
                     repr += '(%g,%g)'% info['filling']
             IF ORB:
-                for i in range(self.c_triangulation.orb_num_singular_arcs):
+                for i in range(self._orb_num_singularities()):
                     info = self._orb_singularity_info(i)
                     repr += '(%g)' % info.singular_order
             return repr
@@ -1264,7 +1264,7 @@ cdef class Triangulation():
             if self.c_triangulation is NULL:
                 raise ValueError('The Triangulation is empty.')
 
-            num = self.c_triangulation.orb_num_singular_arcs
+            num = self._orb_num_singularities()
 
             if singular_index is not None:
                 singular_index = valid_index(

@@ -397,9 +397,9 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
     initialize_triangulation(manifold);
 
     manifold->num_tetrahedra = cf->num_tet;
-    manifold->solution_type[complete] = not_attempted;
-    manifold->solution_type[filled] = not_attempted;
-    manifold->orb_num_singular_arcs = 0;
+    manifold->orb_solution_type[complete] = not_attempted;
+    manifold->orb_solution_type[filled] = not_attempted;
+    manifold->orb_num_singular_edges = 0;
     manifold->num_or_cusps = 0;
     manifold->num_nonor_cusps = 0;
     manifold->num_cusps = 0;
@@ -471,9 +471,6 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
     {
         cusp->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
         cusp->orb_cusp_shape->index = -1;
-        cusp->orb_cusp_shape->orbifold_euler_characteristic = 0.0;
-        cusp->orb_cusp_shape->num_cone_points = 0;
-        cusp->orb_cusp_shape->cone_points = NULL;
     }
     
     ei = cf->head;
@@ -515,7 +512,7 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
             edge->orb_singular_index = -1;
         } else {
             edge->orb_is_singular = TRUE;
-            manifold->orb_num_singular_arcs++;
+            manifold->orb_num_singular_edges++;
             edge->orb_singular_order = ei->singular_order;
             edge->orb_old_singular_order = ei->singular_order;
             edge->orb_singular_index = ei->singular_index;
@@ -571,6 +568,8 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
                         tet->orb_tet_shape->use_orientation_parameter[j][i] = TRUE;
         }
 
+    orb_cusps_fill_incident_singular_edges(manifold);
+
     peripheral_curves_as_needed(manifold);
 
     /* identify_cusps(manifold); */
@@ -613,10 +612,10 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
     orient(manifold);
     my_free(tet_array);
 
-    manifold->solution_type[complete] = cf->type;
-    manifold->solution_type[filled] = cf->type;
+    manifold->orb_solution_type[complete] = cf->type;
+    manifold->orb_solution_type[filled] = cf->type;
 
-    if (manifold->solution_type[complete] == geometric_solution)
+    if (manifold->orb_solution_type[complete] == geometric_solution)
         orb_compute_tilts(manifold);
 
     /* peripheral_curves_as_needed(manifold); */
@@ -664,7 +663,7 @@ void orb_write_casson_format_to_stream(
     }
 
     if (include_geometric_structure_and_cusp_indices) {
-        if (manifold->solution_type[complete] == geometric_solution) {
+        if (manifold->orb_solution_type[complete] == geometric_solution) {
             if (orb_contains_flat_tetrahedra(manifold) == TRUE)
                 ostream_printf(stream,
                                "SolutionType partially_flat_solution\n");
@@ -672,28 +671,28 @@ void orb_write_casson_format_to_stream(
                 ostream_printf(stream, "SolutionType geometric_solution\n");
         }
 
-        if (manifold->solution_type[complete] == nongeometric_solution)
+        if (manifold->orb_solution_type[complete] == nongeometric_solution)
             ostream_printf(stream, "SolutionType nongeometric_solution\n");
 
-        if (manifold->solution_type[complete] == not_attempted)
+        if (manifold->orb_solution_type[complete] == not_attempted)
             ostream_printf(stream, "SolutionType not_attempted\n");
 
-        if (manifold->solution_type[complete] == other_solution)
+        if (manifold->orb_solution_type[complete] == other_solution)
             ostream_printf(stream, "SolutionType other_solution\n");
 
-        if (manifold->solution_type[complete] == step_failed)
+        if (manifold->orb_solution_type[complete] == step_failed)
             ostream_printf(stream, "SolutionType step_failed\n");
 
-        if (manifold->solution_type[complete] == no_solution)
+        if (manifold->orb_solution_type[complete] == no_solution)
             ostream_printf(stream, "SolutionType no_solution\n");
 
-        if (manifold->solution_type[complete] == invalid_solution)
+        if (manifold->orb_solution_type[complete] == invalid_solution)
             ostream_printf(stream, "SolutionType invalid_solution\n");
 
-        if (manifold->solution_type[complete] == degenerate_solution)
+        if (manifold->orb_solution_type[complete] == degenerate_solution)
             ostream_printf(stream, "SolutionType degenerate_solution\n");
 
-        if (manifold->solution_type[complete] == flat_solution)
+        if (manifold->orb_solution_type[complete] == flat_solution)
             ostream_printf(stream, "SolutionType flat_solution\n");
 
         ostream_printf(stream, "vertices_known\n\n");
@@ -776,7 +775,7 @@ void orb_write_casson_format_to_stream(
     }
 
     if (include_geometric_structure_and_cusp_indices &&
-        manifold->solution_type[complete] != not_attempted)
+        manifold->orb_solution_type[complete] != not_attempted)
     {
         ostream_printf(stream, "\n");
 

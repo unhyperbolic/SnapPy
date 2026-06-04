@@ -2771,6 +2771,8 @@ extern SolutionType orb_find_hyperbolic_structure(
 /*                                                                      */
 /************************************************************************/
 
+extern int orb_get_num_singular_edges( Triangulation *manifold);
+    
 extern void orb_get_singularity_info( Triangulation *manifold,
                                       int            singular_index,
                                       Real           *singular_order,

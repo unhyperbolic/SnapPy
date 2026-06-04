@@ -548,11 +548,9 @@ void free_edge_class(
 void free_cusp(Cusp * cusp)
 {
     if (cusp->orb_cusp_shape != NULL)
-    {
-        if (cusp->orb_cusp_shape->cone_points != NULL)
-            my_free(cusp->orb_cusp_shape->cone_points);
         my_free(cusp->orb_cusp_shape);
-    }
+    if (cusp->orb_incident_singular_edges != NULL)
+        my_free(cusp->orb_incident_singular_edges);
 
     my_free(cusp);
 }
@@ -800,25 +798,21 @@ void copy_triangulation(
         *new_cusp[cusp->index - min_cusp_index] = *cusp;
 
 #ifdef ORB
+        new_cusp[cusp->index - min_cusp_index]->orb_num_incident_singular_edges = 0;
+        new_cusp[cusp->index - min_cusp_index]->orb_incident_singular_edges = NULL;
         if (cusp->orb_cusp_shape != NULL)
         {
             new_cusp[cusp->index - min_cusp_index]->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
             *new_cusp[cusp->index - min_cusp_index]->orb_cusp_shape = *cusp->orb_cusp_shape;
-            new_cusp[cusp->index - min_cusp_index]->orb_cusp_shape->cone_points = NULL;
-            if (cusp->orb_cusp_shape->cone_points != NULL
-             && cusp->orb_cusp_shape->num_cone_points > 0)
-            {
-                new_cusp[cusp->index - min_cusp_index]->orb_cusp_shape->cone_points =
-                    NEW_ARRAY(cusp->orb_cusp_shape->num_cone_points, int);
-                for (j = 0; j < cusp->orb_cusp_shape->num_cone_points; j++)
-                    new_cusp[cusp->index - min_cusp_index]->orb_cusp_shape->cone_points[j] =
-                        cusp->orb_cusp_shape->cone_points[j];
-            }
         }
 #endif
 
         INSERT_BEFORE(new_cusp[cusp->index - min_cusp_index], &destination->cusp_list_end);
     }
+
+#ifdef ORB
+    orb_cusps_fill_incident_singular_edges(destination);
+#endif
 
     /*
      *  Free the arrays of pointers.
@@ -861,7 +855,7 @@ void initialize_triangulation(
     manifold->num_nonor_cusps           = 0;
     manifold->num_fake_cusps            = 0;
 #ifdef ORB
-    manifold->orb_num_singular_arcs     = 0;
+    manifold->orb_num_singular_edges    = 0;
 #endif
     manifold->num_generators            = 0;
     manifold->CS_value_is_known         = FALSE;
@@ -976,6 +970,8 @@ void initialize_cusp(
     cusp->shape_precision[current]  = 0;
 #ifdef ORB
     cusp->orb_cusp_shape            = NULL;
+    cusp->orb_num_incident_singular_edges = 0;
+    cusp->orb_incident_singular_edges = NULL;
 #endif
     cusp->index                     = 255;
     cusp->displacement              = 0.0;

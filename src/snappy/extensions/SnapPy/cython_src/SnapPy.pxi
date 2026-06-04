@@ -229,7 +229,6 @@ cdef extern from "triangulation.h":
         EdgeClass edge_list_end
         int num_generators
         int num_tetrahedra
-        int orb_num_singular_arcs # IF ORB:
 
 cdef extern from "winged_edge.h":
     ctypedef struct TetrahedronSneak
@@ -610,11 +609,12 @@ cdef extern from "SnapPea.h":
     extern void free_symplectic_basis(int **, int) except *
 
     IF ORB:
+        extern int orb_get_num_singular_edges(c_Triangulation * manifold) except *
+        extern void orb_get_singularity_info(c_Triangulation * manifold, int singular_index, Real * singular_order, Real * inner_product) except *
+        extern void orb_set_singularity_info(c_Triangulation * manifold, int singular_index, Real singular_order) except *
         extern c_SolutionType orb_find_hyperbolic_structure(
             c_Triangulation * manifold, Boolean manual) except *
         extern Real orb_volume(c_Triangulation * manifold, Boolean * ok) except *
-        extern void orb_get_singularity_info(c_Triangulation * manifold, int singular_index, Real * singular_order, Real * inner_product) except *
-        extern void orb_set_singularity_info(c_Triangulation * manifold, int singular_index, Real singular_order) except *
 
 cdef extern from "kernel_prototypes.h":
     extern void choose_generators(c_Triangulation *manifold,

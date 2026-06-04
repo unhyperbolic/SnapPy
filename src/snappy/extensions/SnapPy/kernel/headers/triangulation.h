@@ -244,6 +244,8 @@ struct Cusp
     int                 shape_precision[2];     /**< cusp_shapes.c                        */
 #ifdef ORB
     OrbCuspShape        *orb_cusp_shape;
+    int                 orb_num_incident_singular_edges;
+    EdgeClass           **orb_incident_singular_edges;
 #endif
     int                 index;                  /**< cusp number, as perceived by user    */
                                                 /**<  (numbering starts at zero)          */
@@ -275,13 +277,16 @@ struct Triangulation
     char                *name;                  /**< name of manifold                     */
     int                 num_tetrahedra;         /**< number of tetrahedra                 */
     SolutionType        solution_type[2];       /**< complete and filled                  */
+#ifdef ORB
+    SolutionType        orb_solution_type[2];
+#endif
     Orientability       orientability;          /**< Orientability of manifold            */
     int                 num_cusps,              /**< total number of cusps                */
                         num_or_cusps,           /**< number of orientable cusps           */
                         num_nonor_cusps,        /**< number of nonorientable cusps        */
                         num_fake_cusps;         /**< number of fake cusps                 */
 #ifdef ORB
-    int                 orb_num_singular_arcs;
+    int                 orb_num_singular_edges;
 #endif
     int                 num_generators;         /**< choose_generators.c (local)          */
     Boolean             CS_value_is_known,      /**< Chern_Simons.c                       */

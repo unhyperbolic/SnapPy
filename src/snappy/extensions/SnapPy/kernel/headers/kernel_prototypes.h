@@ -1243,36 +1243,7 @@ extern int *copy_group_word(int *word);
 
 #ifdef ORB
 
-/************************************************************************/
-/*                                                                      */
-/*                         orb_cusp_area.c                              */
-/*                                                                      */
-/************************************************************************/
-
-extern void orb_normalize_cusps(Triangulation *manifold);
-
-/************************************************************************/
-/*                                                                      */
-/*                    orb_hyperbolic_structure.c                        */
-/*                                                                      */
-/************************************************************************/
-
-extern Real orb_minor1(GL4RMatrix matrix, int row, int col);
-
-/* ORB-TODO: move to canonize??? */
-
-extern void orb_compute_tilts(Triangulation *manifold);
-
-/************************************************************************/
-/*                                                                      */
-/*                    orb_identify_solution_type.c                      */
-/*                                                                      */
-/************************************************************************/
-
-extern void orb_identify_solution_type(Triangulation *manifold);
-extern Boolean orb_contains_flat_tetrahedra( Triangulation *manifold );
-extern Boolean orb_solution_is_degenerate(Triangulation *manifold);
-extern void orb_compute_cusp_euler_characteristics(Triangulation *manifold);
+#include "orb_kernel_prototypes.h"
 
 #endif
 

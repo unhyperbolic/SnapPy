@@ -4,6 +4,16 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static EdgeClass * orb_find_singular_edge(
     Triangulation *manifold,
+    int           singular_index);
+
+int orb_get_num_singular_edges(
+    Triangulation *manifold)
+{
+    return manifold->orb_num_singular_edges;
+}
+
+static EdgeClass * orb_find_singular_edge(
+    Triangulation *manifold,
     int           singular_index)
 {
     for (EdgeClass *edge = manifold->edge_list_begin.next;

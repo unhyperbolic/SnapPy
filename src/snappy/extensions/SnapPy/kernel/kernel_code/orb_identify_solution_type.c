@@ -12,7 +12,7 @@ static Boolean orb_solution_is_flat(Triangulation *manifold);
 static Boolean orb_solution_is_geometric(Triangulation *manifold);
 static Boolean orb_solution_is_invalid(Triangulation *manifold);
 Boolean orb_solution_is_degenerate(Triangulation *manifold);
-void orb_compute_cusp_euler_characteristics(Triangulation *manifold);
+Real orb_compute_cusp_euler_characteristics(Cusp * cusp);
 
 extern Real orb_volume(Triangulation *manifold, Boolean *ok);
 
@@ -21,40 +21,38 @@ void orb_identify_solution_type(
 {
     Boolean ok;
 
-    orb_compute_cusp_euler_characteristics(manifold);
-
     if (orb_solution_is_invalid(manifold))
     {
-        manifold->solution_type[filled] = other_solution;
+        manifold->orb_solution_type[filled] = other_solution;
         return;
     }
 
     if (orb_solution_is_degenerate(manifold))
     {
-        manifold->solution_type[filled] = degenerate_solution;
+        manifold->orb_solution_type[filled] = degenerate_solution;
         return;
     }
 
     if (orb_solution_is_flat(manifold))
     {
-        manifold->solution_type[filled] = flat_solution;
+        manifold->orb_solution_type[filled] = flat_solution;
         return;
     }
 
     if (orb_solution_is_geometric(manifold)
      && orb_volume(manifold, &ok) > ORB_VOLUME_EPSILON)
     {
-        manifold->solution_type[filled] = geometric_solution;
+        manifold->orb_solution_type[filled] = geometric_solution;
         return;
     }
 
     if (orb_volume(manifold, &ok) > ORB_VOLUME_EPSILON)
     {
-        manifold->solution_type[filled] = nongeometric_solution;
+        manifold->orb_solution_type[filled] = nongeometric_solution;
         return;
     }
 
-    manifold->solution_type[filled] = other_solution;
+    manifold->orb_solution_type[filled] = other_solution;
 }
 
 Boolean orb_contains_flat_tetrahedra(
@@ -74,45 +72,6 @@ Boolean orb_solution_is_degenerate(
 {
     (void)manifold;
     return FALSE;
-}
-
-void orb_compute_cusp_euler_characteristics(
-    Triangulation *manifold)
-{
-    int count = manifold->orb_num_singular_arcs;
-    Real *singular_orders = count > 0 ? NEW_ARRAY(count, Real) : NULL;
-
-    if (singular_orders != NULL)
-        for (int i = 0; i < count; i++)
-            singular_orders[i] = 0.0;
-
-    for (EdgeClass *edge = manifold->edge_list_begin.next;
-         edge != &manifold->edge_list_end;
-         edge = edge->next)
-        if (edge->orb_is_singular && singular_orders != NULL)
-            singular_orders[edge->orb_singular_index] = edge->orb_singular_order;
-
-    for (Cusp *cusp = manifold->cusp_list_begin.next;
-         cusp != &manifold->cusp_list_end;
-         cusp = cusp->next)
-        if (!cusp->is_finite)
-        {
-            cusp->orb_cusp_shape->orbifold_euler_characteristic =
-                cusp->euler_characteristic;
-
-            for (int i = 0; i < cusp->orb_cusp_shape->num_cone_points; i++)
-                if (singular_orders != NULL
-                 && singular_orders[cusp->orb_cusp_shape->cone_points[i]] == 0)
-                    cusp->orb_cusp_shape->orbifold_euler_characteristic -= 1.0;
-                else if (singular_orders != NULL)
-                    cusp->orb_cusp_shape->orbifold_euler_characteristic -=
-                        1.0 - 1.0 / singular_orders[cusp->orb_cusp_shape->cone_points[i]];
-        }
-        else
-            cusp->orb_cusp_shape->orbifold_euler_characteristic = 2.0;
-
-    if (singular_orders != NULL)
-        my_free(singular_orders);
 }
 
 static Boolean orb_flat_tet(
@@ -202,19 +161,21 @@ static Boolean orb_solution_is_invalid(
     for (Cusp *cusp = manifold->cusp_list_begin.next;
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next)
-        if (fabs(cusp->orb_cusp_shape->orbifold_euler_characteristic)
-                < ORB_IDEAL_EPSILON)
+    {
+        Real orbifold_euler_characteristic =
+            orb_compute_orbifold_cusp_euler_characteristic(cusp);
+        Real inner_product =
+            cusp->orb_cusp_shape->inner_product[ultimate];
+
+        if (fabs(orbifold_euler_characteristic) < ORB_IDEAL_EPSILON)
         {
-            if (fabs(cusp->orb_cusp_shape->inner_product[ultimate])
-                    > ORB_IDEAL_EPSILON)
+            if (fabs(inner_product) > ORB_IDEAL_EPSILON)
                 return TRUE;
         }
-        else if (cusp->orb_cusp_shape->orbifold_euler_characteristic
-                    * cusp->orb_cusp_shape->inner_product[ultimate] > 0
-              || fabs(cusp->orb_cusp_shape->inner_product[ultimate])
-                    < ORB_IDEAL_EPSILON)
+        else if (orbifold_euler_characteristic * inner_product > 0
+                 || fabs(inner_product) < ORB_IDEAL_EPSILON)
             return TRUE;
-
+    }
     return FALSE;
 }
 

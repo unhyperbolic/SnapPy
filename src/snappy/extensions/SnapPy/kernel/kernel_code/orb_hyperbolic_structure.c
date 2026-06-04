@@ -89,9 +89,6 @@ static void orb_initialize_shapes(Triangulation *manifold)
             cusp->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
             cusp->orb_cusp_shape->area = 0.0;
             cusp->orb_cusp_shape->index = -1;
-            cusp->orb_cusp_shape->orbifold_euler_characteristic = 0.0;
-            cusp->orb_cusp_shape->num_cone_points = 0;
-            cusp->orb_cusp_shape->cone_points = NULL;
         }
 }
 
@@ -149,7 +146,7 @@ SolutionType orb_find_hyperbolic_structure( Triangulation *manifold, Boolean man
 			{
 				if (orb_solution_is_degenerate(manifold))
 				{
-					manifold->solution_type[complete] = degenerate_solution;
+					manifold->orb_solution_type[complete] = degenerate_solution;
 					res = degenerate_solution;
 				}
 
@@ -194,7 +191,7 @@ static SolutionType prepare_for_manual( Triangulation *manifold )
 
 	if (need_to_perturb)
 	{
-		temp = NEW_ARRAY( manifold->orb_num_singular_arcs, Real );
+		temp = NEW_ARRAY( manifold->orb_num_singular_edges, Real );
 
 		for (	edge = manifold->edge_list_begin.next;
 			edge!=&manifold->edge_list_end;
@@ -225,7 +222,7 @@ static SolutionType prepare_for_manual( Triangulation *manifold )
 		my_free(temp);
 	}
 
-	return manifold->solution_type[complete];
+	return manifold->orb_solution_type[complete];
 }
 
 static void my_copy_solution( Triangulation *manifold, Boolean save )
@@ -300,7 +297,7 @@ static SolutionType my_find_complete_hyperbolic_structure(
   if   (initialize_settings(manifold,use_previous_solution)==func_failed)
   {
 			reindex_cells( manifold );
-			manifold->solution_type[complete] = step_failed;
+			manifold->orb_solution_type[complete] = step_failed;
 			return step_failed;
   }
 
@@ -548,30 +545,30 @@ static SolutionType my_do_Dehn_filling(
         if (distance_to_solution < RIGHT_BALLPARK && solution_was_found)
                 orb_identify_solution_type(manifold);
         else if (iteration_limit_exceeded == TRUE)
-                manifold->solution_type[filled] = no_solution;
+                manifold->orb_solution_type[filled] = no_solution;
         else if (result1==func_failed)
-		manifold->solution_type[filled] = step_failed;
+		manifold->orb_solution_type[filled] = step_failed;
 	else switch (result)
         {
                 case func_cancelled:
-                        manifold->solution_type[filled] = not_attempted;
+                        manifold->orb_solution_type[filled] = not_attempted;
                         break;
                 default:
-                        manifold->solution_type[filled] = no_solution;
+                        manifold->orb_solution_type[filled] = no_solution;
                         break;
         }
 
         uLongComputationEnds();
 
-        manifold->solution_type[complete] = manifold->solution_type[filled];
+        manifold->orb_solution_type[complete] = manifold->orb_solution_type[filled];
 	
-	if (manifold->solution_type[complete] == geometric_solution )
+	if (manifold->orb_solution_type[complete] == geometric_solution )
 	{
 		orb_normalize_cusps( manifold );
 		orb_compute_tilts( manifold );
 	}
 
-        return manifold->solution_type[complete];
+        return manifold->orb_solution_type[complete];
 }
 
 

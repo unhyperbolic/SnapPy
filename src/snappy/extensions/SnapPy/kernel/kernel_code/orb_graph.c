@@ -51,7 +51,7 @@ extern Triangulation *orb_triangulate_graph_complement(
     create_finite_vertices(gamma, manifold);
     create_edge_classes(manifold);
     orient_edge_classes(manifold);
-    label_edge_classes(gamma, &manifold->orb_num_singular_arcs);
+    label_edge_classes(gamma, &manifold->orb_num_singular_edges);
 
     /* note: all although identify_cusp reindex everything, it does it in a way
      * consistent with the previous indices */
@@ -61,6 +61,8 @@ extern Triangulation *orb_triangulate_graph_complement(
     peripheral_curves_as_needed(manifold);
 
     add_peripheral_curves(gamma);
+
+    orb_cusps_fill_incident_singular_edges(manifold);
 
     if (do_remove_finite_vertices) remove_finite_vertices(manifold);
 
