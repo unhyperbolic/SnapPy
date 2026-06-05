@@ -822,7 +822,7 @@ IF ORB:
             # also remove vertices that are adjacent to singular edges.
 
             # Is this a memory leak if this raises an exception through uFatalError?
-            triangulation = orb_triangulate_diagram_complement(diagram, False)
+            triangulation = orb_triangulate_diagram_complement(diagram, True)
 
         if not triangulation:
             orb_free_diagram(diagram)
