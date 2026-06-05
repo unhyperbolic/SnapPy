@@ -21,5 +21,19 @@ cdef class Orbifold(Triangulation):
         orb_find_hyperbolic_structure(self.c_triangulation, manual)
         self._cache.clear(message='Manifold._orb_cone_fill')
 
+    def solution_type(self, enum=False):
+        cdef c_SolutionType solution_type
+
+        if self.c_triangulation is NULL:
+            raise ValueError('The Triangulation is empty.')
+
+        solution_type = orb_get_solution_type(self.c_triangulation)
+        if enum:
+            return solution_type
+        else:
+            return SolutionType[solution_type]
+
     def volume(self):
         return Real2Number(orb_volume(self.c_triangulation))
+
+    
