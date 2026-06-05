@@ -386,7 +386,8 @@ extern Cusp *find_cusp(Triangulation *manifold, int cusp_index);
 /*                                                                      */
 /************************************************************************/
 
-extern void remove_finite_vertices(Triangulation *manifold);
+extern void remove_finite_vertices(Triangulation *manifold,
+                                   Boolean create_new_cusp_if_necessary);
 /**<
  *  Removes finite vertices from the manifold.
  */

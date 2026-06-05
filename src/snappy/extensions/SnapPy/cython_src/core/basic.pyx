@@ -561,7 +561,9 @@ def Manifold_from_Triangulation(Triangulation T, recompute=True,
         # hyperbolic structure.
         count_cusps(c_triangulation)
         if get_num_fake_cusps(c_triangulation) > 0:
-            remove_finite_vertices(c_triangulation)
+            create_new_cusp_if_necessary = True
+            remove_finite_vertices(
+                c_triangulation, create_new_cusp_if_necessary)
             count_cusps(c_triangulation)
 
         find_complete_hyperbolic_structure(c_triangulation)

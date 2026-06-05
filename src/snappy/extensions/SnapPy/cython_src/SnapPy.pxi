@@ -641,7 +641,7 @@ cdef extern from "kernel_prototypes.h":
     extern void free_cross_sections(c_Triangulation *manifold)
     extern void compute_cross_sections(c_Triangulation *manifold)
     extern void compute_tilts(c_Triangulation *manifold)
-    extern void remove_finite_vertices(c_Triangulation *manifold)
+    extern void remove_finite_vertices(c_Triangulation *manifold, Boolean create_new_cusp_if_necessary)
     extern void count_cusps(c_Triangulation *manifold)
     extern c_Triangulation* subdivide(c_Triangulation *manifold, char *new_name) except *
     extern void close_cusps(c_Triangulation *manifold, Boolean fill_cusp[], Boolean fill_by_fold, Boolean mark_solid_tori)
