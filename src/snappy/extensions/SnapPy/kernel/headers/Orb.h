@@ -15,6 +15,9 @@ extern SolutionType orb_find_hyperbolic_structure(
     Triangulation *manifold,
     Boolean        manual);
 
+extern void orb_remove_hyperbolic_structure(
+    Triangulation *manifold);
+
 /************************************************************************/
 /*                                                                      */
 /*                           orb_interface.c                            */

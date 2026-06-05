@@ -23,11 +23,6 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 #define PI_OVER_4               (PI / 4)
 
 static void orb_initialize_shapes(Triangulation *manifold);
-extern void orb_identify_solution_type(Triangulation *manifold);
-extern void orb_normalize_cusps(Triangulation *manifold);
-extern Boolean orb_solution_is_degenerate(Triangulation *manifold);
-extern Real orb_minor1(GL4RMatrix matrix, int row, int col);
-extern void orb_compute_tilts(Triangulation *manifold);
 
 static SolutionType my_do_Dehn_filling(
     Triangulation *manifold,
@@ -92,7 +87,9 @@ static void orb_initialize_shapes(Triangulation *manifold)
         }
 }
 
-SolutionType orb_find_hyperbolic_structure( Triangulation *manifold, Boolean manual )
+SolutionType orb_find_hyperbolic_structure(
+    Triangulation *manifold,
+    Boolean       manual)
 {
 	SolutionType res;
 	Real	step_size;	
@@ -1877,6 +1874,40 @@ static FuncResult select_independent_equations( Real **equations, int num_rows, 
 	*new_rows = pr;
 
 	return func_OK;
+}
+
+void orb_remove_hyperbolic_structure(
+    Triangulation *manifold)
+{
+    for (Tetrahedron *tet = manifold->tet_list_begin.next;
+         tet != &manifold->tet_list_end;
+         tet = tet->next)
+        if (tet->orb_tet_shape != NULL)
+        {
+            my_free(tet->orb_tet_shape);
+            tet->orb_tet_shape = NULL;
+        }
+
+    for (EdgeClass *edge = manifold->edge_list_begin.next;
+         edge != &manifold->edge_list_end;
+         edge = edge->next)
+        if (edge->orb_edge_shape != NULL)
+        {
+            my_free(edge->orb_edge_shape);
+            edge->orb_edge_shape = NULL;
+        }
+
+    for (Cusp *cusp = manifold->cusp_list_begin.next;
+         cusp != &manifold->cusp_list_end;
+         cusp = cusp->next)
+        if (cusp->orb_cusp_shape != NULL)
+        {
+            my_free(cusp->orb_cusp_shape);
+            cusp->orb_cusp_shape = NULL;
+        }
+
+    for (int i = 0; i < 2; i++) /*  i = complete, filled    */
+        manifold->orb_solution_type[i] = not_attempted;
 }
 
 SNAPPEA_NAMESPACE_END_SCOPE
