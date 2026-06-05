@@ -31,7 +31,6 @@ Real orb_volume(
 static Real tetrahedron_volume(
     Real    *angles)
 {
-    static const int opposite[] = {5, 4, 3};
     GL4RMatrix G;
     Complex w1, w2, w, z1, z2, bottom;
     Real sqrt_det, real_top;
@@ -42,7 +41,7 @@ static Real tetrahedron_volume(
 
     real_top = 0.0;
     for (int i = 0; i < 3; i++)
-        real_top -= 2.0 * sin(angles[i]) * sin(angles[opposite[i]]);
+        real_top -= 2.0 * sin(angles[i]) * sin(angles[5 - i]);
 
     sqrt_det = sqrt(ABS(gl4R_determinant(G)));
 
@@ -58,8 +57,8 @@ static Real tetrahedron_volume(
     {
         w1.real = cos(angles[i]);
         w1.imag = sin(angles[i]);
-        w2.real = cos(angles[opposite[i]]);
-        w2.imag = sin(angles[opposite[i]]);
+        w2.real = cos(angles[5 - i]);
+        w2.imag = sin(angles[5 - i]);
         w = complex_mult(w1, w2);
         bottom = complex_plus(bottom, w);
     }
@@ -97,7 +96,6 @@ static Complex orb_U(
     Complex  z,
     Real    *angles)
 {
-    static const int opposite[] = {5, 4, 3};
     Complex result = complex_volume_dilog(z), w, w1, w2, dilogw;
 
     for (int i = 0; i < 3; i++)
@@ -109,8 +107,8 @@ static Complex orb_U(
             {
                 w1.real = cos(angles[j]);
                 w1.imag = sin(angles[j]);
-                w2.real = cos(angles[opposite[j]]);
-                w2.imag = sin(angles[opposite[j]]);
+                w2.real = cos(angles[5 - j]);
+                w2.imag = sin(angles[5 - j]);
                 w = complex_mult(w, w1);
                 w = complex_mult(w, w2);
             }
