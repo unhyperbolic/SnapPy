@@ -110,6 +110,7 @@ cdef class Triangulation():
 
         if self.c_triangulation != NULL and not self.hyperbolic_structure_initialized:
             remove_hyperbolic_structures(self.c_triangulation)
+            orb_remove_hyperbolic_structure(self.c_triangulation)
 
     cdef get_from_new_plink(self, file_name=None):
         if LinkEditor is None:
