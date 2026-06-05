@@ -64,7 +64,9 @@ extern Triangulation *orb_triangulate_graph_complement(
 
     orb_cusps_fill_incident_singular_edges(manifold);
 
-    if (do_remove_finite_vertices) remove_finite_vertices(manifold);
+    if (do_remove_finite_vertices)
+        remove_finite_vertices(manifold,
+                               /* create_new_cusps_if_necessary = */ FALSE);
 
     peripheral_curves_as_needed(manifold);
 
