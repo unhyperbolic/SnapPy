@@ -1,38 +1,23 @@
 #include "kernel.h"
+
 #include "dilog.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
-static Complex orb_U(Complex z, Real *angles, Boolean *ok);
-static Boolean orb_flat_tet(Tetrahedron *tet);
-static Real tetrahedron_volume(Real *angles, Boolean *ok);
+static Complex orb_U(Complex z, Real *angles);
+static Real tetrahedron_volume(Real *angles);
 
 Real orb_volume(
-    Triangulation *manifold,
-    Boolean       *ok)
+    Triangulation *manifold)
 {
     Real volume = 0.0;
-
-    *ok = TRUE;
 
     for (Tetrahedron *tet = manifold->tet_list_begin.next;
          tet != &manifold->tet_list_end;
          tet = tet->next)
     {
-        Real angles[6];
-        Boolean ok1;
-        Real tet_vol;
-
-        for (int i = 0; i < 6; i++)
-            angles[i] = tet->orb_tet_shape->dihedral_angle[ultimate][i];
-
-        tet_vol = tetrahedron_volume(angles, &ok1);
-
-        if (!ok1 && !orb_flat_tet(tet))
-        {
-            *ok = FALSE;
-            uFatalError("orb_volume", "orb_volume");
-        }
+        Real tet_vol = tetrahedron_volume(
+            tet->orb_tet_shape->dihedral_angle[ultimate]);
 
         if (tet->orb_tet_shape->orientation_parameter[ultimate] > 0)
             volume += tet_vol;
@@ -44,15 +29,12 @@ Real orb_volume(
 }
 
 static Real tetrahedron_volume(
-    Real    *angles,
-    Boolean *ok)
+    Real    *angles)
 {
     static const int opposite[] = {5, 4, 3};
     GL4RMatrix G;
     Complex w1, w2, w, z1, z2, bottom;
     Real sqrt_det, real_top;
-
-    *ok = TRUE;
 
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
@@ -108,18 +90,15 @@ static Real tetrahedron_volume(
     z1 = complex_div(z1, bottom);
     z2 = complex_div(z2, bottom);
 
-    return complex_minus(orb_U(z1, angles, ok), orb_U(z2, angles, ok)).imag / 2;
+    return complex_minus(orb_U(z1, angles), orb_U(z2, angles)).imag / 2;
 }
 
 static Complex orb_U(
     Complex  z,
-    Real    *angles,
-    Boolean *ok)
+    Real    *angles)
 {
     static const int opposite[] = {5, 4, 3};
     Complex result = complex_volume_dilog(z), w, w1, w2, dilogw;
-
-    (void)ok;
 
     for (int i = 0; i < 3; i++)
     {

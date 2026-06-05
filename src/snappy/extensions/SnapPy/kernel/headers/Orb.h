@@ -1,7 +1,7 @@
 #ifndef _Orb_
 #define _Orb_
 
-#include "kernel_namespace.h"
+#include "SnapPea.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
@@ -38,7 +38,7 @@ extern void orb_set_singularity_info( Triangulation *manifold,
 /*                                                                      */
 /************************************************************************/
 
-extern Real orb_volume(Triangulation *manifold, Boolean *ok);
+extern Real orb_volume(Triangulation *manifold);
 
 SNAPPEA_NAMESPACE_END_SCOPE
 

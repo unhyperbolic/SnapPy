@@ -614,7 +614,7 @@ cdef extern from "SnapPea.h":
         extern void orb_set_singularity_info(c_Triangulation * manifold, int singular_index, Real singular_order) except *
         extern c_SolutionType orb_find_hyperbolic_structure(
             c_Triangulation * manifold, Boolean manual) except *
-        extern Real orb_volume(c_Triangulation * manifold, Boolean * ok) except *
+        extern Real orb_volume(c_Triangulation * manifold) except *
 
 cdef extern from "kernel_prototypes.h":
     extern void choose_generators(c_Triangulation *manifold,

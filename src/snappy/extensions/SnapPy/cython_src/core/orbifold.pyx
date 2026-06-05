@@ -22,6 +22,4 @@ cdef class Orbifold(Triangulation):
         self._cache.clear(message='Manifold._orb_cone_fill')
 
     def volume(self):
-        cdef Boolean ok
-
-        return Real2Number(orb_volume(self.c_triangulation, &ok))
+        return Real2Number(orb_volume(self.c_triangulation))

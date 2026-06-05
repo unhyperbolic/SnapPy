@@ -14,8 +14,6 @@ static Boolean orb_solution_is_invalid(Triangulation *manifold);
 Boolean orb_solution_is_degenerate(Triangulation *manifold);
 Real orb_compute_cusp_euler_characteristics(Cusp * cusp);
 
-extern Real orb_volume(Triangulation *manifold, Boolean *ok);
-
 void orb_identify_solution_type(
     Triangulation *manifold)
 {
@@ -40,13 +38,13 @@ void orb_identify_solution_type(
     }
 
     if (orb_solution_is_geometric(manifold)
-     && orb_volume(manifold, &ok) > ORB_VOLUME_EPSILON)
+        && orb_volume(manifold) > ORB_VOLUME_EPSILON)
     {
         manifold->orb_solution_type[filled] = geometric_solution;
         return;
     }
 
-    if (orb_volume(manifold, &ok) > ORB_VOLUME_EPSILON)
+    if (orb_volume(manifold) > ORB_VOLUME_EPSILON)
     {
         manifold->orb_solution_type[filled] = nongeometric_solution;
         return;
