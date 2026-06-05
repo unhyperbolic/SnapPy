@@ -29,7 +29,7 @@ Real orb_volume(
 }
 
 static Real tetrahedron_volume(
-    Real    *angles)
+    Real angles[6])
 {
     GL4RMatrix G;
     Complex w1, w2, w, z1, z2, bottom;
@@ -136,31 +136,6 @@ static Complex orb_U(
     }
 
     return complex_real_mult(0.5, result);
-}
-
-static Boolean orb_flat_tet(
-    Tetrahedron *tet)
-{
-    for (int i = 0; i < 4; i++)
-        for (int j = i + 1; j < 4; j++)
-        {
-            EdgeIndex e1 = edge_between_vertices[i][j];
-            EdgeIndex e2 = edge_between_faces[i][j];
-            EdgeIndex e3 = edge_between_vertices[i][one_vertex_at_edge[e2]];
-            EdgeIndex e4 = edge_between_vertices[i][other_vertex_at_edge[e2]];
-            EdgeIndex e5 = edge_between_vertices[j][one_vertex_at_edge[e2]];
-            EdgeIndex e6 = edge_between_vertices[j][other_vertex_at_edge[e2]];
-
-            if (ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e1] - PI) < 1e-6
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e2] - PI) < 1e-6
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e3]) < 1e-6
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e4]) < 1e-6
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e5]) < 1e-6
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e6]) < 1e-6)
-                return TRUE;
-        }
-
-    return FALSE;
 }
 
 SNAPPEA_NAMESPACE_END_SCOPE
