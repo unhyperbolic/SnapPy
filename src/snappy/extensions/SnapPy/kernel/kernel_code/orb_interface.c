@@ -31,7 +31,7 @@ static EdgeClass * orb_find_singular_edge(
     return NULL;
 }
 
-void orb_get_singularity_info(
+void orb_get_singular_edge_info(
     Triangulation *manifold,
     int            singular_index,
     Real           *singular_order,
@@ -51,7 +51,7 @@ void orb_get_singularity_info(
     }
 }
 
-void orb_set_singularity_info(
+void orb_set_singular_edge_info(
     Triangulation *manifold,
     int           singular_index,
     Real          singular_order)

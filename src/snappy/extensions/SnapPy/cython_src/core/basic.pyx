@@ -356,13 +356,13 @@ class CuspInfo(Info):
                  'holonomy precision' : 'holonomy_accuracy',
                  'shape precision'    : 'shape_accuracy'}
 
-class SingularityInfo(Info):
+class SingularEdgeInfo(Info):
     def __repr__(self):
         if self.singular_order == 0.0:
-            return ('Arc %-2d: Annular cusp (singular order = 0)' %
+            return ('Edge %-2d: Annular cusp (singular order = 0)' %
                     self.index)
         else:
-            return ('Arc %-2d: Singular of order = %g' %
+            return ('Edge %-2d: Singular of order = %g' %
                     (self.index, self.singular_order))
 
 class DualCurveInfo(Info):

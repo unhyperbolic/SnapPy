@@ -433,9 +433,9 @@ cdef class Triangulation():
         count_cusps(self.c_triangulation)
         return get_num_fake_cusps(self.c_triangulation)
 
-    def _orb_num_singularities(self) -> int:
+    def _orb_num_singular_edges(self) -> int:
         """
-        Number of singular arcs.
+        Number of singular edges.
         """
         if self.c_triangulation is NULL:
             raise ValueError('The Triangulation is empty.')
@@ -1106,8 +1106,8 @@ cdef class Triangulation():
                 else:
                     repr += '(%g,%g)'% info['filling']
             IF ORB:
-                for i in range(self._orb_num_singularities()):
-                    info = self._orb_singularity_info(i)
+                for i in range(self._orb_num_singular_edges()):
+                    info = self._orb_singular_edge_info(i)
                     repr += '(%g)' % info.singular_order
             return repr
 
@@ -1267,29 +1267,29 @@ cdef class Triangulation():
             if self.c_triangulation is NULL:
                 raise ValueError('The Triangulation is empty.')
 
-            num = self._orb_num_singularities()
+            num = self._orb_num_singular_edges()
 
             if singular_index is not None:
                 singular_index = valid_index(
                     singular_index,
                     num,
-                    'The specified singular arc (%s) does not exist.')
+                    'The specified singular edge (%s) does not exist.')
 
                 self._cache.clear(message='cone_fill')
 
-                orb_set_singularity_info(
+                orb_set_singular_edge_info(
                     self.c_triangulation,
                     singular_index,
                     Object2Real(singular_order))
             else:
                 if len(singular_order) > num:
                     raise IndexError('You provided singular orders for too '
-                                     'many singular arcs. There are only %d.' % num)
+                                     'many singular edges. There are only %d.' % num)
 
                 self._cache.clear(message='cone_fill')
 
                 for singular_index, singular_order in enumerate(singular_order):
-                    orb_set_singularity_info(
+                    orb_set_singular_edge_info(
                         self.c_triangulation,
                         singular_index,
                         Object2Real(singular_order))
@@ -1357,10 +1357,10 @@ cdef class Triangulation():
         self._cache.clear(message='compute_cusp_orientabilities')
 
     IF ORB:
-        def _orb_singularity_info(self, data_spec=None):
+        def _orb_singular_edge_info(self, data_spec=None):
             """
             Returns an info object containing information about the given
-            singular arc.
+            singular edge.
             """
 
             cdef int singular_index
@@ -1371,19 +1371,19 @@ cdef class Triangulation():
 
             if data_spec is None:
                 return ListOnePerLine(
-                    [self._orb_singularity_info(i)
-                     for i in range(self._orb_num_singularities())])
+                    [self._orb_singular_edge_info(i)
+                     for i in range(self._orb_num_singular_edges())])
             if isinstance(data_spec, str):
-                return [s[data_spec] for s in self._orb_singularity_info()]
+                return [s[data_spec] for s in self._orb_singular_edge_info()]
             singular_index = valid_index(
                 data_spec,
-                self._orb_num_singularities(),
-                'The specified singular arc (%s) does not exist.')
+                self._orb_num_singular_edges(),
+                'The specified singular edge (%s) does not exist.')
 
-            orb_get_singularity_info(self.c_triangulation,
-                                     singular_index,
-                                     &singular_order,
-                                     NULL)
+            orb_get_singular_edge_info(self.c_triangulation,
+                                       singular_index,
+                                       &singular_order,
+                                       NULL)
 
             info = {
                 'index' : singular_index,
@@ -1391,7 +1391,7 @@ cdef class Triangulation():
                 # inner product???
             }
 
-            return SingularityInfo(**info)
+            return SingularEdgeInfo(**info)
 
     def reverse_orientation(self) -> None:
         """

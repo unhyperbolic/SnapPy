@@ -34,7 +34,7 @@ Relators:
    acac
    aaaabAAAcaaaabAAAc
 >>> O._orb_cone_fill([5.0, 6.0])
->>> O._orb_singularity_info('singular_order')
+>>> O._orb_singular_edge_info('singular_order')
 [5.0, 6.0, 2.0, 3.0, 3.0, 2.0]
 >>> O.fundamental_group()
 Generators:
@@ -52,7 +52,7 @@ Relators:
 >>> O._orb_cone_fill(5.0, 3)
 >>> O._orb_cone_fill(6.0, 4)
 >>> O._orb_cone_fill(2.0, 5)
->>> O._orb_singularity_info('singular_order')
+>>> O._orb_singular_edge_info('singular_order')
 [2.0, 3.0, 4.0, 5.0, 6.0, 2.0]
 >>> O.fundamental_group()
 Generators:
@@ -75,15 +75,15 @@ Relators:
 5.43335845048923
 
 >>> O._orb_cone_fill(2.1, 0)
->>> O._orb_singularity_info('singular_order')
+>>> O._orb_singular_edge_info('singular_order')
 [2.1, 3.0, 4.0, 5.0, 6.0, 2.0]
->>> O._orb_singularity_info()
-[Arc 0 : Singular of order = 2.1,
- Arc 1 : Singular of order = 3,
- Arc 2 : Singular of order = 4,
- Arc 3 : Singular of order = 5,
- Arc 4 : Singular of order = 6,
- Arc 5 : Singular of order = 2]
+>>> O._orb_singular_edge_info()
+[Edge 0 : Singular of order = 2.1,
+ Edge 1 : Singular of order = 3,
+ Edge 2 : Singular of order = 4,
+ Edge 3 : Singular of order = 5,
+ Edge 4 : Singular of order = 6,
+ Edge 5 : Singular of order = 2]
 >>> O.volume() # doctest: +NUMERIC9
 5.67904978263216
 

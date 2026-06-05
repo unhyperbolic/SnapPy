@@ -28,14 +28,14 @@ extern SolutionType orb_get_solution_type(Triangulation *manifold);
 
 extern int orb_get_num_singular_edges(Triangulation *manifold);
     
-extern void orb_get_singularity_info( Triangulation *manifold,
-                                      int            singular_index,
-                                      Real           *singular_order,
-                                      Real           *inner_product);
+extern void orb_get_singular_edge_info( Triangulation *manifold,
+                                        int            singular_index,
+                                        Real           *singular_order,
+                                        Real           *inner_product);
 
-extern void orb_set_singularity_info( Triangulation *manifold,
-                                      int           singular_index,
-                                      Real          singular_order);
+extern void orb_set_singular_edge_info( Triangulation *manifold,
+                                        int           singular_index,
+                                        Real          singular_order);
 
 /************************************************************************/
 /*                                                                      */
