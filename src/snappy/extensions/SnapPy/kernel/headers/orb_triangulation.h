@@ -9,13 +9,13 @@ struct OrbTetShape
 {
     Boolean             is_flat;
     Real                dihedral_angle[4][6]; /* penultimate/ultimate */
-    Real                dual_basis[4][4]; /* DJH */
-    Real                basis[4][4]; /* DJH */
-    Real                Gram_matrix[4][4]; /* DJH */
-    Real                inverse_Gram_matrix[4][4]; /* DJH */
-    Real                eigenvalue[4]; /* DJH */
-    Real                orientation_parameter[4]; /* DJH */
-    Boolean             use_orientation_parameter[4][6]; /* DJH */
+    Real                dual_basis[4][4];
+    Real                basis[4][4];
+    Real                Gram_matrix[4][4];
+    Real                inverse_Gram_matrix[4][4];
+    Real                eigenvalue[4];
+    Real                orientation_parameter[4];
+    Boolean             use_orientation_parameter[4][6];
 };
 
 struct OrbEdgeShape
