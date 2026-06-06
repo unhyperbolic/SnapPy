@@ -26,6 +26,10 @@ struct OrbTetShape
      * Appears to be the vertex Gram matrix.
      */
     Real                Gram_matrix[4][4];
+    /*
+     * ORB-TODO:
+     * Appears to be conjugate, not inverse.
+     */
     Real                inverse_Gram_matrix[4][4];
     Real                eigenvalue[4];
     Real                orientation_parameter[4];
