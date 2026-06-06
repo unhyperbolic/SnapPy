@@ -841,14 +841,20 @@ static void kill_the_incident_generator(
      */
 
     ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.left_face]  ]->num_incident_generators--;
+
+    /*    MG 2026/06/06 Ported from Orb */
     if (ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.left_face]  ]->num_incident_generators==0)
         ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.left_face]  ]->active_relation = FALSE;
       
     ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.right_face] ]->num_incident_generators--;
+
+    /*    MG 2026/06/06 Ported from Orb */
     if (ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.right_face]  ]->num_incident_generators==0)
         ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.right_face]  ]->active_relation = FALSE;
 
     ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.bottom_face]]->num_incident_generators--;
+
+    /*    MG 2026/06/06 Ported from Orb */
     if (ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.bottom_face]  ]->num_incident_generators==0)
         ptet.tet->edge_class[edge_between_faces[ptet.near_face][ptet.bottom_face]  ]->active_relation = FALSE;
 
