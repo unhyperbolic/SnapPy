@@ -20,7 +20,7 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 typedef struct OrbGraph OrbGraph;
 typedef struct OrbGraphMeeting OrbGraphMeeting;
 
-/* Forward declaration from kernel */
+/* Forward declaration from kernel.h */
 typedef struct Tetrahedron Tetrahedron;
 
 /* Corresponds to Graph in gui/graph_complement.h:
@@ -37,12 +37,12 @@ struct OrbGraph
 /* Corresponds to MeetingType in gui/graph_complement.h:
  * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/graph_complement.h#L8-L13
  */
-typedef int MeetingType;
+typedef
 enum
 {
     Cross = 0,
     Inter = 1
-};
+} MeetingType;
 
 /* Corresponds to GraphMeeting in gui/graph_complement.h:
  * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/graph_complement.h#L31-L58
