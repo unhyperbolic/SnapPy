@@ -30,10 +30,6 @@ extern Real orb_compute_orbifold_cusp_euler_characteristic(Cusp * cusp);
 
 extern Real orb_minor1(GL4RMatrix matrix, int row, int col);
 
-/* ORB-TODO: move to canonize??? */
-
-extern void orb_compute_tilts(Triangulation *manifold);
-
 /************************************************************************/
 /*                                                                      */
 /*                    orb_identify_solution_type.c                      */
@@ -43,6 +39,14 @@ extern void orb_compute_tilts(Triangulation *manifold);
 extern void orb_identify_solution_type(Triangulation *manifold);
 extern Boolean orb_contains_flat_tetrahedra( Triangulation *manifold );
 extern Boolean orb_solution_is_degenerate(Triangulation *manifold);
+
+/************************************************************************/
+/*                                                                      */
+/*                            orb_tilts.c                               */
+/*                                                                      */
+/************************************************************************/
+
+extern void orb_compute_tilts(Triangulation *manifold);
 
 SNAPPEA_NAMESPACE_END_SCOPE
 

@@ -5,13 +5,13 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 #define ORB_CUSP_AREA           0.3
 #define ORB_CUSP_AREA_EPSILON   1e-8
 
-static void orb_compute_cusp_areas(Triangulation *manifold);
-static Real orb_compute_link_area(Tetrahedron *tet, int v);
+static void compute_cusp_areas(Triangulation *manifold);
+static Real compute_link_area(Tetrahedron *tet, int v);
 
 void orb_normalize_cusps(
     Triangulation *manifold)
 {
-    orb_compute_cusp_areas(manifold);
+    compute_cusp_areas(manifold);
 
     for (Cusp *cusp = manifold->cusp_list_begin.next;
          cusp != &manifold->cusp_list_end;
@@ -70,7 +70,7 @@ void orb_normalize_cusps(
     }
 }
 
-static void orb_compute_cusp_areas(
+static void compute_cusp_areas(
     Triangulation *manifold)
 {
     for (Cusp *cusp = manifold->cusp_list_begin.next;
@@ -82,10 +82,10 @@ static void orb_compute_cusp_areas(
          tet != &manifold->tet_list_end;
          tet = tet->next)
         for (int v = 0; v < 4; v++)
-            tet->cusp[v]->orb_cusp_shape->area += orb_compute_link_area(tet, v);
+            tet->cusp[v]->orb_cusp_shape->area += compute_link_area(tet, v);
 }
 
-static Real orb_compute_link_area(
+static Real compute_link_area(
     Tetrahedron *tet,
     int          v)
 {
