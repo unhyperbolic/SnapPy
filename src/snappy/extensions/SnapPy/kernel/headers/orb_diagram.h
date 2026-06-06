@@ -82,12 +82,12 @@ struct OrbDiagramVertex
  */
 struct OrbDiagramEdge
 {
-    OrbDiagramVertex *vertex[2];
-    int num_crossings;
+    OrbDiagramVertex   *vertex[2];
+    int                num_crossings;
     OrbDiagramCrossing **crossings;
-    int arc_id;
-    int link_id;
-    int edge_id;
+    int                arc_id;
+    int                link_id;
+    int                edge_id;
     OrbDiagramEdgeType edge_type;
 };
 
@@ -96,11 +96,11 @@ struct OrbDiagramEdge
  */
 struct OrbDiagramCrossing
 {
-    int x, y;
-    int crossing_id;
-    int crossing_sign;
+    int            x, y;
+    int            crossing_id;
+    int            crossing_sign;
     OrbDiagramEdge *over, *under;
-    double position_on_overstrand, position_on_understrand;
+    double         position_on_overstrand, position_on_understrand;
 };
 
 /* Corresponds to the diagram data stored by DiagramCanvas in
@@ -109,13 +109,13 @@ struct OrbDiagramCrossing
  */
 struct OrbDiagram
 {
-    int num_arcs;
-    int num_links;
-    int num_vertices;
-    OrbDiagramVertex **vertices;
-    int num_edges;
-    OrbDiagramEdge **edges;
-    int num_crossings;
+    int                num_arcs;
+    int                num_links;
+    int                num_vertices;
+    OrbDiagramVertex   **vertices;
+    int                num_edges;
+    OrbDiagramEdge     **edges;
+    int                num_crossings;
     OrbDiagramCrossing **crossings;
 };
 
