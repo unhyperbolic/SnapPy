@@ -664,6 +664,10 @@ void orb_write_casson_format_to_stream(
     Tetrahedron *tet;
     int index;
 
+    /*
+     * ORB-TODO: use number tetrahedra.
+     */
+
     for (tet = manifold->tet_list_begin.next, index = 1;
          tet != &manifold->tet_list_end;
 	 tet = tet->next, index++)
@@ -672,6 +676,10 @@ void orb_write_casson_format_to_stream(
     }
 
     if (include_geometric_structure_and_cusp_indices) {
+        /*
+         * ORB-TODO: this should really be a switch statement.
+         */
+
         if (manifold->orb_solution_type[complete] == geometric_solution) {
             if (orb_contains_flat_tetrahedra(manifold) == TRUE)
                 ostream_printf(stream,
@@ -721,19 +729,23 @@ void orb_write_casson_format_to_stream(
 
         PositionedTet ptet = ptet0;
 
-        if (include_angular_error) {
+        if (include_angular_error)
+        {
             Real err = 0;
-            if (edge->orb_singular_order == 0) {
+            if (edge->orb_singular_order == 0)
+            {
                 err = TWO_PI / edge->orb_singular_order;
             }
 
-            do {
+            do
+            {
                 err -= ptet.tet->orb_tet_shape->dihedral_angle
                            [ultimate]
                            [edge_between_faces[ptet.near_face][ptet.left_face]];
 
                 veer_left(&ptet);
-            } while (!same_positioned_tet(&ptet, &ptet0));
+            }
+            while (!same_positioned_tet(&ptet, &ptet0));
 
             ostream_printf(stream, " %21.16f", (double)err);
         }
@@ -778,7 +790,8 @@ void orb_write_casson_format_to_stream(
 
             veer_left(&ptet);
 
-        } while (!same_positioned_tet(&ptet, &ptet0));
+        }
+        while (!same_positioned_tet(&ptet, &ptet0));
 
         ostream_printf(stream, "\n");
     }
