@@ -3,6 +3,11 @@
  *
  *  Functions to populate Cusp::orb_[num_]incident_singular_edges
  *  and compute orbifold Euler characteristic of cusp.
+ *
+ *  Note that Orb stored Cusp::cone_points which were indices and
+ *  not pointers to EdgeClass. Orb also stored the cusp orbifold
+ *  Euler characteristics in Cusp whereas we compute it on the fly.
+ *
  */
 
 #include <stdio.h>
@@ -70,6 +75,12 @@ void orb_cusps_fill_incident_singular_edges(
                     other_vertex_at_edge[edge->incident_edge_index]]);
         }    
 }
+
+/*
+ *  Compare to compute_cusp_euler_characteristics in
+ *  snappea/code/my_identify_solution_type.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_identify_solution_type.c#L208-L240
+ */
 
 Real orb_compute_orbifold_cusp_euler_characteristic(
     Cusp * cusp)

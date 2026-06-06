@@ -1,3 +1,15 @@
+/**
+ *  @file orb_diagram.c
+ *
+ *  Ported from:
+ *  gui/diagram_canvas.cpp
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.cpp
+ *  gui/interface.cpp
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/interface.cpp
+ *  gui/misc_functions.cpp
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/misc_functions.cpp
+ */
+
 #include "kernel.h"
 
 #include <stdio.h>

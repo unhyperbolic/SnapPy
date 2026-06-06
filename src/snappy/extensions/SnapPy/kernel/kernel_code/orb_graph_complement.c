@@ -1,8 +1,13 @@
+/**
+ *  @file orb_graph_complement.c
+ *
+ *  Ported from gui/graph_complement.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/graph_complement.c
+ */
+
 #include "kernel.h"
 
 #include <stdio.h>
-
-/* Taken from gui/graph_complement.c */
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 

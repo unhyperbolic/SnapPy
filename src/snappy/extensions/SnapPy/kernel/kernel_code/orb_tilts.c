@@ -1,6 +1,17 @@
+/**
+ *  @file orb_tilts.c
+ *
+ */
+
 #include "kernel.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
+
+/*
+ * Ported from
+ * my_tilts in snappea/code/my_hyperbolic_structure.c
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_hyperbolic_structure.c#L1685-L1717
+ */
 
 extern void orb_compute_tilts(
     Triangulation *manifold)

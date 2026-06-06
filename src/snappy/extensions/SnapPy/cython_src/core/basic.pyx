@@ -198,7 +198,8 @@ SolutionType = [
     'unrecognized solution type',
     'no solution found',
     'tetrahedra shapes were inserted',
-    
+
+# ORB-TODO: figure whether these are good names. Whether we want to group orb_partially_flat_solution and nongeometric.
     'partially flat tetrahedra', # orb_partially_flat_solution
     'step failed', # orb_step_failed
     'invalid solution' # orb_invalid_solution

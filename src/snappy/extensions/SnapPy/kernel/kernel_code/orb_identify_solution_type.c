@@ -1,3 +1,10 @@
+/**
+ *  @file orb_identify_solution_type.c
+ *
+ *  Adapted from snappea/code/my_identify_solution_type.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_identify_solution_type.c
+ */
+
 #include "kernel.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE

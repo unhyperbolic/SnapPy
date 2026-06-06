@@ -1,11 +1,23 @@
+/**
+ *  @file my_volume.c
+ *
+ *  Ported from snappea/code/orb_volume.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c
+ */
+
 #include "kernel.h"
 
 #include "dilog.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
-static Complex orb_U(Complex z, Real *angles);
+static Complex U(Complex z, Real *angles);
 static Real    tetrahedron_volume(Real *angles);
+
+/*
+ *  Ported from my_volume in snappea/code/my_volume.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L9-L41
+ */
 
 Real orb_volume(
     Triangulation *manifold)
@@ -28,6 +40,11 @@ Real orb_volume(
     return volume;
 }
 
+/*  Volume computed using formula in "A volume forumla for generalized hyperbolic tetrahedra" by Ushijima
+ *
+ *  Ported from tetrahedron_volume in snappea/code/my_volume.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L43-119
+ */
 static Real tetrahedron_volume(
     Real angles[6])
 {
@@ -89,10 +106,14 @@ static Real tetrahedron_volume(
     z1 = complex_div(z1, bottom);
     z2 = complex_div(z2, bottom);
 
-    return complex_minus(orb_U(z1, angles), orb_U(z2, angles)).imag / 2;
+    return complex_minus(U(z1, angles), U(z2, angles)).imag / 2;
 }
 
-static Complex orb_U(
+/*
+ *  Ported from U in snappea/code/my_volume.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L122-171
+ */
+static Complex U(
     Complex  z,
     Real    *angles)
 {
