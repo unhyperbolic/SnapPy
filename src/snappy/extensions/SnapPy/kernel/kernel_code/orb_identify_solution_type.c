@@ -49,7 +49,10 @@ void orb_identify_solution_type(
     if (orb_solution_is_geometric(manifold)
         && orb_volume(manifold) > ORB_VOLUME_EPSILON)
     {
-        manifold->orb_solution_type[filled] = geometric_solution;
+        if (orb_contains_flat_tetrahedra(manifold))
+            manifold->orb_solution_type[filled] = orb_partially_flat_solution;
+        else
+            manifold->orb_solution_type[filled] = geometric_solution;
         return;
     }
 

@@ -92,12 +92,9 @@ static SolutionType string_to_solution_type(
     _SOL_TYPE(no_solution);
     _ORB_SOL_TYPE(step_failed);
     _ORB_SOL_TYPE(invalid_solution);
+    _ORB_SOL_TYPE(partially_flat_solution);
 
     #undef _SOL_TYPE
-
-    if (strcmp(str, "partially_flat_solution") == 0) {
-        return geometric_solution;
-    }
 
     return not_attempted;
 }
@@ -680,13 +677,10 @@ void orb_write_casson_format_to_stream(
          * ORB-TODO: this should really be a switch statement.
          */
 
-        if (manifold->orb_solution_type[complete] == geometric_solution) {
-            if (orb_contains_flat_tetrahedra(manifold) == TRUE)
-                ostream_printf(stream,
-                               "SolutionType partially_flat_solution\n");
-            else
-                ostream_printf(stream, "SolutionType geometric_solution\n");
-        }
+        if (manifold->orb_solution_type[complete] == geometric_solution)
+            ostream_printf(stream, "SolutionType geometric_solution\n");
+        if (manifold->orb_solution_type[complete] == orb_partially_flat_solution)
+            ostream_printf(stream, "SolutionType partially_flat_solution\n");
 
         if (manifold->orb_solution_type[complete] == nongeometric_solution)
             ostream_printf(stream, "SolutionType nongeometric_solution\n");
@@ -714,6 +708,10 @@ void orb_write_casson_format_to_stream(
 
         ostream_printf(stream, "vertices_known\n\n");
     }
+
+    /*
+     * ORB-TODO: index not needed.
+     */
 
     EdgeClass *edge;
     for (edge = manifold->edge_list_begin.next, index = 1;

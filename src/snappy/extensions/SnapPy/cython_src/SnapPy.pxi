@@ -34,6 +34,10 @@ cdef extern from "SnapPea.h":
         no_solution
         externally_computed
 
+        orb_partially_flat_solution
+        orb_step_failed
+        orb_invalid_solution
+
     ctypedef enum c_FillingStatus "FillingStatus":
         complete
         filled

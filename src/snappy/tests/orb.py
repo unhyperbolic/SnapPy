@@ -6,7 +6,7 @@
 >>> SnapPy._orb_set_use_orb_conventions(True)
 >>> O = Orbifold(os.path.join(test_files_paths[0], '6_5^2.7.orb'), remove_finite_vertices = False)
 >>> O.solution_type()
-'all tetrahedra positively oriented'
+'partially flat tetrahedra'
 >>> O.volume() # doctest: +NUMERIC9
 0.117838420347115
 
@@ -73,6 +73,8 @@ Relators:
 >>> O._orb_cone_fill(5.0, 3)
 >>> O._orb_cone_fill(6.0, 4)
 >>> O._orb_cone_fill(2.0, 5)
+>>> O.solution_type()
+'partially flat tetrahedra'
 >>> O.volume() # doctest: +NUMERIC9
 5.43335845048923
 
@@ -86,6 +88,8 @@ Relators:
  Edge 3 : Singular of order = 5,
  Edge 4 : Singular of order = 6,
  Edge 5 : Singular of order = 2]
+>>> O.solution_type()
+'all tetrahedra positively oriented'
 >>> O.volume() # doctest: +NUMERIC9
 5.67904978263216
 

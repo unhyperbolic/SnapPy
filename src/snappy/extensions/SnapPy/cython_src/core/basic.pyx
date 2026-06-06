@@ -188,6 +188,7 @@ MatrixParity = ['orientation-reversing', 'orientation-preserving']
 Orientability = ['orientable', 'nonorientable', 'unknown']
 Orbifold1 = ['unknown', 'circle', 'mirrored arc']
 FuncResult = ['func_OK', 'func_cancelled', 'func_failed', 'func_bad_input']
+# ORB-TODO: We should expose string constants to the user.
 SolutionType = [
     'not attempted',
     'all tetrahedra positively oriented',
@@ -196,7 +197,12 @@ SolutionType = [
     'contains degenerate tetrahedra',
     'unrecognized solution type',
     'no solution found',
-    'tetrahedra shapes were inserted']
+    'tetrahedra shapes were inserted',
+    
+    'partially flat tetrahedra', # orb_partially_flat_solution
+    'step failed', # orb_step_failed
+    'invalid solution' # orb_invalid_solution
+]
 
 
 # SnapPea memory usage
