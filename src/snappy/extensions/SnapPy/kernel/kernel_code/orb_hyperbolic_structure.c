@@ -69,7 +69,7 @@ static void initialize_shapes(
         {
             cusp->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
             cusp->orb_cusp_shape->area = 0.0;
-            cusp->orb_cusp_shape->index = -1;
+            cusp->orb_cusp_shape->column_index = -1;
         }
 }
 
@@ -420,7 +420,7 @@ static FuncResult initialize_settings(
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next)
         /* cusp->index = index++; */
-        cusp->orb_cusp_shape->index = index++;
+        cusp->orb_cusp_shape->column_index = index++;
 
     return update_Gram_matrices(manifold);
 
@@ -839,8 +839,8 @@ static FuncResult update_inner_products(
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next) {
         if (max > MAX_STEP)
-            delta[cusp->orb_cusp_shape->index] *= MAX_STEP / max;
-        cusp->orb_cusp_shape->inner_product[ultimate] += delta[cusp->orb_cusp_shape->index];
+            delta[cusp->orb_cusp_shape->column_index] *= MAX_STEP / max;
+        cusp->orb_cusp_shape->inner_product[ultimate] += delta[cusp->orb_cusp_shape->column_index];
     }
 
     failed = FALSE;
@@ -895,7 +895,7 @@ static FuncResult update_inner_products(
              cusp = cusp->next)
             cusp->orb_cusp_shape->inner_product[ultimate] =
                 cusp->orb_cusp_shape->inner_product[penultimate]
-                + step_size / 2.0 * delta[cusp->orb_cusp_shape->index];
+                + step_size / 2.0 * delta[cusp->orb_cusp_shape->column_index];
 
         for (edge = manifold->edge_list_begin.next;
              edge != &manifold->edge_list_end;
@@ -1133,13 +1133,13 @@ static void compute_equations(
                     += derivative_ij_t(i, j, ptet.tet, m, n);
                 /* LHS: the four vertices */
 
-                equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
+                equations[index][ptet.tet->cusp[i]->orb_cusp_shape->column_index]
                     += derivative_ij_ii(i, j, ptet.tet, m, n);
-                equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
+                equations[index][ptet.tet->cusp[j]->orb_cusp_shape->column_index]
                     += derivative_ij_ii(j, i, ptet.tet, m, n);
-                equations[index][ptet.tet->cusp[m]->orb_cusp_shape->index]
+                equations[index][ptet.tet->cusp[m]->orb_cusp_shape->column_index]
                     += derivative_ij_nn(i, j, m, ptet.tet, n);
-                equations[index][ptet.tet->cusp[n]->orb_cusp_shape->index]
+                equations[index][ptet.tet->cusp[n]->orb_cusp_shape->column_index]
                     += derivative_ij_nn(i, j, n, ptet.tet, m);
                 /* LHS: this edge */
 
@@ -1154,12 +1154,12 @@ static void compute_equations(
                         += derivative_ij_ij(i, j, ptet.tet, m, n);
                 else
                 {
-                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_ij(i, j, ptet.tet, m, n);
 
-                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[j]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_ij(i, j, ptet.tet, m, n);
@@ -1173,12 +1173,12 @@ static void compute_equations(
                         += derivative_ij_in(i, j, m, ptet.tet, n);
                 else
                 {
-                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(i, j, m, ptet.tet, n);
 
-                    equations[index][ptet.tet->cusp[m]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[m]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[m]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(i, j, m, ptet.tet, n);
@@ -1190,12 +1190,12 @@ static void compute_equations(
                         += derivative_ij_in(i, j, n, ptet.tet, m);
                 else
                 {
-                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[i]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(i, j, n, ptet.tet, m);
 
-                    equations[index][ptet.tet->cusp[n]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[n]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[n]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(i, j, n, ptet.tet, m);
@@ -1207,12 +1207,12 @@ static void compute_equations(
                         += derivative_ij_in(j, i, m, ptet.tet, n);
                 else
                 {
-                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[j]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(j, i, m, ptet.tet, n);
 
-                    equations[index][ptet.tet->cusp[m]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[m]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[m]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(j, i, m, ptet.tet, n);
@@ -1224,12 +1224,12 @@ static void compute_equations(
                         += derivative_ij_in(j, i, n, ptet.tet, m);
                 else
                 {
-                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[j]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[j]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(j, i, n, ptet.tet, m);
 
-                    equations[index][ptet.tet->cusp[n]->orb_cusp_shape->index]
+                    equations[index][ptet.tet->cusp[n]->orb_cusp_shape->column_index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[n]->orb_cusp_shape->inner_product[ultimate])
                         * derivative_ij_in(j, i, n, ptet.tet, m);
@@ -1258,18 +1258,18 @@ static void compute_equations(
                         += 2.0 * tet->orb_tet_shape->inverse_Gram_matrix[i][j];
                 else
                 {
-                    equations[tet->index][tet->cusp[i]->orb_cusp_shape->index]
+                    equations[tet->index][tet->cusp[i]->orb_cusp_shape->column_index]
                         += tet->edge_class[edge_between_vertices[i][j]]->orb_edge_shape->inner_product[ultimate]
                         / tet->cusp[i]->orb_cusp_shape->inner_product[ultimate]
                         * tet->orb_tet_shape->inverse_Gram_matrix[i][j];
 
-                    equations[tet->index][tet->cusp[j]->orb_cusp_shape->index]
+                    equations[tet->index][tet->cusp[j]->orb_cusp_shape->column_index]
                         += tet->edge_class[edge_between_vertices[i][j]]->orb_edge_shape->inner_product[ultimate]
                         / tet->cusp[j]->orb_cusp_shape->inner_product[ultimate]
                         * tet->orb_tet_shape->inverse_Gram_matrix[i][j];
                 }
 
-            equations[tet->index][tet->cusp[i]->orb_cusp_shape->index]
+            equations[tet->index][tet->cusp[i]->orb_cusp_shape->column_index]
                 += tet->orb_tet_shape->inverse_Gram_matrix[i][i];
         }
     }

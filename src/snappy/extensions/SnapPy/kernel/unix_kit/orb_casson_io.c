@@ -476,7 +476,7 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
          cusp = cusp->next)
     {
         cusp->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
-        cusp->orb_cusp_shape->index = -1;
+        cusp->orb_cusp_shape->column_index = -1;
     }
 
     ei = cf->head;
