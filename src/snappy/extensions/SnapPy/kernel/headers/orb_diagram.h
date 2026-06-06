@@ -27,7 +27,10 @@ typedef struct OrbDiagram OrbDiagram;
 
 typedef struct OrbGraph OrbGraph;
 
-/* Corresponds to EndType in gui/diagram_canvas.h */
+/*
+ * Corresponds to EndType in gui/diagram_canvas.h, see
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L27
+ */
 enum OrbDiagramEndType
 {
     diagramBegin = 0,
@@ -48,20 +51,20 @@ typedef enum OrbDiagramEdgeType OrbDiagramEdgeType;
 /* Corresponds to EndData in gui/diagram_canvas.h */
 struct OrbDiagramEndData
 {
-    OrbDiagramEdge *edge;
+    OrbDiagramEdge    *edge;
     OrbDiagramEndType type;
-    Boolean singular;
-    double angle;
+    Boolean           singular;
+    double            angle;
 };
 
 /* Corresponds to Vertex in gui/diagram_canvas.h */
 struct OrbDiagramVertex
 {
-    int x, y;
-    int connected_component;
-    int vertex_id;
-    int link_id;
-    int num_incident_end_data;
+    int               x, y;
+    int               connected_component;
+    int               vertex_id;
+    int               link_id;
+    int               num_incident_end_data;
     OrbDiagramEndData **incident_end_data;
 };
 
