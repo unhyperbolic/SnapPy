@@ -1242,12 +1242,6 @@ extern int *copy_group_word(int *word);
  *  Make copy of null-terminated array.
  */
 
-#ifdef ORB
-
-#include "orb_kernel_prototypes.h"
-
-#endif
-
 SNAPPEA_NAMESPACE_END_SCOPE
 
 #endif

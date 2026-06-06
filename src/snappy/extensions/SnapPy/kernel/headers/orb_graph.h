@@ -19,14 +19,6 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 typedef struct OrbGraph OrbGraph;
 typedef struct OrbGraphMeeting OrbGraphMeeting;
 
-/* Corresponds to triangulate_graph_complement in gui/graph_complement.h */
-
-/* Matthias: Does remove_finite_vertices make sense? The function can remove vertices with adjacent singular edges... Orb only calls it from one functions that is not surfaced through the UI. */
-
-Triangulation *orb_triangulate_graph_complement( OrbGraph *gamma, Boolean remove_finite_vertices );
-/* Corresponds to free_graph in gui/graph_complement.c */
-void orb_free_graph( OrbGraph *gamma );
-
 /* Forward declaration from kernel */
 typedef struct Tetrahedron Tetrahedron;
 

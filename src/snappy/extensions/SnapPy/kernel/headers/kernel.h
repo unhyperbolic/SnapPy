@@ -36,8 +36,10 @@ extern "C" {
 #include "orb_triangulation.h"
 #include "orb_diagram.h"
 #include "orb_graph.h"
+#include "orb_kernel_prototypes.h"
 #endif
 
+    
 #ifdef FORCE_C_LINKAGE
 #ifdef __cplusplus
 }
