@@ -64,6 +64,8 @@ struct TetEdgeInfo
 	            *next;
 };
 
+
+
 /* Ported from readCassonFormat in gui/organizer.cpp */
 static SolutionType string_to_solution_type(
     char *str)
@@ -74,6 +76,13 @@ static SolutionType string_to_solution_type(
             return t;               \
         }
 
+#define _ORB_SOL_TYPE(t)            \
+                                    \
+        if (strcmp(str, #t) == 0) { \
+            return orb_ ## t;       \
+        }
+
+
     /* Branches similar to line 712... */
     _SOL_TYPE(geometric_solution);
     _SOL_TYPE(nongeometric_solution);
@@ -81,8 +90,8 @@ static SolutionType string_to_solution_type(
     _SOL_TYPE(degenerate_solution);
     _SOL_TYPE(other_solution);
     _SOL_TYPE(no_solution);
-    _SOL_TYPE(step_failed);
-    _SOL_TYPE(invalid_solution);
+    _ORB_SOL_TYPE(step_failed);
+    _ORB_SOL_TYPE(invalid_solution);
 
     #undef _SOL_TYPE
 
@@ -359,7 +368,7 @@ static Boolean verify_casson(CassonFormat *cf)
             return FALSE;
         }
     }
-   
+
     my_free(tet_edges);
     return TRUE;
 }
@@ -472,7 +481,7 @@ static Triangulation *casson_to_triangulation(CassonFormat *cf) {
         cusp->orb_cusp_shape = NEW_STRUCT(OrbCuspShape);
         cusp->orb_cusp_shape->index = -1;
     }
-    
+
     ei = cf->head;
 
     while (ei != NULL) {
@@ -680,13 +689,13 @@ void orb_write_casson_format_to_stream(
         if (manifold->orb_solution_type[complete] == other_solution)
             ostream_printf(stream, "SolutionType other_solution\n");
 
-        if (manifold->orb_solution_type[complete] == step_failed)
+        if (manifold->orb_solution_type[complete] == orb_step_failed)
             ostream_printf(stream, "SolutionType step_failed\n");
 
         if (manifold->orb_solution_type[complete] == no_solution)
             ostream_printf(stream, "SolutionType no_solution\n");
 
-        if (manifold->orb_solution_type[complete] == invalid_solution)
+        if (manifold->orb_solution_type[complete] == orb_invalid_solution)
             ostream_printf(stream, "SolutionType invalid_solution\n");
 
         if (manifold->orb_solution_type[complete] == degenerate_solution)

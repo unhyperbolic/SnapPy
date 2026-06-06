@@ -125,7 +125,7 @@ SolutionType orb_find_hyperbolic_structure(
         res = orb_find_complete_hyperbolic_structure(manifold, FALSE, FALSE, approach_value);
 
         /* if we couldn't get anywhere near that solution we may as well give up now */
-        if (res == step_failed || res == no_solution )
+        if (res == orb_step_failed || res == no_solution )
             return res;
 
         /* save that solution in case we need to step back */
@@ -150,7 +150,7 @@ SolutionType orb_find_hyperbolic_structure(
         if ( res == not_attempted )
             res = orb_find_complete_hyperbolic_structure(manifold, TRUE, manual, approach_value);
 
-        if (res == no_solution || res == step_failed )
+        if (res == no_solution || res ==orb_step_failed )
         {
             /* if we didn't find a solution there are two cases:
              *      1) we can take a step back along the ray and try again.
@@ -316,8 +316,8 @@ static SolutionType orb_find_complete_hyperbolic_structure(
     if (initialize_settings(manifold, use_previous_solution) == func_failed)
     {
         reindex_cells(manifold);
-        manifold->orb_solution_type[complete] = step_failed;
-        return step_failed;
+        manifold->orb_solution_type[complete] = orb_step_failed;
+        return orb_step_failed;
     }
 
     res = my_do_Dehn_filling(manifold, manual, approach_value);
@@ -331,7 +331,7 @@ static void reindex_cells(
 {
     EdgeClass   *edge;
     Tetrahedron *tet;
-    int         index, finite_index;
+    int         index;
 
     for (edge = manifold->edge_list_begin.next, index = 0;
          edge != &manifold->edge_list_end;
@@ -570,7 +570,7 @@ static SolutionType my_do_Dehn_filling(
     else if (iteration_limit_exceeded == TRUE)
         manifold->orb_solution_type[filled] = no_solution;
     else if (result1 == func_failed)
-        manifold->orb_solution_type[filled] = step_failed;
+        manifold->orb_solution_type[filled] = orb_step_failed;
     else
         switch (result) {
         case func_cancelled:

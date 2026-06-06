@@ -62,8 +62,8 @@ typedef enum
     externally_computed     /**<  tetrahedra shapes were inserted into the triangulation      */
 #ifdef ORB
     ,
-    step_failed,
-    invalid_solution
+    orb_step_failed,
+    orb_invalid_solution
 #endif
 } SolutionType;
 
