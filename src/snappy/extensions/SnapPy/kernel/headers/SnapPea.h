@@ -51,7 +51,8 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 typedef enum
 {
-    not_attempted,          /**<  solution not attempted, or user cancelled, all pointers NULL                   */
+    not_attempted,          /**<  solution not attempted, or user cancelled
+                             *    (pointers to tet shapes/other geometric info might be NULL) */
     geometric_solution,     /**<  all positively oriented tetrahedra; not flat or degenerate  */
     nongeometric_solution,  /**<  positive volume, but some negatively oriented tetrahedra    */
     flat_solution,          /**<  all tetrahedra flat, but no shapes = {0, 1, infinity}       */

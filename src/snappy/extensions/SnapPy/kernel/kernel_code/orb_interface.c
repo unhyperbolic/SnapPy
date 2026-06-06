@@ -9,7 +9,7 @@ static EdgeClass * orb_find_singular_edge(
 SolutionType orb_get_solution_type(
     Triangulation *manifold)
 {
-    return manifold->solution_type[filled];
+    return manifold->orb_solution_type[filled];
 }
     
 int orb_get_num_singular_edges(

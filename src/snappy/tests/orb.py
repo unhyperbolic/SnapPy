@@ -5,6 +5,8 @@
 >>> from snappy.extensions.SnapPy import Orbifold
 >>> SnapPy._orb_set_use_orb_conventions(True)
 >>> O = Orbifold(os.path.join(test_files_paths[0], '6_5^2.7.orb'), remove_finite_vertices = False)
+>>> O.solution_type()
+'all tetrahedra positively oriented'
 >>> O.volume() # doctest: +NUMERIC9
 0.117838420347115
 
