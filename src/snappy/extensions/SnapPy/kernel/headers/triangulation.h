@@ -206,7 +206,7 @@ struct Cusp
 {
     /*
      * 2026/06/01 MG:
-     * This instead stored "Boolean is_finite" and "CuspTopology topology"
+     * This used to store "Boolean is_finite" and "CuspTopology topology"
      * where "CuspTopology" was Klein/torus/unknown.
      */
 
