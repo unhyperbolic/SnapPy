@@ -89,6 +89,10 @@ Relators:
 >>> O.volume() # doctest: +NUMERIC9
 5.67904978263216
 
+Non-integral cone fillings. This give the free group of three generators in Orb, but not for us:
+
+Really skip this: >>> O.fundamental_group() # doctest: +SKIP
+
 >>> T = SnapPy._orb_test_triangulating_diagram(os.path.join(test_files_paths[0], '6_5^2.7.orb'))
 >>> T._orb_cone_fill([2,2,2])
 >>> T.fundamental_group(False)
@@ -103,9 +107,16 @@ Relators:
    DeDe
    AA
 
-Non-integral cone fillings. This give the free group of three generators in Orb, but not for us:
-
-Really skip this: >>> O.fundamental_group() # doctest: +SKIP
+>>> T = SnapPy._orb_test_triangulating_diagram(os.path.join(test_files_paths[0], '1_1^2.1.orb'))
+>>> T._orb_cone_fill([2,3,4])
+>>> T.fundamental_group(False)
+Generators:
+   a,b,c
+Relators:
+   CAB
+   bcBAbcBAbcBAbcBA
+   CC
+   AAA
 
 >>> SnapPy._orb_set_use_orb_conventions(False)
 
