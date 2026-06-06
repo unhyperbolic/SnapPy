@@ -37,6 +37,15 @@ void orb_identify_solution_type(
         return;
     }
 
+    /*
+     * ORB-TODO:
+     *
+     * orb_volume might be expensive.
+     * Should this just check that at least one tetrahedron
+     * is non-flat? That is that at least one dihedral angle is
+     * non-zero?
+     */
+
     if (orb_solution_is_geometric(manifold)
         && orb_volume(manifold) > ORB_VOLUME_EPSILON)
     {
@@ -87,15 +96,15 @@ static Boolean orb_flat_tet(
 
             if (ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e1] - PI)
                     < ORB_FLAT_EPSILON
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e2] - PI)
+                && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e2] - PI)
                     < ORB_FLAT_EPSILON
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e3])
+                && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e3])
                     < ORB_FLAT_EPSILON
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e4])
+                && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e4])
                     < ORB_FLAT_EPSILON
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e5])
+                && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e5])
                     < ORB_FLAT_EPSILON
-             && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e6])
+                && ABS(tet->orb_tet_shape->dihedral_angle[ultimate][e6])
                     < ORB_FLAT_EPSILON)
                 return TRUE;
         }

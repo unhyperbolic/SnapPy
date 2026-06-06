@@ -510,6 +510,14 @@ Boolean mark_fake_cusps(
                 break;
 
             case 2:
+                /*
+                 * ORB-TODO:
+                 * We probably want to treat cusps with
+                 * cone points (num_incident_singular_edge != 0)
+                 * as real cusps.
+                 *
+                 * Note: need to call orb_cusps_fill_incident_singular_edges first.
+                 */
                 cusp->index = --fake_cusp_count;
                 /*
                  *  2026/06/01 MG: used to set Cusp::is_finite = TRUE

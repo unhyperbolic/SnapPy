@@ -73,6 +73,29 @@ static void initialize_shapes(
         }
 }
 
+/*
+ * ORB-TODO:
+ * in initialize_settings, we use a different indexing
+ * for the edges, tet and cusps.
+ * Can we avoid this?
+ *
+ * Notes:
+ * - edges are indexed starting with 0 skipping the ones with orb_singular_order != 0.
+ *   That is: the indexing skips the "parabolic singular edges" but
+ *            includes non-singular edges (since
+ *            edge_class->orb_singular_order = 1 in initialize_edge_class.)
+ *    Note that num_the_edge_classes could be used if it didn't include the "parabolic singular edges."
+ * - tets are indexed consecutively but starting with the index after
+ *   the edges.
+ *   Thus, we can use number_the_tetrahedra and add the offset to
+ *   tet->index.
+ * - cusps are indexed consecutively after the tets.
+ *   This might be trickiest to achieve with mark_fake_cusps.
+ *
+ * Idea: add column_index to Orb[Tet|Edge|Cusp]Shape.
+ *       That way, we can avoid the call to reindex_cells here.
+ */
+
 SolutionType orb_find_hyperbolic_structure(
     Triangulation *manifold,
     Boolean       manual)
@@ -82,6 +105,16 @@ SolutionType orb_find_hyperbolic_structure(
     Real         approach_value;
 
     initialize_shapes(manifold);
+
+    /*
+     * ORB-TODO:
+     *
+     * Make this simpler.
+     * Give better names.
+     * Avoid it being re-entrant.
+     * That is, orb_find_hyperbolic_structure(..., manual=TRUE)
+     * calls orb_find_hyperbolic_structure(..., manual=FALSE).
+     */
 
     if (!manual)
     {

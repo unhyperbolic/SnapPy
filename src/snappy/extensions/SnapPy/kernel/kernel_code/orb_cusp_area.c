@@ -2,6 +2,12 @@
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
+/*
+ * ORB-TODO: Why a cusp area?
+ * We don't care that the cusps neighborhoods are disjoint, just equal
+ * when computing canonical cell decomposition.
+ */
+
 #define ORB_CUSP_AREA           0.3
 #define ORB_CUSP_AREA_EPSILON   1e-8
 
@@ -18,7 +24,24 @@ void orb_normalize_cusps(
          cusp = cusp->next)
     {
         CuspTopology topology = get_cusp_topology(cusp);
-        
+
+        /*
+         * ORB-TODO:
+         *
+         * This seems weird: underlying topology of vertex link can
+         * be spherical but the cone points make the orbifold Euler
+         * characteristic 0 so that the vertex link allows a Euclidean
+         * orbifold structure.
+         * This corresponds to light like vector we need to scale, but
+         * don't here.
+         *
+         * And vice versa: cone points on a torus give it a hyperbolic
+         * orbifold structure.
+         *
+         * Should this go by orbifold Euler characteristic?
+         * Need some epsilon?
+         */
+
         if (topology == torus_cusp || topology == Klein_cusp)
         {
             Real scalar = safe_sqrt(cusp->orb_cusp_shape->area / ORB_CUSP_AREA);
@@ -93,6 +116,10 @@ static Real compute_link_area(
 
     if (tet->orb_tet_shape->orientation_parameter[ultimate] < ORB_CUSP_AREA_EPSILON)
         return 0.0;
+
+    /* ORB-TODO:
+     * Is this really just the sqr?
+     */
 
     top = -gl4R_determinant(tet->orb_tet_shape->Gram_matrix)
         * gl4R_determinant(tet->orb_tet_shape->Gram_matrix);

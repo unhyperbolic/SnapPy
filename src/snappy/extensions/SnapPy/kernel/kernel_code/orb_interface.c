@@ -2,9 +2,7 @@
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
-static EdgeClass * orb_find_singular_edge(
-    Triangulation *manifold,
-    int           singular_index);
+static EdgeClass * orb_find_singular_edge(Triangulation *manifold, int singular_index);
 
 SolutionType orb_get_solution_type(
     Triangulation *manifold)
@@ -42,11 +40,13 @@ void orb_get_singular_edge_info(
         /* uFatalError already raised by orb_find_singular_edge. */
         return;
 
-    if (singular_order) {
+    if (singular_order)
+    {
         *singular_order = edge->orb_singular_order;
     }
 
-    if (inner_product && edge->orb_edge_shape) {
+    if (inner_product && edge->orb_edge_shape)
+    {
         *inner_product = edge->orb_edge_shape->inner_product[ultimate];
     }
 }

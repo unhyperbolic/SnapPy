@@ -17,6 +17,13 @@ cdef class Orbifold(Triangulation):
                        singular_order : Union[float, list[float]],
                        singular_index : Optional[SupportsIndex] = None) -> None:
         Triangulation._orb_cone_fill(self, singular_order, singular_index)
+        # ORB-TODO
+        #
+        # Consider making this manual = True
+        # Would that mimick the manual work-flow in the Orb app?
+        #
+        # Are we setting the correct Edge::old_singular_order to make this work?
+        #
         manual = False
         orb_find_hyperbolic_structure(self.c_triangulation, manual)
         self._cache.clear(message='Manifold._orb_cone_fill')

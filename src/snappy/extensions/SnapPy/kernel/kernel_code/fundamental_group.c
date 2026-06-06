@@ -303,6 +303,19 @@ struct GroupPresentation
      */
 
 #ifdef ORB
+    /*
+     * ORB-TODO:
+     * itsParabolicRelations is a bad name: they are really
+     * words corresponding to parabolic elements.
+     *
+     * Also: we probably want to include these for each
+     * singular edge and order by singular index.
+     * Depending on whether singular_order = 0, this word
+     * corresponds to a parabolic element or torsion element.
+     *
+     * What's a good name?
+     */
+
     int         itsNumParabolicRelations;
     CyclicWord	*itsParabolicRelations;
 #endif
@@ -714,7 +727,8 @@ static void compute_one_edge_relation(
     new_word->itsLength         = 0;
     new_word->is_Dehn_relation  = FALSE;
 #ifdef ORB
-    if (edge->orb_is_singular && edge->orb_singular_order == 0) {
+    if (edge->orb_is_singular && edge->orb_singular_order == 0)
+    {
         new_word->next               = group->itsParabolicRelations;
         group->itsParabolicRelations = new_word;
         group->itsNumParabolicRelations++;

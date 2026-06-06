@@ -7,6 +7,12 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 struct OrbTetShape
 {
+    /*
+     * ORB-TODO:
+     * Why are these arrays [4] if they correspond to penultimate and ultimate which are two?
+     * Can these be [2]?
+     */
+
     Boolean             is_flat;
     Real                dihedral_angle[4][6]; /* penultimate/ultimate */
     Real                dual_basis[4][4];

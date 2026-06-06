@@ -5,7 +5,7 @@
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 static Complex orb_U(Complex z, Real *angles);
-static Real tetrahedron_volume(Real *angles);
+static Real    tetrahedron_volume(Real *angles);
 
 Real orb_volume(
     Triangulation *manifold)

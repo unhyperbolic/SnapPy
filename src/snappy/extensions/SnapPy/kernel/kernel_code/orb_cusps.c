@@ -28,6 +28,7 @@ static void add_singular_edge_to_cusp(
 void orb_cusps_fill_incident_singular_edges(
     Triangulation * manifold)
 {
+
     for (Cusp * cusp = manifold->cusp_list_begin.next;
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next)
@@ -39,6 +40,13 @@ void orb_cusps_fill_incident_singular_edges(
             cusp->orb_incident_singular_edges = NULL;
         }
     }
+
+    /*
+     * ORB-TODO:
+     * Optimization: we can skip this if
+     *    manifold->num_singular_edges == 0.
+     * Though, should we do that one the client side.
+     */
 
     for (EdgeClass * edge = manifold->edge_list_begin.next;
          edge != &manifold->edge_list_end;
