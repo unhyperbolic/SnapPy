@@ -24,6 +24,24 @@ extern Real orb_compute_orbifold_cusp_euler_characteristic(Cusp * cusp);
 
 /************************************************************************/
 /*                                                                      */
+/*                          orb_diagram.c                               */
+/*                                                                      */
+/************************************************************************/
+
+extern void orb_initialize_diagram(OrbDiagram *);
+extern void orb_initialize_diagram_vertex(OrbDiagramVertex *vertex);
+extern void orb_initialize_diagram_edge(OrbDiagramEdge * edge);
+extern void orb_assign_diagram_arcs(OrbDiagram *);
+extern void orb_assign_diagram_links(OrbDiagram *);
+extern void orb_add_end_data_to_diagram_vertex(OrbDiagramEndData * data, OrbDiagramVertex * vertex);
+extern void orb_free_diagram(OrbDiagram *);
+extern OrbGraph * orb_diagram_to_graph(OrbDiagram *);
+extern Triangulation * orb_triangulate_diagram_complement(OrbDiagram *, Boolean remove_finite_vertices);
+
+
+
+/************************************************************************/
+/*                                                                      */
 /*                           orb_graph.c                                */
 /*                                                                      */
 /************************************************************************/

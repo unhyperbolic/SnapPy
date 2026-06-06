@@ -5,6 +5,30 @@
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
+
+static void orb_add_crossing_to_diagram_edge(OrbDiagramCrossing * crossing, OrbDiagramEdge * edge);
+
+static char * orb_dump_diagram(OrbDiagram * diagram);
+
+/* Corresponds to DiagramCanvas::getCrossingSigns in gui/interface.cpp */
+static void orb_assign_diagram_crossing_signs(OrbDiagram * diagram);
+/* Corresponds to DiagramCanvas::ed_angles in gui/interface.cpp */
+static void orb_assign_diagram_end_data_angles(OrbDiagram * diagram);
+/* Corresponds to DiagramCanvas::assign_crossings_to_edges in gui/interface.cpp */
+static void orb_assign_crossings_to_diagram_edges(OrbDiagram * diagram);
+/* Corresponds to DiagramCanvas::prepare_components_for_output in gui/interface.cpp */
+static void orb_prepare_diagram_components_for_output(OrbDiagram * diagram);
+
+/* Corresponds to get_strand in gui/misc_functions.cpp */
+static int orb_get_diagram_strand(OrbDiagramEdge * e, OrbDiagramVertex * v);
+
+/* Corresponds to get_next_crossing in gui/misc_functions.cpp */
+static OrbDiagramCrossing * orb_get_next_diagram_crossing(OrbDiagramEdge *e, OrbDiagramCrossing *c);
+/* Corresponds to get_prev_crossing in gui/misc_functions.cpp */
+static OrbDiagramCrossing * orb_get_prev_diagram_crossing(OrbDiagramEdge *e, OrbDiagramCrossing *c);
+
+
+/* Corresponds to DiagramCanvas::DiagramCanvas in gui/diagram_canvas.cpp */
 void orb_initialize_diagram(
     OrbDiagram * diagram)
 {
@@ -46,6 +70,7 @@ static void orb_free_diagram_vertex(
     my_free(vertex);
 }
 
+/* Corresponds to DiagramCanvas::clearDiagram in gui/diagram_canvas.cpp */
 void orb_free_diagram(
     OrbDiagram *diagram)
 {
@@ -122,6 +147,7 @@ void orb_add_crossing_to_diagram_edge(
     edge->crossings = new_crossings;
 }
 
+/* Corresponds to DiagramCanvas::assign_arcs in gui/interface.cpp */
 void orb_assign_diagram_arcs(
     OrbDiagram * diagram)
 {
@@ -231,6 +257,7 @@ void orb_assign_diagram_arcs(
     my_free(queue);
 }
 
+/* Corresponds to DiagramCanvas::assign_links in gui/interface.cpp */
 void orb_assign_diagram_links(
     OrbDiagram * diagram)
 {
@@ -923,6 +950,7 @@ OrbGraph * orb_diagram_to_graph(
     return graph;
 }
 
+/* Corresponds to DiagramCanvas::outputTriangulation in gui/interface.cpp */
 /* Ported from DiagramCanvas::outputTriangulation in interface.cpp */
 Triangulation *
 orb_triangulate_diagram_complement(

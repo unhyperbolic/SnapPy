@@ -27,44 +27,6 @@ typedef struct OrbDiagram OrbDiagram;
 
 typedef struct OrbGraph OrbGraph;
 
-/* Corresponds to DiagramCanvas::DiagramCanvas in gui/diagram_canvas.cpp */
-void orb_initialize_diagram(OrbDiagram *);
-/* Corresponds to DiagramCanvas::clearDiagram in gui/diagram_canvas.cpp */
-void orb_free_diagram(OrbDiagram *);
-
-void orb_initialize_diagram_vertex(OrbDiagramVertex *vertex);
-void orb_add_end_data_to_diagram_vertex(OrbDiagramEndData * data, OrbDiagramVertex * vertex);
-
-void orb_initialize_diagram_edge(OrbDiagramEdge * edge);
-void orb_add_crossing_to_diagram_edge(OrbDiagramCrossing * crossing, OrbDiagramEdge * edge);
-
-char * orb_dump_diagram(OrbDiagram * diagram);
-
-/* Corresponds to DiagramCanvas::assign_arcs in gui/interface.cpp */
-void orb_assign_diagram_arcs(OrbDiagram *);
-/* Corresponds to DiagramCanvas::assign_links in gui/interface.cpp */
-void orb_assign_diagram_links(OrbDiagram *);
-/* Corresponds to DiagramCanvas::getCrossingSigns in gui/interface.cpp */
-void orb_assign_diagram_crossing_signs(OrbDiagram * diagram);
-/* Corresponds to DiagramCanvas::ed_angles in gui/interface.cpp */
-void orb_assign_diagram_end_data_angles(OrbDiagram * diagram);
-/* Corresponds to DiagramCanvas::assign_crossings_to_edges in gui/interface.cpp */
-void orb_assign_crossings_to_diagram_edges(OrbDiagram * diagram);
-/* Corresponds to DiagramCanvas::prepare_components_for_output in gui/interface.cpp */
-void orb_prepare_diagram_components_for_output(OrbDiagram * diagram);
-
-/* Corresponds to get_strand in gui/misc_functions.cpp */
-int orb_get_diagram_strand(OrbDiagramEdge * e, OrbDiagramVertex * v);
-
-/* Corresponds to get_next_crossing in gui/misc_functions.cpp */
-OrbDiagramCrossing * orb_get_next_diagram_crossing(OrbDiagramEdge *e, OrbDiagramCrossing *c);
-/* Corresponds to get_prev_crossing in gui/misc_functions.cpp */
-OrbDiagramCrossing * orb_get_prev_diagram_crossing(OrbDiagramEdge *e, OrbDiagramCrossing *c);
-
-OrbGraph * orb_diagram_to_graph(OrbDiagram *);
-/* Corresponds to DiagramCanvas::outputTriangulation in gui/interface.cpp */
-Triangulation * orb_triangulate_diagram_complement(OrbDiagram *, Boolean remove_finite_vertices);
-
 /* Corresponds to EndType in gui/diagram_canvas.h */
 enum OrbDiagramEndType
 {
