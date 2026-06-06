@@ -1,14 +1,17 @@
 /**
- * orb_diagram.h
+ *  @file orb_diagram.h
  *
- * Data structures (prefixed by OrbDiagram) to encode a knotted graph as
- * planar diagram with crossings (generalizes a knot diagram).
+ *  This file defines data structures (OrbDiagram...) to encode a knotted
+ *  graph as planar diagram with crossings - generalizing a knot diagram.
  *
- * Functions to convert a OrbDiagram to a OrbGraph and triangulate the complement.
+ *  That is, it has edges that can cross each other. These crossings are
+ *  recorded in OrbDiagramEdge.
  *
- * A OrbDiagram has an embedding into the plane and its edges can cross.
- * The conversion to OrbGraph turns each crossing into a four-valent vertex
- * results in a fat graph.
+ *  orb_diagram_to_graph turns an OrbDiagram into an OrbGraph by
+ *  turning each crossing into a four-valent vertex of a fat graph.
+ *
+ *  Ported from gui/diagram_canvas.h in Orb:
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h
  *
  */
 
@@ -28,7 +31,7 @@ typedef struct OrbDiagram OrbDiagram;
 typedef struct OrbGraph OrbGraph;
 
 /*
- * Corresponds to EndType in gui/diagram_canvas.h, see
+ * Corresponds to EndType in gui/diagram_canvas.h:
  * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L27
  */
 enum OrbDiagramEndType
@@ -39,7 +42,9 @@ enum OrbDiagramEndType
 
 typedef enum OrbDiagramEndType OrbDiagramEndType;
 
-/* Corresponds to EdgeType in gui/diagram_canvas.h */
+/* Corresponds to EdgeType in gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L28
+ */
 enum OrbDiagramEdgeType
 {
     diagramSingular = 0,
@@ -48,7 +53,9 @@ enum OrbDiagramEdgeType
 
 typedef enum OrbDiagramEdgeType OrbDiagramEdgeType;
 
-/* Corresponds to EndData in gui/diagram_canvas.h */
+/* Corresponds to EndData in gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L34-L42
+ */
 struct OrbDiagramEndData
 {
     OrbDiagramEdge    *edge;
@@ -57,7 +64,9 @@ struct OrbDiagramEndData
     double            angle;
 };
 
-/* Corresponds to Vertex in gui/diagram_canvas.h */
+/* Corresponds to Vertex in gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L44-L53
+ */
 struct OrbDiagramVertex
 {
     int               x, y;
@@ -68,7 +77,9 @@ struct OrbDiagramVertex
     OrbDiagramEndData **incident_end_data;
 };
 
-/* Corresponds to Edge in gui/diagram_canvas.h */
+/* Corresponds to Edge in gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L66-L85
+ */
 struct OrbDiagramEdge
 {
     OrbDiagramVertex *vertex[2];
@@ -80,7 +91,9 @@ struct OrbDiagramEdge
     OrbDiagramEdgeType edge_type;
 };
 
-/* Corresponds to Crossing in gui/diagram_canvas.h */
+/* Corresponds to Crossing in gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L55-L63
+ */
 struct OrbDiagramCrossing
 {
     int x, y;
@@ -90,7 +103,10 @@ struct OrbDiagramCrossing
     double position_on_overstrand, position_on_understrand;
 };
 
-/* Corresponds to DiagramCanvas in gui/diagram_canvas.h */
+/* Corresponds to the diagram data stored by DiagramCanvas in
+ * gui/diagram_canvas.h:
+ * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/diagram_canvas.h#L87-L127
+ */
 struct OrbDiagram
 {
     int num_arcs;
