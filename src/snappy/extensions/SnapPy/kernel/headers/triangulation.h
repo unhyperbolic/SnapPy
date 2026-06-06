@@ -167,7 +167,7 @@ struct Tetrahedron
                         num_triangles[4];   /**< normal_surfaces.h (local)                */
     Boolean             has_correct_orientation; /**< normal_surface_splitting.c (local)  */
 #ifdef ORB
-    OrbTetShape         *orb_tet_shape; /**< Hyperbolic shape */
+    OrbTetShape         *orb_tet_shape;     /**< Encodes hyperbolic structure using vertex Gram matrices */
 #endif
     int                 flag;   /**< general purpose integer for local use as necessary   */
     Extra               *extra; /**< general purpose pointer for local use as necessary   */
@@ -196,7 +196,7 @@ struct EdgeClass
     int                 orb_singular_index;
     Real                orb_singular_order;
     Real                orb_old_singular_order;
-    OrbEdgeShape        *orb_edge_shape;
+    OrbEdgeShape        *orb_edge_shape;    /**< Encodes hyperbolic structure using vertex Gram matrices */
 #endif
     EdgeClass           *prev;              /**< previous EdgeClass on doubly linked list       */
     EdgeClass           *next;              /**<   next   EdgeClass on doubly linked list       */
@@ -243,9 +243,11 @@ struct Cusp
     Complex             cusp_shape[2];          /**< cusp_shapes.c                        */
     int                 shape_precision[2];     /**< cusp_shapes.c                        */
 #ifdef ORB
-    OrbCuspShape        *orb_cusp_shape;
-    int                 orb_num_incident_singular_edges;
-    EdgeClass           **orb_incident_singular_edges;
+    OrbCuspShape        *orb_cusp_shape;        /**< Encodes hyperbolic structure using vertex Gram matrices */
+    int                 orb_num_incident_singular_edges; /**< Corresponds to Triangulation::num_cone_points in Orb. */
+    EdgeClass           **orb_incident_singular_edges;   /**< Singular edges incident to this cusp.
+                                                          * Similar to Triangulation::cone_points,
+                                                          * but we store the EdgeClass. */
 #endif
     int                 index;                  /**< cusp number, as perceived by user    */
                                                 /**<  (numbering starts at zero)          */

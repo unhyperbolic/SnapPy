@@ -11,14 +11,11 @@ static Boolean orb_flat_tet(Tetrahedron *tet);
 static Boolean orb_solution_is_flat(Triangulation *manifold);
 static Boolean orb_solution_is_geometric(Triangulation *manifold);
 static Boolean orb_solution_is_invalid(Triangulation *manifold);
-Boolean orb_solution_is_degenerate(Triangulation *manifold);
-Real orb_compute_cusp_euler_characteristics(Cusp * cusp);
+static Boolean orb_contains_flat_tetrahedra( Triangulation *manifold );
 
 void orb_identify_solution_type(
     Triangulation *manifold)
 {
-    Boolean ok;
-
     if (orb_solution_is_invalid(manifold))
     {
         manifold->orb_solution_type[filled] = other_solution;

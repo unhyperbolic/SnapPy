@@ -1,3 +1,10 @@
+/**
+ *  @file orb_cusps.c
+ *
+ *  Functions to populate Cusp::orb_[num_]incident_singular_edges
+ *  and compute orbifold Euler characteristic of cusp.
+ */
+
 #include <stdio.h>
 
 #include "kernel.h"
@@ -74,7 +81,7 @@ Real orb_compute_orbifold_cusp_euler_characteristic(
     }
 
     int n = cusp->orb_num_incident_singular_edges;
-    
+
     Real result = cusp->euler_characteristic - n;
 
     for (int i = 0; i < n; i++)

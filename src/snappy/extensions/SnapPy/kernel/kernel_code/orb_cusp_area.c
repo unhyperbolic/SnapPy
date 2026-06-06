@@ -1,9 +1,17 @@
-#include "kernel.h"
+/**
+ *  @file orb_cusp_area.c
+ *
+ *  Ported from snappea/code/cusp_area.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/cusp_area.c
+ *
+ */
+
+ #include "kernel.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
 /*
- * ORB-TODO: Why a cusp area?
+ * ORB-TODO: Why this particular cusp area instead of just 1?
  * We don't care that the cusps neighborhoods are disjoint, just equal
  * when computing canonical cell decomposition.
  */
@@ -14,7 +22,14 @@ SNAPPEA_NAMESPACE_BEGIN_SCOPE
 static void compute_cusp_areas(Triangulation *manifold);
 static Real compute_link_area(Tetrahedron *tet, int v);
 
-void orb_normalize_cusps(
+/*  Corollary 2.20 from Heard's thesis
+ *  https://github.com/DamianHeard/orb-thesis
+ *
+ *  Corresponds to
+ *  normalize_cusp_areas in snappea/code/cusp_area.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/cusp_area.c#L70-L126
+ */
+void orb_normalize_cusp_areas(
     Triangulation *manifold)
 {
     compute_cusp_areas(manifold);
@@ -93,6 +108,13 @@ void orb_normalize_cusps(
     }
 }
 
+/*  Theorem 2.19 from Heard's thesis
+ *  https://github.com/DamianHeard/orb-thesis
+ *
+ *  Corresponds to
+ *  compute_cusp_areas in snappea/code/cusp_area.c
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/cusp_area.c#L21-41
+ */
 static void compute_cusp_areas(
     Triangulation *manifold)
 {
@@ -108,6 +130,10 @@ static void compute_cusp_areas(
             tet->cusp[v]->orb_cusp_shape->area += compute_link_area(tet, v);
 }
 
+/*
+ * ORB-TODO:
+ * Should this take OrbTetShape?
+ */
 static Real compute_link_area(
     Tetrahedron *tet,
     int          v)

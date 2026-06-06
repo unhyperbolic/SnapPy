@@ -204,7 +204,7 @@ Cusp * create_one_cusp(
      *
      *      (1) mark_fake_cusps to compute the Euler characteristic.
      *
-     *      (2) compute_cusp_orientability to set the cusp->orientability.
+     *      (2) compute_cusp_orientabilities to set the cusp->orientability.
      *
      *      (3) call peripheral_curves() to set the cusp->orientability if
      *          the cusp's Euler characteristic is zero,

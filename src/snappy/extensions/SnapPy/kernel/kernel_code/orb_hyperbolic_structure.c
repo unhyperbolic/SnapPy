@@ -585,9 +585,14 @@ static SolutionType my_do_Dehn_filling(
 
     manifold->orb_solution_type[complete] = manifold->orb_solution_type[filled];
 
+    /*
+     * ORB-TODO: this should be done when computing the canonical
+     * cell decomposition. Not here.
+     */
+
     if (manifold->orb_solution_type[complete] == geometric_solution)
     {
-        orb_normalize_cusps(manifold);
+        orb_normalize_cusp_areas(manifold);
         orb_compute_tilts(manifold);
     }
 
