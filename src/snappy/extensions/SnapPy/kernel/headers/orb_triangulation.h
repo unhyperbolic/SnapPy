@@ -16,7 +16,15 @@ struct OrbTetShape
     Boolean             is_flat;
     Real                dihedral_angle[4][6]; /* penultimate/ultimate */
     Real                dual_basis[4][4];
+    /*
+     * ORB-TODO:
+     * Rename to corners for consistency with Tetrahedron::corners?
+     */
     Real                basis[4][4];
+    /*
+     * ORB-TODO:
+     * Appears to be the vertex Gram matrix.
+     */
     Real                Gram_matrix[4][4];
     Real                inverse_Gram_matrix[4][4];
     Real                eigenvalue[4];
