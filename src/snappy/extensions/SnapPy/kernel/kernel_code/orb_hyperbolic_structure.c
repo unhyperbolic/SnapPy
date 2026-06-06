@@ -1047,11 +1047,11 @@ static void compute_equations(
     Boolean       manual,
     Real          approach_value)
 {
-    EdgeClass *edge, *other;
-    int index, i, j, m, n;
+    EdgeClass     *edge, *other;
+    int           index, i, j, m, n;
     PositionedTet ptet0, ptet;
-    Tetrahedron *tet;
-    Real angle, v;
+    Tetrahedron   *tet;
+    Real          angle, v;
 
     /* initialize everything */
 
@@ -1065,8 +1065,8 @@ static void compute_equations(
      */
 
     for (edge = manifold->edge_list_begin.next;
-        edge != &manifold->edge_list_end;
-        edge = edge->next)
+         edge != &manifold->edge_list_end;
+         edge = edge->next)
         if (edge->orb_singular_order != 0.0) {
             /* set RHS of edge equations */
 
@@ -1083,7 +1083,8 @@ static void compute_equations(
                     TWO_PI / ((v - 1.0) / (START_APPROACH - 1.0) * edge->orb_old_singular_order
                     - (v - START_APPROACH) / (START_APPROACH - 1.0) * edge->orb_singular_order);
 
-            do {
+            do
+            {
                 i = ptet.near_face;
                 j = ptet.left_face;
                 m = ptet.right_face;
@@ -1118,7 +1119,8 @@ static void compute_equations(
                 if (other->orb_singular_order != 0.0)
                     equations[index][other->index]
                         += derivative_ij_ij(i, j, ptet.tet, m, n);
-                else {
+                else
+                {
                     equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
@@ -1136,7 +1138,8 @@ static void compute_equations(
                 if (other->orb_singular_order != 0.0)
                     equations[index][other->index]
                         += derivative_ij_in(i, j, m, ptet.tet, n);
-                else {
+                else
+                {
                     equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
@@ -1152,7 +1155,8 @@ static void compute_equations(
                 if (other->orb_singular_order != 0.0)
                     equations[index][other->index]
                         += derivative_ij_in(i, j, n, ptet.tet, m);
-                else {
+                else
+                {
                     equations[index][ptet.tet->cusp[i]->orb_cusp_shape->index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[i]->orb_cusp_shape->inner_product[ultimate])
@@ -1168,7 +1172,8 @@ static void compute_equations(
                 if (other->orb_singular_order != 0.0)
                     equations[index][other->index]
                         += derivative_ij_in(j, i, m, ptet.tet, n);
-                else {
+                else
+                {
                     equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[j]->orb_cusp_shape->inner_product[ultimate])
@@ -1181,10 +1186,11 @@ static void compute_equations(
                 }
                 other = ptet.tet->edge_class[edge_between_vertices[j][n]];
 
-                if (other->orb_singular_order != 0.0)
+                if ( other->orb_singular_order != 0.0)
                     equations[index][other->index]
                         += derivative_ij_in(j, i, n, ptet.tet, m);
-                else {
+                else
+                {
                     equations[index][ptet.tet->cusp[j]->orb_cusp_shape->index]
                         += other->orb_edge_shape->inner_product[ultimate]
                         / (2.0 * ptet.tet->cusp[j]->orb_cusp_shape->inner_product[ultimate])
@@ -1197,12 +1203,14 @@ static void compute_equations(
                 }
                 veer_left(&ptet);
 
-            } while (same_positioned_tet(&ptet, &ptet0) == FALSE);
+            }
+            while (same_positioned_tet(&ptet, &ptet0) == FALSE);
         }
 
     for (tet = manifold->tet_list_begin.next;
-        tet != &manifold->tet_list_end;
-        tet = tet->next) {
+         tet != &manifold->tet_list_end;
+         tet = tet->next)
+    {
         equations[tet->index][tet->index] +=
             2.0 * tet->orb_tet_shape->orientation_parameter[ultimate];
 
@@ -1215,7 +1223,8 @@ static void compute_equations(
                 if (tet->edge_class[edge_between_vertices[i][j]]->orb_singular_order != 0.0)
                     equations[tet->index][tet->edge_class[edge_between_vertices[i][j]]->index]
                         += 2.0 * tet->orb_tet_shape->inverse_Gram_matrix[i][j];
-                else {
+                else
+                {
                     equations[tet->index][tet->cusp[i]->orb_cusp_shape->index]
                         += tet->edge_class[edge_between_vertices[i][j]]->orb_edge_shape->inner_product[ultimate]
                         / tet->cusp[i]->orb_cusp_shape->inner_product[ultimate]
@@ -1236,15 +1245,15 @@ static void compute_equations(
 }
 
 static FuncResult newton_step(
-    Real **ind_equations,
+    Real  **ind_equations,
     int   num_rows,
     int   num_columns,
-    Real *delta)
+    Real  *delta)
 {
-    int i, j, k;
-    Real **A;
-    Real **new_equations;
-    Real *z;
+    int        i, j, k;
+    Real       **A;
+    Real       **new_equations;
+    Real       *z;
     FuncResult result;
 
     A = NEW_ARRAY(num_rows, Real *);
@@ -1258,7 +1267,8 @@ static FuncResult newton_step(
     z = NEW_ARRAY(num_columns, Real);
 
     new_equations = NEW_ARRAY(num_rows, Real *);
-    for (i = 0; i < num_rows; i++) {
+    for (i = 0; i < num_rows; i++)
+    {
         new_equations[i] = NEW_ARRAY(num_rows + 1, Real);
 
         for (j = 0; j < num_rows; j++)
@@ -1273,7 +1283,8 @@ static FuncResult newton_step(
 
     result = solve_real_equations(new_equations, num_rows, num_rows, z);
 
-    for (i = 0; result == func_OK && i < num_columns; i++) {
+    for (i = 0; result == func_OK && i < num_columns; i++)
+    {
         delta[i] = 0.0;
         for (j = 0; j < num_rows; j++)
             delta[i] += A[j][i] * z[j];
@@ -1289,7 +1300,7 @@ static FuncResult newton_step(
 static Real derivative_ij_t(
     VertexIndex  i,
     VertexIndex  j,
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     VertexIndex  m,
     VertexIndex  n)
 {
@@ -1307,7 +1318,8 @@ static Real derivative_ij_t(
 
     if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
         result = 0.0;
-    else {
+    else
+    {
 
         top = 2.0 * t * w_ii * w_jj * (v_mn * v_mn - v_mm * v_nn);
 
@@ -1323,7 +1335,7 @@ static Real derivative_ij_t(
 static Real derivative_ij_ij(
     VertexIndex  i,
     VertexIndex  j,
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     VertexIndex  m,
     VertexIndex  n)
 {
@@ -1341,13 +1353,15 @@ static Real derivative_ij_ij(
 
     angle = tet->orb_tet_shape->dihedral_angle[ultimate][edge_between_faces[i][j]];
 
-    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]]) {
+    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
+    {
         top = 2.0 * w_ij * (v_mm * v_nn - v_mn * v_mn);
 
         bottom = w_ii * w_jj * sin(2.0 * angle);
 
         result = top / bottom;
-    } else
+    }
+    else
         result = 0.0;
 
     return result;
@@ -1358,7 +1372,7 @@ static Real derivative_ij_in(
     VertexIndex  i,
     VertexIndex  j,
     VertexIndex  n,
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     VertexIndex  m)
 {
     Real v_im, v_in, v_jm, v_jn, v_mm, v_mn, v_ii, v_nn, w_ii, w_jj, w_ij, top, bottom, angle, t, result;
@@ -1379,13 +1393,16 @@ static Real derivative_ij_in(
     angle = tet->orb_tet_shape->dihedral_angle[ultimate][edge_between_faces[i][j]];
     t = tet->orb_tet_shape->orientation_parameter[ultimate];
 
-    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]]) {
+    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
+    {
         top = 2.0 * w_ij * (w_jj * (v_jm * v_mn - v_jn * v_mm) + w_ij * (v_im * v_mn - v_in * v_mm));
 
         bottom = sin(2.0 * angle) * w_ii * w_jj * w_jj;
 
         result = top / bottom;
-    } else {
+    }
+    else
+    {
         top = 2.0 * t * t * w_ii * (v_mm * v_nn - v_mn * v_mn) * (v_im * v_mn - v_in * v_mm);
 
         bottom = sin(2.0 * angle) * w_ii * w_ii * w_jj * w_jj;
@@ -1402,7 +1419,7 @@ static Real derivative_ij_mn(
     VertexIndex  j,
     VertexIndex  m,
     VertexIndex  n,
-    Tetrahedron *tet)
+    Tetrahedron  *tet)
 {
     Real v_ii, v_ij, v_im, v_in, v_jj, v_jm, v_jn, v_mn, v_nn, v_mm, w_ii, w_ij, w_jj, top, bottom, t, angle, result;
 
@@ -1424,14 +1441,17 @@ static Real derivative_ij_mn(
     angle = tet->orb_tet_shape->dihedral_angle[ultimate][edge_between_faces[i][j]];
     t = tet->orb_tet_shape->orientation_parameter[ultimate];
 
-    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]]) {
+    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
+    {
         top = 2.0 * w_ij * (w_ii * w_jj * (v_in * v_jm - 2.0 * v_ij * v_mn + v_im * v_jn)
             - w_ij * (w_ii * (v_ii * v_mn - v_im * v_in) + w_jj * (v_jj * v_mn - v_jm * v_jn)));
 
         bottom = w_ii * w_ii * w_jj * w_jj * sin(2.0 * angle);
 
         result = top / bottom;
-    } else {
+    }
+    else
+    {
         top = 2.0 * t * t * (w_ii * w_jj * v_mn + (v_mn * v_mn - v_mm * v_nn) *
             (w_ii * (v_ii * v_mn - v_im * v_in) + w_jj * (v_jj * v_mn - v_jm * v_jn)));
 
@@ -1447,7 +1467,7 @@ static Real derivative_ij_mn(
 static Real derivative_ij_ii(
     VertexIndex  i,
     VertexIndex  j,
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     VertexIndex  m,
     VertexIndex  n)
 {
@@ -1464,13 +1484,16 @@ static Real derivative_ij_ii(
     angle = tet->orb_tet_shape->dihedral_angle[ultimate][edge_between_faces[i][j]];
     t = tet->orb_tet_shape->orientation_parameter[ultimate];
 
-    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]]) {
+    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
+    {
         top = w_ij * w_ij * (v_mm * v_nn - v_mn * v_mn);
 
         bottom = sin(2.0 * angle) * w_ii * w_jj * w_jj;
 
         result = top / bottom;
-    } else {
+    }
+    else
+    {
         top = (v_mm * v_nn - v_mn * v_mn) * (v_mm * v_nn - v_mn * v_mn) * t * t * w_ii;
 
         bottom = sin(2.0 * angle) * w_ii * w_ii * w_jj * w_jj;
@@ -1487,7 +1510,7 @@ static Real derivative_ij_nn(
     VertexIndex  i,
     VertexIndex  j,
     VertexIndex  n,
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     VertexIndex  m)
 {
     Real v_ii, v_ij, v_im, v_jj, v_jm, v_mm, v_mn, v_nn, w_ii, w_ij, w_jj, top, bottom, angle, t, result;
@@ -1508,7 +1531,8 @@ static Real derivative_ij_nn(
     angle = tet->orb_tet_shape->dihedral_angle[ultimate][edge_between_faces[i][j]];
     t = tet->orb_tet_shape->orientation_parameter[ultimate];
 
-    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]]) {
+    if (!tet->orb_tet_shape->use_orientation_parameter[ultimate][edge_between_faces[i][j]])
+    {
         top = w_ij * (2.0 * w_ii * w_jj * (v_ij * v_mm - v_im * v_jm) +
             w_ij * (w_ii * (v_ii * v_mm - v_im * v_im)
                 + w_jj * (v_jj * v_mm - v_jm * v_jm)));
@@ -1516,7 +1540,9 @@ static Real derivative_ij_nn(
         bottom = w_ii * w_ii * w_jj * w_jj * sin(2.0 * angle);
 
         result = top / bottom;
-    } else {
+    }
+    else
+    {
         top = -t * t * (w_ii * w_jj * v_mm + (v_mn * v_mn - v_mm * v_nn) * (
                 w_ii * (v_ii * v_mm - v_im * v_im)
                 + w_jj * (v_jj * v_mm - v_jm * v_jm)));
@@ -1537,7 +1563,7 @@ extern Real orb_minor1(
     int        col)
 {
     Real m[3][3], det;
-    int i, j, r, c;
+    int  i, j, r, c;
 
     for (i = 0, r = 0; i < 3; r++)
         if (r != row) {
@@ -1550,7 +1576,8 @@ extern Real orb_minor1(
             i++;
         }
 
-    for (i = 0, det = 0.0; i < 3; i++) {
+    for (i = 0, det = 0.0; i < 3; i++)
+    {
         det += m[0][i] * m[1][(i + 1) % 3] * m[2][(i + 2) % 3];
         det -= m[2][i] * m[1][(i + 1) % 3] * m[0][(i + 2) % 3];
     }
@@ -1560,12 +1587,13 @@ extern Real orb_minor1(
 
 
 static FuncResult update_dihedral_angle(
-    Tetrahedron *tet,
+    Tetrahedron  *tet,
     EdgeIndex    e)
 {
     Real v1, v2, v, w, w1, w2, t, theta;
 
-    if (tet->edge_class[e]->orb_singular_order == 0.0) {
+    if (tet->edge_class[e]->orb_singular_order == 0.0)
+    {
         tet->orb_tet_shape->dihedral_angle[ultimate][e] = 0.0;
         return func_OK;
     }
@@ -1580,8 +1608,10 @@ static FuncResult update_dihedral_angle(
 
     t = tet->orb_tet_shape->orientation_parameter[ultimate];
 
-    if (tet->orb_tet_shape->use_orientation_parameter[ultimate][e]) {
-        if ((v * v - v1 * v2) / (w1 * w2) < 0 || ABS(t * safe_sqrt((v * v - v1 * v2) / (w1 * w2))) > 1) {
+    if (tet->orb_tet_shape->use_orientation_parameter[ultimate][e])
+    {
+        if ((v * v - v1 * v2) / (w1 * w2) < 0 || ABS(t * safe_sqrt((v * v - v1 * v2) / (w1 * w2))) > 1)
+        {
             /* update_Gram_matrix should have already checked this */
             if (tet->orb_tet_shape->use_orientation_parameter[penultimate][e])
                 uFatalError("update_dihedral_angle", "my_hyperbolic_strucutre");
@@ -1607,8 +1637,11 @@ static FuncResult update_dihedral_angle(
 
         else
             uFatalError("update_dihedral_angle", "my_hyperbolic_structure");
-    } else {
-        if ((w * w / (w1 * w2)) > 1 || (w * w / (w1 * w2)) < 0) {
+    }
+    else
+    {
+        if ((w * w / (w1 * w2)) > 1 || (w * w / (w1 * w2)) < 0)
+        {
             /* update_Gram_matrix should have already checked this */
             if (!tet->orb_tet_shape->use_orientation_parameter[penultimate][e])
                 uFatalError("update_dihedral_angle", "my_hyperbolic_strucutre");
@@ -1647,14 +1680,15 @@ extern void orb_compute_tilts(
     Triangulation *manifold)
 {
     Tetrahedron *tet;
-    FaceIndex f;
-    int i;
-    Real factor;
+    FaceIndex   f;
+    int         i;
+    Real        factor;
 
     for (tet = manifold->tet_list_begin.next;
-        tet != &manifold->tet_list_end;
-        tet = tet->next)
-        for (f = 0; f < 4; f++) {
+         tet != &manifold->tet_list_end;
+         tet = tet->next)
+        for (f = 0; f < 4; f++)
+        {
             tet->tilt[f] = 0.0;
 
             for (i = 0; i < 4; i++)
@@ -1684,14 +1718,14 @@ extern void orb_compute_tilts(
 
 
 static FuncResult select_independent_equations(
-    Real **equations,
+    Real  **equations,
     int   num_rows,
     int   num_columns,
-    Real ***ind_equations,
-    int  *new_rows)
+    Real  ***ind_equations,
+    int   *new_rows)
 {
     Real **transpose;
-    int i, j, k, next_pivot, pr, pc, R, C;
+    int  i, j, k, next_pivot, pr, pc, R, C;
     Real temp, pivot_element;
 
     R = num_columns + 1;
@@ -1700,7 +1734,8 @@ static FuncResult select_independent_equations(
 
 
     transpose = NEW_ARRAY(R, Real *);
-    for (i = 0; i < R; i++) {
+    for (i = 0; i < R; i++)
+    {
         transpose[i] = NEW_ARRAY(C, Real);
 
         for (j = 0; j < C; j++)
@@ -1710,28 +1745,33 @@ static FuncResult select_independent_equations(
     pr = 0;
     pc = 0;
 
-    while (pr < R && pc < C) {
+    while (pr < R && pc < C)
+    {
         next_pivot = pr;
         pivot_element = 0.0;
 
         for (i = pr; i < R; i++)
-            if (ABS(transpose[i][pc]) > ABS(pivot_element)) {
+            if (ABS(transpose[i][pc]) > ABS(pivot_element))
+            {
                 pivot_element = transpose[i][pc];
                 next_pivot = i;
             }
 
         if (next_pivot != pr)
-            for (i = 0; i < C; i++) {
+            for (i = 0; i < C; i++)
+            {
                 temp = transpose[next_pivot][i];
                 transpose[next_pivot][i] = transpose[pr][i];
                 transpose[pr][i] = temp;
             }
 
-        if (ABS(pivot_element) > ORB_MATRIX_EPSILON) {
+        if (ABS(pivot_element) > ORB_MATRIX_EPSILON)
+        {
             for (i = 0; i < C; i++)
                 transpose[pr][i] /= pivot_element;
 
-            for (i = pr + 1; i < R; i++) {
+            for (i = pr + 1; i < R; i++)
+            {
                 temp = transpose[i][pc];
                 transpose[i][pc] = 0.0;
 
@@ -1741,12 +1781,14 @@ static FuncResult select_independent_equations(
 
             pr++;
             pc++;
-        } else
+        }
+        else
             pc++;
     }
 
     *ind_equations = NEW_ARRAY(pr, Real *);
-    for (i = 0; i < pr; i++) {
+    for (i = 0; i < pr; i++)
+    {
         (*ind_equations)[i] = NEW_ARRAY(num_columns + 1, Real);
 
         for (j = 0; j < C; j++)
@@ -1782,25 +1824,25 @@ void orb_remove_hyperbolic_structure(
     Triangulation *manifold)
 {
     for (Tetrahedron * tet = manifold->tet_list_begin.next;
-        tet != &manifold->tet_list_end;
-        tet = tet->next)
-        if (tet->orb_tet_shape != NULL) {
+         tet != &manifold->tet_list_end;
+         tet = tet->next)
+        if ( tet->orb_tet_shape != NULL) {
             my_free(tet->orb_tet_shape);
             tet->orb_tet_shape = NULL;
         }
 
     for (EdgeClass * edge = manifold->edge_list_begin.next;
-        edge != &manifold->edge_list_end;
-        edge = edge->next)
-        if (edge->orb_edge_shape != NULL) {
+         edge != &manifold->edge_list_end;
+         edge = edge->next)
+        if ( edge->orb_edge_shape != NULL) {
             my_free(edge->orb_edge_shape);
             edge->orb_edge_shape = NULL;
         }
 
     for (Cusp * cusp = manifold->cusp_list_begin.next;
-        cusp != &manifold->cusp_list_end;
-        cusp = cusp->next)
-        if (cusp->orb_cusp_shape != NULL) {
+         cusp != &manifold->cusp_list_end;
+         cusp = cusp->next)
+        if ( cusp->orb_cusp_shape != NULL) {
             my_free(cusp->orb_cusp_shape);
             cusp->orb_cusp_shape = NULL;
         }
