@@ -2,8 +2,7 @@
  *  @file orb_cusp_area.c
  *
  *  Ported from snappea/code/cusp_area.c
- *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/gui/cusp_area.c
- *
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/cusp_area.c
  */
 
  #include "kernel.h"

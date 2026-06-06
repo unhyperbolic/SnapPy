@@ -1,7 +1,7 @@
 /**
- *  @file my_volume.c
+ *  @file orb_volume.c
  *
- *  Ported from snappea/code/orb_volume.c
+ *  Ported from snappea/code/my_volume.c
  *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c
  */
 
@@ -43,7 +43,7 @@ Real orb_volume(
 /*  Volume computed using formula in "A volume forumla for generalized hyperbolic tetrahedra" by Ushijima
  *
  *  Ported from tetrahedron_volume in snappea/code/my_volume.c
- *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L43-119
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L43-L119
  */
 static Real tetrahedron_volume(
     Real angles[6])
@@ -56,6 +56,7 @@ static Real tetrahedron_volume(
         for (int j = 0; j < 4; j++)
             G[i][j] = (i == j) ? (Real)1.0 : -cos(angles[edge_between_faces[i][j]]);
 
+    /* calculate the top of the complex numbers z1 and z2 */
     real_top = 0.0;
     for (int i = 0; i < 3; i++)
         real_top -= 2.0 * sin(angles[i]) * sin(angles[5 - i]);
@@ -68,6 +69,7 @@ static Real tetrahedron_volume(
     z2.real = real_top;
     z2.imag = -2.0 * sqrt_det;
 
+    /* now for the bottom */
     bottom = Zero;
 
     for (int i = 0; i < 3; i++)
@@ -111,7 +113,7 @@ static Real tetrahedron_volume(
 
 /*
  *  Ported from U in snappea/code/my_volume.c
- *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L122-171
+ *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_volume.c#L122-L171
  */
 static Complex U(
     Complex  z,

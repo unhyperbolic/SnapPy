@@ -117,13 +117,6 @@ extern void orb_identify_solution_type(Triangulation *manifold);
  *   Triangulation::orb_solution_type[filled].
  */
 
-extern Boolean orb_solution_is_degenerate(Triangulation *manifold);
-/**< Is solution computed by orb_find_hyperbolic_structure
- *   and stored in Tetrahedron::orb_tet_shape, EdgeClass::orb_edge_shape
- *   and Cusp::orb_cusp_shape degenerate?
- *   Does not write to Triangulation::orb_solution_Type.
- */
-
 /************************************************************************/
 /*                                                                      */
 /*                             orb_tilts.c                              */

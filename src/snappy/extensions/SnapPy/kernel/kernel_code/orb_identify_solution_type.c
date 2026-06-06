@@ -3,15 +3,41 @@
  *
  *  Adapted from snappea/code/my_identify_solution_type.c
  *  https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_identify_solution_type.c
+ *
+ *  This file provides the function
+ *      orb_identify_solution_type(Triangulation *manifold);
+ *  which identifies the type of solution in the orbifold shape data and
+ *  writes the result to manifold->orb_solution_type[filled].
  */
 
 #include "kernel.h"
 
 SNAPPEA_NAMESPACE_BEGIN_SCOPE
 
+/*
+ *  A solution must have volume at least ORB_VOLUME_EPSILON to count
+ *  as a positive volume solution. Otherwise the volume will be
+ *  considered zero or negative.
+ */
 #define ORB_VOLUME_EPSILON      1e-4
+
+/*
+ *  ORB_DIHEDRAL_EPSILON controls the tolerance when checking whether
+ *  the tetrahedra's dihedral angles agree with the geometry determined
+ *  by the Gram matrix.
+ */
 #define ORB_DIHEDRAL_EPSILON    1e-2
+
+/*
+ *  ORB_IDEAL_EPSILON defines when a cusp orbifold Euler characteristic
+ *  or cusp inner product should count as zero.
+ */
 #define ORB_IDEAL_EPSILON       1e-4
+
+/*
+ *  A solution is considered flat iff it's not degenerate and the
+ *  relevant dihedral angles are within ORB_FLAT_EPSILON of 0.0 or PI.
+ */
 #define ORB_FLAT_EPSILON        1e-6
 
 static Boolean orb_flat_tet(Tetrahedron *tet);
@@ -29,11 +55,22 @@ void orb_identify_solution_type(
         return;
     }
 
-    if (orb_solution_is_degenerate(manifold))
-    {
-        manifold->orb_solution_type[filled] = degenerate_solution;
-        return;
-    }
+    /*
+     * ORB-TODO:
+     *
+     * if (solution_is_degenerate(manifold))
+     * {
+     *     manifold->orb_solution_type[filled] = degenerate_solution;
+     *     return;
+     * }
+     *
+     * There is apparently no degeneracy check in Orb.
+     *
+     * That is, there is a is_degenerate_tet in my_identify_solution_type.c
+     * https://github.com/DamianHeard/orb/blob/f1bbe9a2170b172278c6fa43bd8039dfd6a66276/snappea/code/my_identify_solution_type.c#L158-L186
+     *
+     * But that code seemed to have checked for flatness and is all commented out.
+     */
 
     if (orb_solution_is_flat(manifold))
     {
@@ -78,13 +115,6 @@ Boolean orb_contains_flat_tetrahedra(
         if (orb_flat_tet(tet))
             return TRUE;
 
-    return FALSE;
-}
-
-Boolean orb_solution_is_degenerate(
-    Triangulation *manifold)
-{
-    (void)manifold;
     return FALSE;
 }
 

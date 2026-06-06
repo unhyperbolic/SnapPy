@@ -142,11 +142,13 @@ SolutionType orb_find_hyperbolic_structure(
 
             if (step_size < MIN_STEP || approach_value >= START_APPROACH )
             {
+                /*
                 if (orb_solution_is_degenerate(manifold))
                 {
                     manifold->orb_solution_type[complete] = degenerate_solution;
                     res = degenerate_solution;
                 }
+                */
 
                 return res;
             }

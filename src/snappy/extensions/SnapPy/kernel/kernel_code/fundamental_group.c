@@ -570,20 +570,18 @@ GroupPresentation *compute_unsimplified_presentation(
 			 && solution_type != no_solution
 			 && solution_type != degenerate_solution);
 
-#ifdef ORB
+    /*
+     * ORB-TODO: Make choose_generators compute the corners
+     * when there Triangulation::orb_solution_Type instead of
+     * Triangulation::solution_type.
+     */
     choose_generators(manifold, compute_vertices, FALSE);
-    /* new_choose_generators(manifold, FALSE); */
-#else
-    choose_generators(manifold, compute_vertices, FALSE);
-#endif
-    
+
     group->itsNumGenerators = manifold->num_generators;
 
     compute_matrix_generators(manifold, group);
 
-#ifdef ORB
-    /* need to set the singular_orders of the manifold to 0 if there  are none zero singular_orders */
-#endif
+    /* ORB-TODO: need to set the singular_orders of the manifold to 0 if there  are none zero singular_orders (???) */
     compute_relations(manifold, group);
 
     initialize_original_generators(group, group->itsNumGenerators);
