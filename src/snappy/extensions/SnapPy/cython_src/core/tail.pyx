@@ -804,7 +804,7 @@ IF ORB:
     def _orb_set_use_orb_conventions(use_orb_conventions : bool):
         orb_set_use_orb_conventions(use_orb_conventions)
 
-    def _orb_test_triangulating_diagram(name):
+    def _orb_test_triangulating_diagram(name, remove_finite_vertices = True):
         cdef c_Triangulation * triangulation
         cdef OrbDiagram * diagram
 
@@ -817,12 +817,8 @@ IF ORB:
             free_triangulation(triangulation)
 
         if diagram:
-            # Do not remove finite vertices.
-            # This is what the Orb GUI did - and remove_finite_vertices would
-            # also remove vertices that are adjacent to singular edges.
-
-            # Is this a memory leak if this raises an exception through uFatalError?
-            triangulation = orb_triangulate_diagram_complement(diagram, True)
+            triangulation = orb_triangulate_diagram_complement(
+                diagram, remove_finite_vertices)
 
         if not triangulation:
             orb_free_diagram(diagram)
