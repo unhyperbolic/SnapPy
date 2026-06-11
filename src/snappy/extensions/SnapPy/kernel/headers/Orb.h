@@ -60,6 +60,31 @@ extern void orb_set_singular_edge_info( Triangulation *manifold,
                                         int           singular_index,
                                         Real          singular_order);
 
+extern void orb_get_cusp_info(
+    Triangulation   *manifold,
+    int             cusp_index,
+    Boolean         *orientable,
+    int             *euler_characteristic,
+    Real            *orbifold_euler_characteristic,
+    int             *num_incident_singular_edges,
+    int             **incident_singular_edge_indices,
+    Real            **incident_singular_edge_orders);
+/**<
+ *  Provides orbifold-specific cusp data not available through
+ *  get_cusp_info(), core_geodesic() or get_holonomy().
+ *
+ *  It may report whether the cusp is orientable, its Euler
+ *  characteristic, its orbifold Euler characteristic, the number of
+ *  incident singular edges, the singular orders of those incident
+ *  edges and their singular edge indices.
+ *
+ *  If incident_singular_edge_indices and/or
+ *  incident_singular_edge_orders
+ *  is nonNULL, orb_get_cusp_info() allocates an array of length
+ *  *num_incident_singular_edges for each nonNULL output and stores it
+ *  there; the caller is responsible for freeing those arrays.
+ */
+
 /************************************************************************/
 /*                                                                      */
 /*                           orb_volume.c                               */

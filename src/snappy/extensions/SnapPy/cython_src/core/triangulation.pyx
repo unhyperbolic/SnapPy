@@ -1098,10 +1098,11 @@ cdef class Triangulation():
             repr = self.name()
             for i in range(self.num_cusps()):
                 info = self.cusp_info(i)
-                if info.is_complete:
-                    repr += '(0,0)'
-                else:
-                    repr += '(%g,%g)'% info['filling']
+                if 'filling' in info:
+                    if info.is_complete:
+                        repr += '(0,0)'
+                    else:
+                        repr += '(%g,%g)'% info['filling']
             for i in range(self._orb_num_singular_edges()):
                 info = self._orb_singular_edge_info(i)
                 repr += '(%g)' % info.singular_order
@@ -1291,6 +1292,114 @@ cdef class Triangulation():
 
     # When doctesting, the M,L coefficients acquire an accuracy of 8.
     # So we have to include the zeros in the doctest string.
+    def _cusp_info(self, data_spec=None, include_geometry=False):
+        cdef int cusp_index
+        cdef c_CuspTopology topology
+        cdef Boolean is_complete, orientable
+        cdef bint emit_geometric_info
+        cdef Real m, l, orbifold_euler_characteristic
+        cdef int singular_order, accuracy
+        cdef int euler_characteristic, num_cone_points
+        cdef Complex c_core_length
+        cdef Real *cone_point_orders = NULL
+        cdef int *cone_point_singular_edge_indices = NULL
+        cdef Complex initial_shape, current_shape
+        cdef int initial_shape_accuracy, current_shape_accuracy
+        cdef Complex initial_modulus, current_modulus
+        cdef int meridian_accuracy, longitude_accuracy
+        cdef Complex c_meridian, c_longitude
+
+        if self.c_triangulation is NULL:
+            raise ValueError('The Triangulation is empty.')
+        if data_spec is None:
+            return ListOnePerLine([self._cusp_info(i, include_geometry)
+                                   for i in range(self.num_cusps())])
+        if isinstance(data_spec, str):
+            return [c[data_spec] for c in self._cusp_info(
+                include_geometry=include_geometry)]
+        cusp_index = valid_index(
+            data_spec, self.num_cusps(),
+            'The specified cusp (%s) does not exist.')
+
+        orb_get_cusp_info(self.c_triangulation, cusp_index,
+                          &orientable, &euler_characteristic,
+                          &orbifold_euler_characteristic,
+                          &num_cone_points,
+                          &cone_point_singular_edge_indices,
+                          &cone_point_orders)
+
+        if euler_characteristic == 0 and num_cone_points == 0:
+            if include_geometry:
+                get_cusp_info(self.c_triangulation, cusp_index,
+                              &topology, &is_complete, &m, &l,
+                              &initial_shape, &current_shape,
+                              &initial_shape_accuracy, &current_shape_accuracy,
+                              &initial_modulus, &current_modulus)
+                get_holonomy(self.c_triangulation, cusp_index,
+                             &c_meridian, &c_longitude,
+                             &meridian_accuracy, &longitude_accuracy)
+                core_geodesic(self.c_triangulation, cusp_index,
+                              &singular_order, &c_core_length, &accuracy)
+            else:
+                get_cusp_info(self.c_triangulation, cusp_index,
+                              &topology, &is_complete, &m, &l,
+                              NULL, NULL, NULL, NULL, NULL, NULL)
+                core_geodesic(self.c_triangulation, cusp_index,
+                              &singular_order, NULL, NULL)
+        else:
+                get_cusp_info(self.c_triangulation, cusp_index,
+                              &topology, NULL, NULL, NULL,
+                              NULL, NULL, NULL, NULL, NULL, NULL)
+
+        info = {
+           'index' : cusp_index,
+           'topology' : CuspTopology[topology],
+           'orientable' : B2B(orientable),
+           'euler_characteristic' : euler_characteristic,
+           'orbifold_euler_characteristic' : Real2float(
+               orbifold_euler_characteristic),
+           'cone_point_orders' : [Real2float(cone_point_orders[i])
+                                  for i in range(num_cone_points)],
+           'cone_point_singular_edge_indices' : [
+               cone_point_singular_edge_indices[i]
+               for i in range(num_cone_points)]
+           }
+
+        if euler_characteristic == 0 and num_cone_points == 0:
+            info.update({
+                'is_complete' : B2B(is_complete),
+                'filling' : (Real2float(m), Real2float(l))})
+            if singular_order != 0:
+                info['singular_order'] = singular_order
+            if include_geometry:
+                shape = Complex2Number(current_shape)
+                shape.accuracy = current_shape_accuracy
+                meridian = Complex2Number(c_meridian)
+                meridian.accuracy = meridian_accuracy
+                longitude = Complex2Number(c_longitude)
+                longitude.accuracy = longitude_accuracy
+                modulus = Complex2Number(current_modulus)
+                info.update({
+                    'shape': self._number_(shape),
+                    'shape_accuracy': current_shape_accuracy,
+                    'modulus': self._number_(modulus),
+                    'holonomies': (self._number_(meridian),
+                                   self._number_(longitude)),
+                    'holonomy_accuracy': min(
+                        meridian_accuracy, longitude_accuracy)
+                })
+                if singular_order != 0:
+                    core_length = Complex2Number(c_core_length)
+                    core_length.accuracy = accuracy
+                    info['core_length'] = self._number_(core_length)
+
+        if cone_point_orders != NULL:
+            my_free(cone_point_orders)
+        if cone_point_singular_edge_indices != NULL:
+            my_free(cone_point_singular_edge_indices)
+
+        return CuspInfo(**info)
+
     def cusp_info(self, data_spec=None):
         """
         Returns an info object containing information about the given
@@ -1303,7 +1412,7 @@ cdef class Triangulation():
         >>> c.is_complete
         False
         >>> sorted(c.keys())
-        ['filling', 'index', 'is_complete', 'singular_order', 'topology']
+        ['cone_point_orders', 'cone_point_singular_edge_indices', 'euler_characteristic', 'filling', 'index', 'is_complete', 'orbifold_euler_characteristic', 'orientable', 'singular_order', 'topology']
 
         You can get information about multiple cusps at once:
 
@@ -1314,39 +1423,7 @@ cdef class Triangulation():
         >>> M.cusp_info('is_complete')
         [True, False, False]
         """
-        cdef int cusp_index
-        cdef c_CuspTopology topology
-        cdef Boolean is_complete,
-        cdef Real m, l
-        cdef int singular_order
-
-        if self.c_triangulation is NULL:
-            raise ValueError('The Triangulation is empty.')
-        if data_spec is None:
-            return ListOnePerLine([self.cusp_info(i)
-                                   for i in range(self.num_cusps())])
-        if isinstance(data_spec, str):
-            return [c[data_spec] for c in self.cusp_info()]
-        cusp_index = valid_index(
-            data_spec, self.num_cusps(),
-            'The specified cusp (%s) does not exist.')
-
-        get_cusp_info(self.c_triangulation, cusp_index,
-                      &topology, &is_complete, &m, &l,
-                      NULL, NULL, NULL, NULL, NULL, NULL)
-        core_geodesic(self.c_triangulation, cusp_index,
-                      &singular_order, NULL, NULL)
-
-        info = {
-           'index' : cusp_index,
-           'topology' : CuspTopology[topology],
-           'is_complete' : B2B(is_complete),
-           'filling' : (Real2float(m), Real2float(l))
-           }
-        if singular_order != 0:
-            info['singular_order'] = singular_order
-
-        return CuspInfo(**info)
+        return self._cusp_info(data_spec, include_geometry=False)
 
     def _testing_compute_cusp_orientabilities(self):
         testing_compute_cusp_orientabilities(self.c_triangulation)

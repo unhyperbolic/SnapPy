@@ -348,17 +348,43 @@ class Info(dict):
 
 
 class CuspInfo(Info):
-    def __repr__(self):
+    def _topology_repr(self):
+        if self.euler_characteristic >= 0:
+            return self.topology
+
+        if self.orientable:
+            genus = 1 - self.euler_characteristic // 2
+            return 'Orientable of Genus %d' % genus
+        else:
+            genus = 2 - self.euler_characteristic
+            return 'Nonorientable of Genus %d' % genus
+
+    def _cone_points_repr(self):
+        if len(self.cone_point_orders) == 0:
+            return ''
+
+        return (' with cone points of order %s and orbifold Euler char %g' % (
+            self.cone_point_orders, self.orbifold_euler_characteristic))
+
+    def _info_torus_or_klein(self):
         if self.is_complete:
             if 'shape' in self:
-                return ('Cusp %-2d: complete %s of shape %s' %
-                        (self.index, self.topology, self.shape) )
+                return 'complete %s of shape %s' % (self.topology, self.shape)
             else:
-                return ('Cusp %-2d: %s, not filled' %
-                        (self.index, self.topology) )
+                return '%s, not filled' % self.topology
         else:
-            return ('Cusp %-2d: %s with Dehn filling coefficients (M, L) = %s' %
-                    (self.index, self.topology, self.filling) )
+            return ('%s with Dehn filling coefficients (M, L) = %s' %
+                    (self.topology, self.filling) )
+
+    def _info_repr(self):
+        if self.euler_characteristic == 0 and len(self.cone_point_orders) == 0:
+            return self._info_torus_or_klein()
+        else:
+            return self._topology_repr() + self._cone_points_repr()
+
+    def __repr__(self):
+        return 'Cusp %-2d: %s' % (self.index, self._info_repr())
+
     _obsolete = {'complete?'          : 'is_complete',
                  'holonomy precision' : 'holonomy_accuracy',
                  'shape precision'    : 'shape_accuracy',

@@ -1194,7 +1194,7 @@ cdef class Manifold(Triangulation):
         >>> c.modulus# doctest: +NUMERIC6
         -0.12155872 + 1.04204128*I
         >>> sorted(c.keys())
-        ['filling', 'holonomies', 'holonomy_accuracy', 'index', 'is_complete', 'modulus', 'shape', 'shape_accuracy', 'topology']
+        ['cone_point_orders', 'cone_point_singular_edge_indices', 'euler_characteristic', 'filling', 'holonomies', 'holonomy_accuracy', 'index', 'is_complete', 'modulus', 'orbifold_euler_characteristic', 'orientable', 'shape', 'shape_accuracy', 'topology']
 
         Here 'shape' is the shape of the cusp, i.e.
         (longitude/meridian)
@@ -1228,16 +1228,6 @@ cdef class Manifold(Triangulation):
              -0.1766049820997? + 1.2028208192855?*I]
 
         """
-        cdef int cusp_index
-        cdef c_CuspTopology topology
-        cdef Boolean is_complete,
-        cdef Real m, l
-        cdef Complex initial_shape, current_shape
-        cdef int initial_shape_accuracy, current_shape_accuracy,
-        cdef Complex initial_modulus, current_modulus
-        cdef int meridian_accuracy, longitude_accuracy, singular_order, accuracy
-        cdef Complex c_meridian, c_longitude, c_core_length
-
         if self.c_triangulation is NULL:
             raise ValueError('The Triangulation is empty.')
 
@@ -1249,56 +1239,8 @@ cdef class Manifold(Triangulation):
                                 "as first argument to cusp_info().")
             return cusps_compute_cusp_shapes(self, verified = verified,
                                               bits_prec = bits_prec)
-
-        if data_spec is None:
-            return ListOnePerLine([self.cusp_info(i)
-                                   for i in range(self.num_cusps())])
-        # Need to check that data_spec has string type
-        if isinstance(data_spec, str):
-            return [c[data_spec] for c in self.cusp_info()]
-        cusp_index = valid_index(
-            data_spec, self.num_cusps(),
-            'The specified cusp (%s) does not exist.')
-
-        get_cusp_info(self.c_triangulation, cusp_index,
-                      &topology, &is_complete, &m, &l,
-                      &initial_shape, &current_shape,
-                      &initial_shape_accuracy, &current_shape_accuracy,
-                      &initial_modulus, &current_modulus)
-        get_holonomy(self.c_triangulation, cusp_index,
-                     &c_meridian, &c_longitude,
-                     &meridian_accuracy, &longitude_accuracy)
-        shape= Complex2Number(current_shape)
-        shape.accuracy = current_shape_accuracy
-        meridian = Complex2Number(c_meridian)
-        meridian.accuracy = meridian_accuracy
-        longitude = Complex2Number(c_longitude)
-        longitude.accuracy = longitude_accuracy
-        modulus = Complex2Number(current_modulus)
-        info = {
-            'index' : cusp_index,
-            'topology' : CuspTopology[topology],
-            'is_complete' : B2B(is_complete),
-            'filling' : (Real2float(m), Real2float(l)),
-            'shape': self._number_(shape),
-            'shape_accuracy': current_shape_accuracy,
-            'modulus': self._number_(modulus),
-            'holonomies': (self._number_(meridian), self._number_(longitude)),
-            'holonomy_accuracy': min(meridian_accuracy,longitude_accuracy)
-        }
-
-        core_geodesic(self.c_triangulation, cusp_index,
-                      &singular_order, &c_core_length, &accuracy)
-
-        if singular_order != 0:
-            core_length = Complex2Number(c_core_length)
-            core_length.accuracy = accuracy
-            info.update({
-                'core_length': self._number_(core_length),
-                'singular_order': singular_order
-            })
-
-        return CuspInfo(**info)
+        return Triangulation._cusp_info(
+            self, data_spec, include_geometry=True)
 
     def dehn_fill(self, filling_data, which_cusp=None) -> None:
         """

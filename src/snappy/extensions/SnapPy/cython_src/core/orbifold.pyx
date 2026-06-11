@@ -40,6 +40,14 @@ cdef class Orbifold(Triangulation):
         else:
             return SolutionType[solution_type]
 
+    def cusp_info(self, data_spec=None):
+        """
+        Returns cusp information, including orbifold-specific cone point
+        data when present.
+        """
+        return Triangulation._cusp_info(
+            self, data_spec, include_geometry=False)
+
     def volume(self):
         return Real2Number(orb_volume(self.c_triangulation))
 
