@@ -179,6 +179,15 @@ extern void compute_cusp_orientabilities(Triangulation   *manifold);
  *  Euler characteristic zero).
  */
 
+extern Boolean is_cusp_fake(const Cusp * cusp);
+/**<
+ *  True if the vertex link is a sphere without orbifold cone points.
+ *  Has to be called after the cusp Euler characteristic and
+ *  (if the triangulation has any singular edges)
+ *  Cusp::orb_num_incident_singular_edges has any has been computed by,
+ *  for example, mark_fake_cusps and orb_cusps_fill_incident_singular_edges.
+ */
+
 extern CuspTopology get_cusp_topology(const Cusp * cusp);
 /**<
  *  Determine the topology of the cusp from orientability and Euler

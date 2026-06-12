@@ -184,8 +184,7 @@ static void initialize_matching_cusps(
          cusp != &manifold->cusp_list_end;
          cusp = cusp->next)
 
-        if ( get_cusp_topology(cusp) == sphere_cusp
-             && cusp->orb_num_incident_singular_edges == 0)
+        if ( is_cusp_fake(cusp) == TRUE )
             cusp->matching_cusp = NULL;
         else
         {
