@@ -573,6 +573,7 @@ cdef class Triangulation():
         for i in range(n):
             tet = tet.next
         result = two_to_three(tet, f, &self.c_triangulation.num_tetrahedra)
+        tidy_peripheral_curves(self.c_triangulation)
 
         if result == func_OK:
             self._cache.clear(message = '2-3 move')
@@ -624,6 +625,7 @@ cdef class Triangulation():
 
         result = three_to_two(tet.edge_class[e], &where_to_resume,
                               &self.c_triangulation.num_tetrahedra)
+        tidy_peripheral_curves(self.c_triangulation)
 
         if result == func_OK:
             self._cache.clear(message = '3-2 move')
